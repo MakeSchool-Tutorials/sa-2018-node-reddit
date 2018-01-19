@@ -1,2 +1,4 @@
 # Ignore OS X System files
 .DS_Store
+
+node_modules
