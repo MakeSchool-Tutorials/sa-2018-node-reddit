@@ -100,6 +100,8 @@ Next, Bootstrap includes some dynamic elements (for example, responsive elements
 </html>
 ```
 
+[TODO: explain why css goes in the head and js goes in the body, review HTML structure]
+
 ## Handlebars
 
 [TODO: no code writing here, just a little deeper overview of what Handlebars is, what the `{{...}}` tags are, etc...]
@@ -108,7 +110,74 @@ Next, Bootstrap includes some dynamic elements (for example, responsive elements
 
 [TODO: explain what a navbar is, connect to explanation of Handlebars layout]
 
+[TODO: explain Bootstrap components, and how to use Bootstrap documentation]
 
+We'll install the Bootstrap Navbar together, step by step. But first, take a few minutes to [skim the instructions](https://getbootstrap.com/docs/4.0/components/navbar/).  
+
+Bootstrap gives us a ton of options to customize our navbar.  For this app, we only want a simple navbar with a logo and a few links on the left and a login/logout link on the right, like this:
+
+```
+[TODO: include wireframe]
+```
+
+We'll include that navbar with the following HTML:
+```HTML
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">MakeReddit</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">log in/log out</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+```
+[TODO: (Stretch) explain this snippet]
+
+Let's copy that snippet and paste it in our `views/layout.hbs` file.  Make it the first thing inside the `<body>` tag, like so:
+```HTML
+...
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">MakeReddit</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+              <li><a href="#">log in/log out</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    {{{body}}}
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+...
+```
+
+[TODO: give students .scss file to include]
 
 
 After the intro, the tutorial should continue with the core content. Longer tutorials should be broken up into multiple pages.
