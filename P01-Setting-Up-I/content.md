@@ -14,7 +14,7 @@ Under the MVC architecture, we think of our app as having three main systems tha
   - The Model is the part where we store information [...]
   - The Controller is the part in between–the code that gets information from the Models and sends it to the Views, and takes information from the Views and stores it in the Models. [...]
 
-(This section focuses mostly on Views and Controllers–we'll get to Models in the next section)
+(This section focuses mostly on Views–we'll get to Models in the next section, and controllers in part 4 [TODO: check if accurate])
 
 The first section of the tutorial should summarize what the student will learn and what tools they'll use. It should also outline any prerequisites for understanding the material and link to resources for getting up to speed. It's usually a good idea to show a screenshot or video of the final product and link to the solution repository.
 
@@ -49,8 +49,97 @@ express --view=hbs --css=sass makereddit
 [image of directory structure here]
 
 ## Hello World
-[TODO: establish setup works with hello world page]
-[Nodemon here]
+
+Let's open the `views/index.hbs` file.  Soon we'll learn more about what this file is and how it works, but for right now it's enough to understand that this is our "home page".  This is the file that renders when people first visit our website.
+
+Let's change `Welcome to {{title}}` to `Hello, world`, so that `views/index.hbs` looks like this:
+```HTML
+<h1>{{title}}</h1>
+<p>Hello, world</p>
+```
+[TODO: comment on why 'hello world']
+
+Now, before we can run our server, we need to install our packages. [TODO explain better] In your terminal, enter:
+```
+npm install
+```
+
+And then wait while NPM installs all of the background software our app needs.  This can take anywhere from a few seconds to 10 minutes, so you may need to be patient!
+
+Once it's finished–if there were no errors–start the server by entering into your terminal:
+```
+npm start
+```
+
+Then open your browser and go to `localhost:3000`.  You should see something like this:
+[TODO: screenshot]
+
+Congratulations! You just built a web app! We've still got a long way to go before it does anything useful, and we still need to learn about how it works, but we've taken our first big step.
+
+## Nodemon
+
+Let's add one more useful tool before we move on.  We just want our website to say "hello, world" so we know it's working, but the biggest letters on the page actually say "Express".  If we look back at our code in `views/index.hbs` it seems to be coming from the `<h1>{{title}}</h1>`, but what are those curly braces for, and how does it know `title` is supposed to be `Express`?
+
+This feature comes from Handlebars (which is why these files end with '.hbs').  We'll learn about Handlebars in more detail further down this page, but for now let's just change that `title` to "Hello, world" instead of "Express".
+
+First, open `/routes/index.js` and lines 5-7 should look like this:
+```Javascript
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
+});
+```
+
+We're going to learn all about routes starting in [part 4], so don't worry if this still seems mysterious–soon, it won't. This just tells our web server that when anybody visits the root path of our website, or the home page, it should render a file called 'index' (`/views/index.hbs`!), and then it assigns the value 'Express' to the key 'title'.
+
+Let's change that 'title' to 'Hello, world', so that the entire `/routes/index.js` file looks like this:
+```Javascript
+var express = require('express');
+var router = express.Router();
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Hello, world' });
+});
+
+module.exports = router;
+```
+
+Now–be sure to save your file!–then, let's go back to the browser and hit refresh.  And:
+[TODO: screenshot]
+:flushed:
+
+Unfortunately, Express only reads these files when it's starting.  After that, it ignores any changes we make.  One quick fix is to simply restart the server:
+- Go to the terminal where the server is running
+- Hit `control` + `c` on your keyboard. (This is a very common command for stopping command line programs–get used to it because you'll see it again and again)
+- enter `npm start` to restart the server
+
+Now when we refresh the page:
+[TODO: screenshot]
+:relieved:
+
+But it's going to be a huge pain if we have to stop and restart the server after every. single. little. change.  Luckily, there are lots of packages that will take care of restarting the server for us.  As you grow as a developer, you'll eventually want to learn about tools like [Webpack](https://webpack.js.org/) or [Yarn](https://yarnpkg.com/en/).  But for this project, we're going to use a super simple solution called [nodemon](https://nodemon.io/) (short for "Node Monitor").
+
+First, open your terminal and enter:
+```
+npm install -g nodemon
+```
+(the `-g` means we're installing it globally, not just for this project)
+
+Now, instead of typing `npm start`, we'll type `nodemon start`.  Go ahead:  use `control`+`c` to stop the running server, then enter:
+```
+nodemon start
+```
+
+Now in our `routes/index.js` file, let's set the title on our home page to be our real title, "MakeReddit":
+```Javascript
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'MakeReddit' });
+});
+```
+
+Now, **without** restarting the server, let's go to the browser and refresh the page:
+[TODO: screenshot]
+:satisfied:
 
 # Bootstrap and Handlebars
 
@@ -73,6 +162,10 @@ First, let's open the `views/layout.hbs` file.  At first, it should look like th
   </body>
 </html>
 ```
+
+Remember what we learned about HTML [in previous tutorial], and then let's look back at `views/index` for a moment–what's missing?  This isn't a complete HTML document...
+[...]
+
 This layout file is special because it will load every page inside this html.  [... example with wireframes]
 
 First, we'll include the CSS inside the `<head>` tag like this:
@@ -177,7 +270,7 @@ Let's copy that snippet and paste it in our `views/layout.hbs` file.  Make it th
 ...
 ```
 
-[TODO: give students .scss file to include]
+[TODO: give students .scss file to include w/ basic styling.  Set up further styling as a stretch challenge]
 
 
 After the intro, the tutorial should continue with the core content. Longer tutorials should be broken up into multiple pages.

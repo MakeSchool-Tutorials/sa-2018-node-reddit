@@ -1,7 +1,9 @@
 ---
-title: "Get started with writing tutorials!"
+title: "Getting Started"
 slug: getting-started
 ---
+
+[explain difference between web page and web app]
 
 The above title becomes the tutorials first header so _an introduction to the tutorial page should be given here before any more headers are created._
 
