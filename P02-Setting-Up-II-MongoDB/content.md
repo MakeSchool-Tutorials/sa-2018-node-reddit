@@ -42,7 +42,7 @@ Inside the database, you should see something like the screenshot below.  First,
 
 ![mLab Deployment Creator](assets/mlab-08-new-user.png)
 
-Use whatever username and password you like.  I used username: ms-user, password: makeschool.  Click on 'Create'.  You should now see one user in your user table.
+Use whatever username and password you like (I used username: ms-user, password: makeschool), but be sure to remember it, because we'll need it again soon.  Click on 'Create'.  You should now see one user in your user table.
 
 ![mLab Deployment Creator](assets/mlab-09-users-table.png)
 
@@ -61,3 +61,47 @@ npm install mongodb --save
 (the `--save` tag adds the package to our `package.json` file so that will be included any time we run `npm install`)
 
 ## Connecting to Our mLab Database
+
+Open `app.js`, and paste the following code at the end of the document, just above the `module.exports = app;` line (probably line 52, but your file might be slightly different from mine):
+```Javascript
+// Database setup
+const mongoose = require('mongoose');
+const mongoURI = '(your mongodb URI)';
+
+mongoose.connect(mongoURI)
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+```
+
+Notice that mongoURI variable–let's go back to (mLab)[https://mlab.com/home] and click on your database. You'll see your MongoDB URI on that screen:
+
+![mLab Deployment Creator](assets/mlab-06-deployments.png)
+
+We want the address that starts with `mongodb://...`, and be sure to replace `<dbuser>` and `<dbpassword>` with the username and password for the database user we created above. In this example, my MongoDB URI is `mongodb://ms-user:makeschool@ds233228.mlab.com:33228/makereddit1`.
+
+The last few lines of your `app.js` file should look like the following (except with *your* mongoURI):
+
+```Javascript
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+// Database setup
+const mongoose = require('mongoose');
+const mongoURI = 'mongodb://ms-user:makeschool@ds111478.mlab.com:11478/msredditxa';
+
+mongoose.connect(mongoURI)
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+module.exports = app;
+```
