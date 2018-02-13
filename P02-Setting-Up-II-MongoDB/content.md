@@ -45,3 +45,19 @@ Inside the database, you should see something like the screenshot below.  First,
 Use whatever username and password you like.  I used username: ms-user, password: makeschool.  Click on 'Create'.  You should now see one user in your user table.
 
 ![mLab Deployment Creator](assets/mlab-09-users-table.png)
+
+# MongoDB Driver and Mongoose
+
+Now our database is all set up and ready to go on mLab's servers–but now we need to make our app connect to it.  We need to install two packages to help us do that.  The first–the MongoDB driver–lets us control a MongoDB database through a Node app. It will do its work mostly behind the scenes, though, because we're going to use [Mongoose](http://mongoosejs.com/) to work with our database.  Writing database code is not difficult (once you learn how), but it is boring, complicated and error-prone;  Mongoose makes things much simpler. [...]
+
+## Installing the MongoDB Driver
+
+[TODO: a step might be missing here.  QA on a computer that hasn't had mongodb installed before]
+
+In your terminal, enter
+```
+npm install mongodb --save
+```
+(the `--save` tag adds the package to our `package.json` file so that will be included any time we run `npm install`)
+
+## Connecting to Our mLab Database
