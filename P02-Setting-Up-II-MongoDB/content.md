@@ -5,10 +5,11 @@ slug: setting-up
 In this section, we'll finish setting up our dev environment by installing and configuring our database.  MongoDB is the database we'll be using, [mLab, Mongo Driver, Mongoose]
 
 [TODO: Introduction to MongoDB]
+[TODO: now adding users in this section]
 
 # mLab
 
-Rather than keeping our database on our local machines, we're going to use a DataBase-as-a-Service (DBaas) called mLab.  Storing our database on mLab's servers offers us two advantages:
+Instead of keeping our database on our local machines, we're going to use a DataBase-as-a-Service (DBaas) called mLab.  Storing our database on mLab's servers offers us two advantages:
 - First, it greatly simplifies the setup process [...]
 - Second, it gives us some handy tools for looking around inside our database [...]
 
@@ -48,7 +49,7 @@ Use whatever username and password you like (I used username: ms-user, password:
 
 # MongoDB Driver and Mongoose
 
-Now our database is all set up and ready to go on mLab's servers–but now we need to make our app connect to it.  We need to install two packages to help us do that.  The first–the MongoDB driver–lets us control a MongoDB database through a Node app. It will do its work mostly behind the scenes, though, because we're going to use [Mongoose](http://mongoosejs.com/) to work with our database.  Writing database code is not difficult (once you learn how), but it is boring, complicated and error-prone;  Mongoose makes things much simpler. [...]
+Now our database is all set up and ready to go on mLab's servers–but now we need to make our app connect to it.  We need to install two packages to help us do that.  The first one–the MongoDB driver–lets us control a MongoDB database through a Node app. It will do its work mostly behind the scenes, though, because we're going to use [Mongoose](http://mongoosejs.com/) to work with our database.  Writing database code is not difficult (once you learn how), but it is complicated, error-prone and boring;  Mongoose makes things much simpler. [...]
 
 ## Installing the MongoDB Driver
 
@@ -59,6 +60,13 @@ In your terminal, enter
 npm install mongodb --save
 ```
 (the `--save` tag adds the package to our `package.json` file so that will be included any time we run `npm install`)
+
+## Installing Mongoose
+
+In your terminal, enter
+```
+npm install mongoose --save
+```
 
 ## Connecting to Our mLab Database
 
@@ -73,6 +81,8 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 ```
+
+[TODO: explain this block of code, or link to Mongoose's Getting Started page at http://mongoosejs.com/docs/index.html, for reference]
 
 Notice that mongoURI variable–let's go back to (mLab)[https://mlab.com/home] and click on your database. You'll see your MongoDB URI on that screen:
 
@@ -96,7 +106,7 @@ app.use(function(err, req, res, next) {
 
 // Database setup
 const mongoose = require('mongoose');
-const mongoURI = 'mongodb://ms-user:makeschool@ds111478.mlab.com:11478/msredditxa';
+const mongoURI = 'mongodb://ms-user:makeschool@ds233228.mlab.com:33228/makereddit1';
 
 mongoose.connect(mongoURI)
 mongoose.Promise = global.Promise;
@@ -105,3 +115,108 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 module.exports = app;
 ```
+
+# Adding Users
+
+Before we move on, let's make sure that our database actually works. We're going to add user accounts to our app [so that users can post under their own username, log in and out, have private information, etc...].  [set expectations: We're going to copy-paste a lot of code quickly/don't worry we'll explain it all later/...]
+
+First, create a new folder in your root directory called 'models', and inside there create a new file called `user.js`.  Your file structure should look like this:
+
+[TODO: add file structure tree]
+
+Paste the following inside `models/user.js`:
+
+```Javascript
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const UserSchema = new Schema({
+  username: { type: String, required: true }
+});
+
+const User = mongoose.model('User', UserSchema);
+module.exports = User;
+```
+
+We'll learn about what's happening here in detail in later sections but, in short, this file defines what properties our users will have.  To begin with we will only store a username, but in the future we might also store a password, a name, an email address, etc...
+
+Next, open the `routes/users.js` file and delete everything in it. Paste in the following:
+
+```Javascript
+const express = require('express');
+const router = express.Router();
+const User = require('../models/user');
+
+router.get('/', (req, res, next) => {
+  res.render('users/index');
+});
+
+router.get('/new', (req, res, next) => {
+  res.render('users/new');
+})
+
+router.post('/', (req, res, next) => {
+  const user = new User(req.body);
+
+  user.save(function(err, user) {
+    if(err) console.log(err);
+    return res.redirect('/users');
+  });
+})
+
+module.exports = router;
+```
+
+Again, we'll learn all about routes later on in this tutorial, so don't worry about understanding everything right now.  Basically, this file tells our app what to do when users request certain URLs.  We are inside the `/users` route, so if someone requests `ourwebsite.com/users/`, we will render something called `users/index`.  If someone requests `ourwebsite.com/users/new`, we will render something called `users/new`.  (Don't worry about the `post` right now–we'll get there.)
+
+As for `users/index` and `users/new`, they don't exist yet.  Let's create them. Make a new folder inside the `views/` folder called `users`.  Inside `users`, make two new files called `index.hbs` and `new.hbs`.  Your file structure should look like this:
+
+[TODO: add file structure tree]
+
+In `views/users/index.hbs`, paste this:
+```HTML
+<div>
+  Users Index
+</div>
+
+
+<ul>
+  {{#each users as |user|}}
+    <li>{{user.username}}</li>
+  {{/each}}
+</ul>
+```
+
+And paste this into `views/users/new.hbs`:
+```HTML
+<div>
+  <form action="/users" method="post">
+    <legend>New User</legend>
+
+    <div class="form-group">
+      <label for="user-username">Username</label>
+      <input type="text" name="username" class="form-control" id="user-username" placeholder="Username">
+    </div>
+
+    <div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</div>
+
+```
+
+With all of these pieces in place, let's create a user. In your terminal, if the server isn't already running, start it with:
+
+```
+nodemon start
+```
+
+Then, go to `localhost:3000/users/new` in your browser. There should be a new user form, with a single field for a username, like so:
+[TODO: add screenshot]
+
+Enter a username and click "Submit".  It should take you to a users index page, with a list of all the users in the database (at first there will be only one).  
+
+[TODO: explain how this proves the db is working, show users on mLab website]
+
+[TODO: Conclusion/segue to auth]
