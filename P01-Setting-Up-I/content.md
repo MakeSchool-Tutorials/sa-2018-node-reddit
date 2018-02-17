@@ -14,7 +14,7 @@ Under the MVC architecture, we think of our app as having three main systems tha
   - The Model is the part where we store information [...]
   - The Controller is the part in between–the code that gets information from the Models and sends it to the Views, and takes information from the Views and stores it in the Models. [...]
 
-(This section focuses mostly on Views–we'll get to Models in the next section, and controllers in part 4 [TODO: check if accurate])
+<!-- (This section focuses mostly on Views–we'll get to Models in the next section, and controllers in part 4 [TODO: check if accurate]) -->
 
 The first section of the tutorial should summarize what the student will learn and what tools they'll use. It should also outline any prerequisites for understanding the material and link to resources for getting up to speed. It's usually a good idea to show a screenshot or video of the final product and link to the solution repository.
 
@@ -57,9 +57,9 @@ Let's change `Welcome to {{title}}` to `Hello, world`, so that `views/index.hbs`
 <h1>{{title}}</h1>
 <p>Hello, world</p>
 ```
-[TODO: comment on why 'hello world']
+<!-- [TODO: comment on why 'hello world'] -->
 
-Now, before we can run our server, we need to install our packages. [TODO explain better] In your terminal, enter:
+<!-- Now, before we can run our server, we need to install our packages. [TODO explain better] In your terminal, enter: -->
 ```
 npm install
 ```
@@ -72,7 +72,7 @@ npm start
 ```
 
 Then open your browser and go to `localhost:3000`.  You should see something like this:
-[TODO: screenshot]
+<!-- [TODO: screenshot] -->
 
 Congratulations! You just built a web app! We've still got a long way to go before it does anything useful, and we still need to learn about how it works, but we've taken our first big step.
 
@@ -105,7 +105,7 @@ module.exports = router;
 ```
 
 Now–be sure to save your file!–then, let's go back to the browser and hit refresh.  And:
-[TODO: screenshot]
+<!-- [TODO: screenshot] -->
 :flushed:
 
 Unfortunately, Express only reads these files when it's starting.  After that, it ignores any changes we make.  One quick fix is to simply restart the server:
@@ -114,7 +114,7 @@ Unfortunately, Express only reads these files when it's starting.  After that, i
 - enter `npm start` to restart the server
 
 Now when we refresh the page:
-[TODO: screenshot]
+<!-- [TODO: screenshot] -->
 :relieved:
 
 But it's going to be a huge pain if we have to stop and restart the server after every. single. little. change.  Luckily, there are lots of packages that will take care of restarting the server for us.  As you grow as a developer, you'll eventually want to learn about tools like [Webpack](https://webpack.js.org/) or [Yarn](https://yarnpkg.com/en/).  But for this project, we're going to use a super simple solution called [nodemon](https://nodemon.io/) (short for "Node Monitor").
@@ -138,7 +138,7 @@ router.get('/', function(req, res, next) {
 ```
 
 Now, **without** restarting the server, let's go to the browser and refresh the page:
-[TODO: screenshot]
+<!-- [TODO: screenshot] -->
 :satisfied:
 
 # Bootstrap and Handlebars
@@ -193,24 +193,24 @@ Next, Bootstrap includes some dynamic elements (for example, responsive elements
 </html>
 ```
 
-[TODO: explain why css goes in the head and js goes in the body, review HTML structure]
+<!-- [TODO: explain why css goes in the head and js goes in the body, review HTML structure] -->
 
 ## Handlebars
 
-[TODO: no code writing here, just a little deeper overview of what Handlebars is, what the `{{...}}` tags are, etc...]
+<!-- [TODO: no code writing here, just a little deeper overview of what Handlebars is, what the `{{...}}` tags are, etc...] -->
 
 ## Adding a Navbar
 
-[TODO: explain what a navbar is, connect to explanation of Handlebars layout]
+<!-- [TODO: explain what a navbar is, connect to explanation of Handlebars layout] -->
 
-[TODO: explain Bootstrap components, and how to use Bootstrap documentation]
+<!-- [TODO: explain Bootstrap components, and how to use Bootstrap documentation] -->
 
 We'll install the Bootstrap Navbar together, step by step. But first, take a few minutes to [skim the instructions](https://getbootstrap.com/docs/4.0/components/navbar/).  
 
 Bootstrap gives us a ton of options to customize our navbar.  For this app, we only want a simple navbar with a logo and a few links on the left and a login/logout link on the right, like this:
 
 ```
-[TODO: include wireframe]
+<!-- [TODO: include wireframe] -->
 ```
 
 We'll include that navbar with the following HTML:
@@ -235,7 +235,7 @@ We'll include that navbar with the following HTML:
   </div>
 </nav>
 ```
-[TODO: (Stretch) explain this snippet]
+<!-- [TODO: (Stretch) explain this snippet] -->
 
 Let's copy that snippet and paste it in our `views/layout.hbs` file.  Make it the first thing inside the `<body>` tag, like so:
 ```HTML
@@ -270,7 +270,7 @@ Let's copy that snippet and paste it in our `views/layout.hbs` file.  Make it th
 ...
 ```
 
-[TODO: give students .scss file to include w/ basic styling.  Set up further styling as a stretch challenge]
+<!-- [TODO: give students .scss file to include w/ basic styling.  Set up further styling as a stretch challenge] -->
 
 
 After the intro, the tutorial should continue with the core content. Longer tutorials should be broken up into multiple pages.

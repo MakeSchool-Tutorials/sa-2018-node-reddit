@@ -1,11 +1,11 @@
 ---
 title: "Setting up our environment part II"
-slug: setting-up
+slug: setting-up-ii
 ---
 In this section, we'll finish setting up our dev environment by installing and configuring our database.  MongoDB is the database we'll be using, [mLab, Mongo Driver, Mongoose]
 
-[TODO: Introduction to MongoDB]
-[TODO: now adding users in this section]
+<!-- [TODO: Introduction to MongoDB] -->
+<!-- [TODO: now adding users in this section] -->
 
 # mLab
 
@@ -17,7 +17,7 @@ In your browser, go to (https://mlab.com/signup/) to create an account.  (Unless
 
 ![mLab Signup Page](assets/mlab-01-signup.png)
 
-[TODO: verify mLab account creation steps]
+<!-- [TODO: verify mLab account creation steps] -->
 
 [After your account is created, click on `+ Create New` to create a new MongoDB deployment.]  Select 'Amazon Web Services' for your provider and 'Sandbox' for your plan type, as shown below, then click 'Continue'.
 
@@ -53,7 +53,7 @@ Now our database is all set up and ready to go on mLab's servers–but now we ne
 
 ## Installing the MongoDB Driver
 
-[TODO: a step might be missing here.  QA on a computer that hasn't had mongodb installed before]
+<!-- [TODO: a step might be missing here.  QA on a computer that hasn't had mongodb installed before] -->
 
 In your terminal, enter
 ```
@@ -82,7 +82,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 ```
 
-[TODO: explain this block of code, or link to Mongoose's Getting Started page at http://mongoosejs.com/docs/index.html, for reference]
+<!-- [TODO: explain this block of code, or link to Mongoose's Getting Started page at http://mongoosejs.com/docs/index.html, for reference] -->
 
 Notice that mongoURI variable–let's go back to (mLab)[https://mlab.com/home] and click on your database. You'll see your MongoDB URI on that screen:
 
@@ -122,7 +122,7 @@ Before we move on, let's make sure that our database actually works. We're going
 
 First, create a new folder in your root directory called 'models', and inside there create a new file called `user.js`.  Your file structure should look like this:
 
-[TODO: add file structure tree]
+<!-- [TODO: add file structure tree] -->
 
 Paste the following inside `models/user.js`:
 
@@ -171,7 +171,7 @@ Again, we'll learn all about routes later on in this tutorial, so don't worry ab
 
 As for `users/index` and `users/new`, they don't exist yet.  Let's create them. Make a new folder inside the `views/` folder called `users`.  Inside `users`, make two new files called `index.hbs` and `new.hbs`.  Your file structure should look like this:
 
-[TODO: add file structure tree]
+<!-- [TODO: add file structure tree] -->
 
 In `views/users/index.hbs`, paste this:
 ```HTML
@@ -213,10 +213,10 @@ nodemon start
 ```
 
 Then, go to `localhost:3000/users/new` in your browser. There should be a new user form, with a single field for a username, like so:
-[TODO: add screenshot]
+<!-- [TODO: add screenshot] -->
 
 Enter a username and click "Submit".  It should take you to a users index page, with a list of all the users in the database (at first there will be only one).  
 
-[TODO: explain how this proves the db is working, show users on mLab website]
+<!-- [TODO: explain how this proves the db is working, show users on mLab website] -->
 
-[TODO: Conclusion/segue to auth]
+<!-- TODO: Conclusion/segue to auth -->
