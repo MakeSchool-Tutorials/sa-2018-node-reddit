@@ -163,18 +163,25 @@ First, let's open the `views/layout.hbs` file.  At first, it should look like th
 </html>
 ```
 
-Remember what we learned about HTML [in previous tutorial], and then let's look back at `views/index` for a moment–what's missing?  This isn't a complete HTML document...
+Remember what we learned about HTML in previous tutorials, and then let's look back at `views/index` for a moment–what's missing?  This isn't a complete HTML document...
 [...]
 
-This layout file is special because it will load every page inside this html.  [... example with wireframes]
+This layout file is special because it will load every page inside this html.  
+<!-- [TODO: elaborate, include example with wireframes] -->
 
-First, we'll include the CSS inside the `<head>` tag like this:
+First, we'll include the CSS and some meta tags inside the `<head>` tag like this:
 ```HTML
 <html>
   <head>
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   </head>
   <body>
   ...
@@ -186,9 +193,10 @@ Next, Bootstrap includes some dynamic elements (for example, responsive elements
   <body>
     {{{body}}}
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
   </body>
 </html>
 ```
@@ -201,9 +209,12 @@ Next, Bootstrap includes some dynamic elements (for example, responsive elements
 
 ## Adding a Navbar
 
+<!-- [TODO: remove bootstrap, use custom css] -->
+
 <!-- [TODO: explain what a navbar is, connect to explanation of Handlebars layout] -->
 
-<!-- [TODO: explain Bootstrap components, and how to use Bootstrap documentation] -->
+<!-- [TODO: primer/review on HTML5 tags here] -->
+
 
 We'll install the Bootstrap Navbar together, step by step. But first, take a few minutes to [skim the instructions](https://getbootstrap.com/docs/4.0/components/navbar/).  
 
