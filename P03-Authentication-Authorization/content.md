@@ -10,7 +10,7 @@ Authentication and authorization are closely related, but they're not actually t
 
 The word "auth" can refer to either authentication, authorization or both of them together.
 
-# Authentication
+# Authentication: Passwords
 
 User registration, authentication and authorization are pretty basic features needed by almost every web app, so there are lots of tools for us to choose from to help us get started.  The main package we'll use here is called [Passport](http://www.passportjs.org/).
 <!-- TODO: a little more background on passport and alternatives, and passport-local -->
@@ -132,6 +132,65 @@ Let's make sure this works as expected. Go back to `localhost:3000/users/new` an
 
 <!-- TODO: explain hashing (and encryption), and why we're using hashing here -->
 
+Now that our users have passwords, and we're saving them so securely that even we can never know what they are, let's give our users the ability to log in.
 
+# Authentication: Log in
+
+Let's start with this idea: our users should log in by going to `/login`.  If we try that right now–in your browser, visit `localhost:3000/login`–what happens? [It doesn't work, that's what happens](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).  We never defined that endpoint–which is to say, we never told our app what to do if someone visits that address.
+
+Let's open the `routes/index.js` file. (Users get their own routes file in `routes/users.js`, and other resources will get their own files, too.  But login/logout is kind of special, so we'll keep them right in the index). Let's add a login route, like this:
+
+```Javascript
+router.get('/login', (req, res, next) => {
+  res.render('login');
+});
+```
+
+Now let's visit `localhost:3000/login` again.  It still doesn't work, but what's wrong now?
+
+<!-- TODO: add 'Failed to lookup view "login" in views directory' screenshot -->
+
+It's trying to load a view, so it looks in the `/views` directory for a file called "login", just like we told it to, but that file isn't there. Let's create the file `views/login.hbs`, and paste the following form inside:
+
+```HTML
+<form action="/login" method="post">
+  <legend>Log in</legend>
+
+  <div class="form-group">
+    <label for="user-username">Username</label>
+    <input type="text" name="username" class="form-control" id="user-username" placeholder="username">
+  </div>
+
+  <div class="form-group">
+    <label for="user-password">Password</label>
+    <input type="password" name="password" class="form-control" id="user-password" placeholder="password">
+  </div>
+
+  <div class='text-right'>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+```
+
+Now when we visit `localhost:3000/login`, we see our login form.
+
+<!-- TODO: add screenshot -->
+
+But if we try to log in now, what do you expect to happen?  It won't work yet.  When we submit a form, where does it send that data?  (Hint: check the form's `action`)
+
+<!-- TODO: review HTTP verbs -->
+Open `routes/index.js`.  We need to define a POST route to `/login`, so include the following snippet:
+```Javascript
+router.post('/login', (req, res, next) => {
+  console.log('logging in!');
+  console.log(req.body);
+
+  res.redirect('/');
+});
+```
+
+Now, with all of our groundwork laid, we're finally ready to authenticate users.
+
+# Authentication
 
 # Authorization
