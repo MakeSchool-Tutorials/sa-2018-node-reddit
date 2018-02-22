@@ -193,4 +193,141 @@ Now, with all of our groundwork laid, we're finally ready to authenticate users.
 
 # Authentication
 
+How does logging in even work?  It's gotta be crazy complicated, right?  Some parts are, actually.  We're going to use something called the Blowfish Cypher (hence: `bcrypt`).  You can read all about it in [this Wikipedia article](https://en.wikipedia.org/wiki/Blowfish_(cipher))–but, it may be best not to get too far down that rabbit hole.  The hard parts have been done for us and we have a convenient package to use.  And the basic principles of how secure logins work are pretty easy to understand.
+
+When our users visit `/login`, we will present them with a login form.  In that form, they enter a username and password.  We take the username and use it to find them in the database.  If they exist, we check if they entered the correct password... but I think you can see the problem with that.
+
+We don't know what the user's password is supposed to be (because we NEVER EVER STORE PLAIN TEXT PASSWORDS IN OUR DATABASE).  We have the function that hashed their password in the first place, so we can hash the password they just entered, and see if that matches the hashed password in our database.  In fact, that's what we'll do.
+
+<!-- Wait.  If that's all there is to it, couldn't anybody with access to our database go read [this Wikipedia article about the Blowfish cypher](https://en.wikipedia.org/wiki/Blowfish_(cipher)), or just go download the [bcrypt NPM package](https://www.npmjs.com/package/bcrypt) and un-hash all the users' hashed passwords? Two things protect us from attacks this simple:
+- First, _hashing_ is generally one-way, unlike _encryption_, which is usually designed to be _decrypted_.  So even if you have the hashed password _and_ the algorithm that hashed it, you still need the original password to get anywhere.
+- Second, _salt_. In this case, _salt_ is a secret string that bcrypt adds to the formula for our app.  It's defined in .  [[Eep.  Am I salting? TODO: salt ]] -->
+
+Let's open `models/user.js` to add an `.authenticate()` method to our users.
+<!-- TODO: talk through method -->
+
+let's add the `.authenticate()` function declaration to `models/user.js`, so that the entire file looks like this:
+```Javascript
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt');
+
+const UserSchema = new Schema({
+  username: { type: String, required: true },
+  password: { type: String, required: true }
+});
+
+UserSchema.pre('save', function(next) {
+  let user = this;
+
+  bcrypt.hash(user.password, 10, function (err, hash){
+    if (err) return next(err);
+
+    user.password = hash;
+    next();
+  })
+});
+
+UserSchema.statics.authenticate = function(username, password, next) {
+  User.findOne({ username: username })
+    .exec(function (err, user) {
+      if (err) {
+        return next(err)
+      } else if (!user) {
+        var err = new Error('User not found.');
+        err.status = 401;
+        return next(err);
+      }
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (result === true) {
+          return next(null, user);
+        } else {
+          return next();
+        }
+      });
+    });
+}
+
+const User = mongoose.model('User', UserSchema);
+module.exports = User;
+```
+
+<!-- TODO: briefly explain `.statics.` -->
+
+What's next? Somewhere we can call `User.authenticate('myusername', 'secretpassword')` to log our user in, but where do we do that?  We want to authenticate users when they send us their password, which happens when they submit the login form.  Where does that send the password?
+
+<!-- TODO: fold behind solution -->
+
+We wrote code for POST requests to `/login` in `routes/index.js`, so let's open that file.  Our call to `User.authenticate()` looks like this:
+
+```Javascript
+User.authenticate(req.body.username, req.body.password, (err, user) => {
+    if (err || !user) {
+      const next_error = new Error("Username or password incorrect");
+      next_error.status = 401;
+
+      return next(next_error);
+    } else {
+      req.session.userId = user._id;
+      console.log(req.session);
+
+      return res.redirect('/') ;
+    }
+  });
+```
+
+<!-- TODO: talk through code -->
+
+In the end, your complete `/routes/index.js` file should look like this:
+
+```Javascript
+var express = require('express');
+var router = express.Router();
+
+router.get('/', (req, res, next) => {
+  res.render('index', { title: 'MakeReddit' });
+});
+
+router.get('/login', (req, res, next) => {
+  res.render('login');
+});
+
+router.post('/login', (req, res, next) => {
+  console.log('logging in!');
+  console.log(req.body);
+
+  User.authenticate(req.body.username, req.body.password, (err, user) => {
+    if (err || !user) {
+      const next_error = new Error("Username or password incorrect");
+      next_error.status = 401;
+
+      return next(next_error);
+    } else {
+      req.session.userId = user._id;
+      console.log(req.session);
+
+      return res.redirect('/') ;
+    }
+  });
+  res.redirect('/');
+});
+
+module.exports = router;
+```
+
+# Logging out
+
 # Authorization
+
+
+
+
+
+
+
+
+
+
+
+
+.
