@@ -1,6 +1,6 @@
 ---
 title: "Setting up our environment"
-slug: setting-up
+slug: 01-setting-up
 ---
 In this section we'll set up our environments. [...]
 We're going to learn how to set up a web server using Express, generate HTML using Handlebars, and make it look good using Bootstrap.

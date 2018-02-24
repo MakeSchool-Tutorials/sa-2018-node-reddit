@@ -1,6 +1,6 @@
 ---
 title: "Authentication and Authorization"
-slug: auth
+slug: 03-auth
 ---
 
 <!-- TODO: [In this section we will save users in the database, and learn how to require a username and password.  By the end we will have a Registration page where users can sign up, a log in page, and a button for logging out ...] -->
@@ -465,14 +465,3 @@ module.exports = router;
 ```
 
 Before we move on, let's make sure everything here works: be sure that you're logged out of the app (you should see a "Log in" link in the upper right) and try to visit `localhost:3000/users`.  If you're redirected to `localhost:3000/login`, we're ready to move on.
-
-
-
-
-
-
-
-
-
-
-.

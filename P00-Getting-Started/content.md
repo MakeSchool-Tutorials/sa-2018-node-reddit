@@ -1,6 +1,6 @@
 ---
 title: "Getting Started"
-slug: get-started
+slug: 00-get-started
 ---
 
 <!-- TODO: explain difference between web page and web app -->
