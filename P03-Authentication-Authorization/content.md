@@ -355,11 +355,116 @@ And now let's try logging in.  Assuming you remembered your password correctly, 
 
 Go back to `localhost:3000/login`, and what happens to our "Log in/Log out" link? It's back to "Log in", which means that either we're not logged in anymore (don't worry; we are), or that our layout forgot.  If you look back at `routes/index.js`, you might notice that when we call `res.render` in our `router.get('login', ...)` function, we don't pass any values for  `title` or `currentUser`.  This means that when we go to `/login`, the view (Handlebars) doesn't know what `currentUser` is, so it renders a "Log in" link.  (You might have noticed that the title is missing, too).
 
-We'll set this up so that every page checks whether you're logged in or not, but at this point we've already moved on from _authentication_ and into _authorization_
+<!-- TODO: explain middleware, add the following to routes/index.js -->
+```Javascript
+// set layout variables
+router.use(function(req, res, next) {
+  res.locals.title = "MakeReddit";
+  res.locals.currentUserId = req.session.userId;
+
+  next();
+})
+```
+
+<!-- TODO: remove passing locals to view in get('/'), verify all works as expected. -->
+
+# Logout
+
+<!-- TODO: forgot this section... just add post('/logout') function to routes/index.js -->
 
 # Authorization
 
+And now we come to _authorization_.
 
+The key to our authorization strategy will be another piece of middleware that will allow users to access pages if they are logged in, and redirect them to the login page if they are not.  Remember that to the system, being "logged in" just means that your browser has an encrypted cookie with your user id in it.  To check if someone is logged in, we just need to check for the existence of that value.
+
+Let's create a new file, and a new folder, called `routes/helpers/auth.js` and paste the following code inside:
+
+```Javascript
+exports.requireLogin = (req, res, next) => {
+  if(req.session && req.session.userId) {
+    return next();
+  } else {
+    let err = new Error('You must log in to view this page');
+    err.status = 401;
+
+    return res.redirect('/login');
+  }
+}
+```
+
+<!-- TODO: talk through code -->
+
+Let's see an example of how to use this code by requiring authorization for users to view our users index–the list of all the users in the system.  To start, open the users routes file (`routes/users.js`) and include our authorization helpers at the top (`const auth = require('./helpers/auth')`). Now for any route where we want to require authorization, we can simply pass our `auth.requireLogin` middleware as the second argument when we declare the route.  So, `router.get('/', (req, res, next) => { ... })` becomes `router.get('/', auth.requireLogin, (req, res, next) => { ... })`.
+
+At this point, our full `routes/index.js` should look like this:
+
+```Javascript
+const express = require('express');
+const router = express.Router();
+const User = require('../models/user');
+
+// set layout variables
+router.use(function(req, res, next) {
+  res.locals.title = "MakeReddit";
+  res.locals.currentUserId = req.session.userId;
+
+  next();
+})
+
+
+/* GET home page. */
+router.get('/', (req, res, next) => {
+  // const currentUser = req.session.userId;
+  console.log("locals:");
+  console.log(res.locals);
+
+  res.render('index');
+});
+
+router.get('/login', (req, res, next) => {
+  res.render('login');
+});
+
+router.post('/login', (req, res, next) => {
+  console.log('logging in!');
+  console.log(req.body);
+
+  User.authenticate(req.body.username, req.body.password, (err, user) => {
+    console.log(err);
+    console.log(user);
+    if (err || !user) {
+      const next_error = new Error("Username or password incorrect");
+      next_error.status = 401;
+
+      return next(next_error);
+    } else {
+      req.session.userId = user._id;
+      console.log(req.session);
+
+      // TODO: implement users/show
+      // return res.redirect(`/users/${user._id}`);
+      return res.redirect('/') ;
+    }
+  });
+});
+
+router.get('/logout', (req, res, next) => {
+  if(req.session) {
+    req.session.destroy((err) => {
+      if(err) {
+        return next(err);
+      } else {
+        return res.redirect('/login');
+      }
+    });
+  }
+});
+
+module.exports = router;
+```
+
+Before we move on, let's make sure everything here works: be sure that you're logged out of the app (you should see a "Log in" link in the upper right) and try to visit `localhost:3000/users`.  If you're redirected to `localhost:3000/login`, we're ready to move on.
 
 
 
