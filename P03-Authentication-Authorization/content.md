@@ -201,7 +201,11 @@ We don't know what the user's password is supposed to be (because we NEVER EVER 
 
 <!-- Wait.  If that's all there is to it, couldn't anybody with access to our database go read [this Wikipedia article about the Blowfish cypher](https://en.wikipedia.org/wiki/Blowfish_(cipher)), or just go download the [bcrypt NPM package](https://www.npmjs.com/package/bcrypt) and un-hash all the users' hashed passwords? Two things protect us from attacks this simple:
 - First, _hashing_ is generally one-way, unlike _encryption_, which is usually designed to be _decrypted_.  So even if you have the hashed password _and_ the algorithm that hashed it, you still need the original password to get anywhere.
-- Second, _salt_. In this case, _salt_ is a secret string that bcrypt adds to the formula for our app.  It's defined in .  [[Eep.  Am I salting? TODO: salt ]] -->
+- Second, _salt_. In this case, _salt_ is a secret string that bcrypt adds to the formula for our app.  It's defined in .  [[TODO: Eep.  Am I salting? --yes, in ]] -->
+
+<!-- TODO: set up sessions in app.js-->
+<!-- var session = require('express-session');
+app.use(session({ secret: 'jf0832po8', cookie: { maxAge: 3600000 }, resave: true, saveUninitialized: true })); -->
 
 Let's open `models/user.js` to add an `.authenticate()` method to our users.
 <!-- TODO: talk through method -->
@@ -269,20 +273,21 @@ User.authenticate(req.body.username, req.body.password, (err, user) => {
       return next(next_error);
     } else {
       req.session.userId = user._id;
-      console.log(req.session);
 
       return res.redirect('/') ;
     }
   });
 ```
 
+Let's take a minute to understand what's happening here.
 <!-- TODO: talk through code -->
 
 In the end, your complete `/routes/index.js` file should look like this:
 
 ```Javascript
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const User = require('../models/user');
 
 router.get('/', (req, res, next) => {
   res.render('index', { title: 'MakeReddit' });
@@ -293,9 +298,6 @@ router.get('/login', (req, res, next) => {
 });
 
 router.post('/login', (req, res, next) => {
-  console.log('logging in!');
-  console.log(req.body);
-
   User.authenticate(req.body.username, req.body.password, (err, user) => {
     if (err || !user) {
       const next_error = new Error("Username or password incorrect");
@@ -304,18 +306,56 @@ router.post('/login', (req, res, next) => {
       return next(next_error);
     } else {
       req.session.userId = user._id;
-      console.log(req.session);
 
       return res.redirect('/') ;
     }
   });
-  res.redirect('/');
 });
 
 module.exports = router;
 ```
 
-# Logging out
+# Toggle "Log in"/"Log out" Link
+
+Go to `localhost:3000` in your browser and notice the header at the top, particularly the 'log in/log out' text on the right.  Obviously, this isn't how log in buttons are supposed to work–it isn't even a real link.  Let's add a bit of logic that checks if a user is logged in–if they're not logged in, we'll offer them a 'log in' link; if they are, the link will say 'log out'.
+
+The header is defined in our layout file.  Open `views/layout.hbs`, and replace the `<nav>` section with the following code:
+
+```HTML
+<nav>
+  <div class="logo">
+    MakeReddit
+  </div>
+
+  {{# if current_user}}
+    <a href="/logout">log out</a>
+  {{else}}
+    <a href="/login">log in</a>
+  {{/if}}
+</nav>
+```
+
+<!-- TODO: talk through code -->
+
+However, this doesn't work yet.  Try it if you like–go to `localhost:3000/login`, enter your username and password... and still be offered a link to log _in_.  Take another look at that `{{if}}` statement.  Do you see the problem?  We never assign any value to `current_user`, so it's not possible to avoid the `{{else}}` branch; `current_user` will always be `undefined`.
+
+We need to define the variables for this view in the controller (or in this case, our routes file at `routes/index.js`).   
+
+Let's modify the GET request for our root route to check the session for the existence of a `userId` and pass that value, if it exists, to our view.  Replace the existing `router.get('/', ...)` function with the code below:
+
+```Javascript
+router.get('/', (req, res, next) => {
+  const currentUser = req.session.userId;
+
+  res.render('index', { title: 'MakeReddit', currentUser: currentUser });
+});
+```
+
+And now let's try logging in.  Assuming you remembered your password correctly, you should be back at the home page and in the upper right-hand corner it _should_ say "Log out". Nice! But we're not quite finished yet...
+
+Go back to `localhost:3000/login`, and what happens to our "Log in/Log out" link? It's back to "Log in", which means that either we're not logged in anymore (don't worry; we are), or that our layout forgot.  If you look back at `routes/index.js`, you might notice that when we call `res.render` in our `router.get('login', ...)` function, we don't pass any values for  `title` or `currentUser`.  This means that when we go to `/login`, the view (Handlebars) doesn't know what `currentUser` is, so it renders a "Log in" link.  (You might have noticed that the title is missing, too).
+
+We'll set this up so that every page checks whether you're logged in or not, but at this point we've already moved on from _authentication_ and into _authorization_
 
 # Authorization
 
