@@ -218,6 +218,44 @@ router.get('/:id', auth.requireLogin, (req, res, next) => {
 
 # Rooms Edit and Update
 
+<!-- TODO: point out how new/create mirrors edit/update, give a few code snippets, ask students to try implementing, and hide final code behind a solution fold.  Esp., point out that we need the room id in the form action, so we need to pass that in from the controller -->
+
+`views/rooms/edit.hbs`:
+```HTML
+<div>
+  <form action="/rooms/{{room.id}}" method="post">
+    <legend>Edit Room</legend>
+    <div class="form-group">
+      <label for="post-topic">Topic</label>
+      <input type="text" name="topic" class="form-control" id="room-topic" value="{{room.topic}}">
+    </div>
+    <div class='text-right'>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</div>
+```
+
+and `routes/rooms.js`:
+```Javascript
+// Rooms edit
+router.get('/:id/edit', auth.requireLogin, (req, res, next) => {
+  Room.findById(req.params.id, function(err, room) {
+    if(err) { console.error(err) };
+
+    res.render('rooms/edit', { room: room });
+  });
+});
+
+// Rooms update
+router.post('/:id', auth.requireLogin, (req, res, next) => {
+  Room.findByIdAndUpdate(req.params.id, req.body, function(err, room) {
+    if(err) { console.error(err) };
+
+    res.redirect('/rooms/' + req.params.id);
+  });
+});
+```
 
 
 
