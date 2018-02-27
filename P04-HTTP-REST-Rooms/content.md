@@ -152,7 +152,7 @@ Let's set up the view at `views/rooms/index.hbs`.  Paste the following inside th
   <ul>
     {{#each rooms as |room|}}
       <li>
-        <a href="rooms/{{room.id}}">{{room.title}} | <a href="rooms/{{room.id}}/edit">edit</a>
+        <a href="rooms/{{room.id}}">{{room.topic}}</a> | <a href="rooms/{{room.id}}/edit">edit</a>
       </li>
     {{/each}}
   </ul>
@@ -163,7 +163,7 @@ Now we need to set up our `index` controller action in `routes/rooms.js`.  (Reme
 ```Javascript
 // Rooms index
 router.get('/', (req, res, next) => {
-  Room.find({}, 'title', function(err, rooms) {
+  Room.find({}, 'topic', function(err, rooms) {
     if(err) {
       console.error(err);
     } else {
@@ -178,6 +178,43 @@ router.get('/', (req, res, next) => {
 In the end, we should be able to visit `localhost:3000/rooms/new`, save a new room, and then see something like this:
 
 <!-- TODO: rooms index screenshot -->
+
+# Rooms Show
+
+Where an `index` shows a collection of items, such as all the rooms in our database, the `show` action lets us look at a single object.  At first our rooms `show` views won't be very interesting–we have to wait until the next section to create posts and comments–but all of the links on our `index` view are broken right now, and we can at least fix that.
+
+Create a new file for our view at `views/rooms/show.hbs` and paste in the following:
+
+```HTML
+<div>
+  {{room.title}}
+</div>
+
+<div>
+  Coming soon: posts!
+</div>
+```
+
+Then, in our controller we need to render this file when anybody visits `/rooms/:id` (where `:id` is the id of a specific room) and set the value of `room` on the second line.  In `routes/rooms.js`, replace `get('/:id', ...)` with:
+
+```Javascript
+// Rooms show
+router.get('/:id', auth.requireLogin, (req, res, next) => {
+  Room.findById(req.params.id, function(err, room) {
+    if(err) { console.error(err) };
+
+    Post.find({ room: room }, function(err, posts) {
+      if(err) { console.error(err) };
+
+      res.render('rooms/show', { room: room, posts: posts });
+    })
+  });
+});
+```
+
+<!-- TODO: Talk through code, especially about slugs and router order (keep slugs after named routes) -->
+
+<!-- TODO: segue and screenshot -->
 
 # Rooms Edit and Update
 
