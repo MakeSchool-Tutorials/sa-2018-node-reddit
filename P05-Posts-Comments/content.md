@@ -34,7 +34,32 @@ module.exports = mongoose.model('Post', PostSchema);
 
 # Nested Routes
 
+<!-- TODO: include code for nesting posts inside rooms -->
+
 # Post Routes (__not__ POST routes...)
+
+We won't create exactly the same set of options for Posts that we did for Rooms. For one thing, we won't have an `index`, because the Room's `show` action will basically serve that purpose by displaying all of the posts for that room.  And, although they could be useful, we won't create `show` or `edit` actions right now, either. So we're starting with only
+
+For now, let's create a new file called `routes/posts.js` and paste in the following:
+
+```Javascript
+const express = require('express');
+const router = express.Router({mergeParams: true});
+const auth = require('./helpers/auth');
+const Room = require('../models/room');
+
+// Posts new
+router.get('/new', auth.requireLogin, (req, res, next) => {
+  // TODO
+});
+
+// Posts create
+router.post('/', auth.requireLogin, (req, res, next) => {
+  // TODO
+})
+
+module.exports = router;
+```
 
 # Posts New and Create
 
