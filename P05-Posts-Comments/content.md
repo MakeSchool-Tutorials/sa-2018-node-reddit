@@ -63,6 +63,68 @@ module.exports = router;
 
 # Posts New and Create
 
+First, let's give our users a way to create new posts and save them to our database. This is going to be very similar to the `new` and `create` actions we set up for rooms, but...
+
+<!-- TODO: set up and give code snippets, then ask students to implement -->
+
+<!-- TODO: hide solutions behind fold -->
+
+`views/posts/new.hbs`
+```HTML
+<div>
+  <form action="/rooms/{{room.id}}/posts" method="post">
+    <legend>New Post</legend>
+
+    <div class="form-group">
+      <label for="post-title">Subject</label>
+      <input type="text" name="subject" class="form-control" id="post-subject" placeholder="Subject">
+    </div>
+
+    <div class="form-group">
+      <label for="post-title">Body</label>
+      <input type="text" name="body" class="form-control" id="post-body" placeholder="Body">
+    </div>
+
+    <div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</div>
+```
+
+'routes/posts.js'
+```Javascript
+const express = require('express');
+const router = express.Router({mergeParams: true});
+const auth = require('./helpers/auth');
+const Room = require('../models/room');
+
+router.get('/new', auth.requireLogin, (req, res, next) => {
+  Room.findById(req.params.roomId, function(err, room) {
+    if(err) { console.error(err) };
+
+    res.render('posts/new', { room: room });
+  });
+});
+
+router.post('/', auth.requireLogin, (req, res, next) => {
+  Room.findById(req.params.roomId, function(err, room) {
+    if(err) { console.error(err) };
+
+    let post = new Post(req.body);
+    post.room = room;
+
+    post.save(function(err, post) {
+      if(err) { console.error(err) };
+
+      return res.redirect(`/rooms/${room._id}`);
+    });
+  });
+})
+
+module.exports = router;
+```
+
 # Add Posts to Rooms Show View
 
 # Posts Delete
