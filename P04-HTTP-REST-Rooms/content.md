@@ -10,6 +10,7 @@ TODO: In the next section we'll implement all of these actions–after we introd
 # HTTP and REST
 
 <!-- TODO -->
+<!-- TODO: explain that advantage of REST is organizing by resources -->
 
 # Room Models
 

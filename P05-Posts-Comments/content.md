@@ -127,6 +127,61 @@ module.exports = router;
 
 # Add Posts to Rooms Show View
 
+When we go into a room, we expect to see all of the posts on that topic.  Let's update the Rooms show view so that when we go to a room, we find all of the related posts and render them on the page.
+
+Let's start with the view itself.  Open `views/rooms/show.hbs` and replace the contents with the following:
+
+```HTML
+<div>
+  <h1>{{room.topic}}</h1>
+</div>
+
+<div>
+  {{#each posts as |post|}}
+    <div class="post-div">
+      <h3>{{post.subject}}</h3>
+      <p>{{post.body}}</p>
+    </div>
+  {{/each}}
+</div>
+
+<div>
+  <a href="/rooms/{{room.id}}/posts/new">New Post</a>
+</div>
+```
+
+<!-- TODO: walk through code.  esp:, do I need to intro or review #each? New Post link is new, also-->
+
+Let's define `posts` in `routes/rooms.js`.  Update the `show` action to the following:
+
+```Javascript
+// Rooms show
+router.get('/:id', auth.requireLogin, (req, res, next) => {
+  Room.findById(req.params.id, function(err, room) {
+    if(err) { console.error(err) };
+
+    Post.find({ room: room }, function(err, posts) {
+      if(err) { console.error(err) };
+
+      res.render('rooms/show', { room: room, posts: posts });
+    });
+  });
+});
+```
+
+And let's require our Post model at the top of the file, so that Javascript knows what a `Post` is:
+
+```Javascript
+const Post = require('../models/post');
+```
+
+<!-- TODO: walk through code -->
+
+Now, let's browse to `localhost:3000/rooms`.  Open any of the rooms you've created, then click on 'New Post'. Add your new post to the database, and you should be redirected to `room/:id`–which should display your post.
+
+<!-- # Partials -->
+<!-- TODO: stretch/optional -->
+
 # Posts Delete
 
 # Comments
