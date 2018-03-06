@@ -3,7 +3,7 @@ title: "Voting"
 slug: 06-voting
 ---
 
-The final step–and the main feature that separates Reddit from any other message board–is up-voting and down-voting posts.
+The final step–and the main feature that separates Reddit from any other message board–is up-voting and down-voting posts. We'll sort all of the posts by their number of votes so that (in theory) the most interesting content will always be at the top.
 
 # Add Voting to Posts View
 
@@ -44,6 +44,8 @@ Let's start by adding up-vote and down-vote buttons to our posts. Our posts are 
 
 <!-- TODO: talk through code, esp. why these are in forms, classes to make forms like buttons (or even links), end on discussing post.points for segue -->
 
+<!-- # Make Buttons That POST -->
+<!-- TODO: replace forms in above HTML w/ +/- signs, put and discuss forms in this section. -->
 
 # Add Points to Post Model
 
@@ -69,7 +71,7 @@ module.exports = mongoose.model('Post', PostSchema);
 
 # Posts Update Action
 
-Now for the tricky part–what happens when a user clicks on our new up/down-vote buttons? Let's look again at the HTML:
+Now for the tricky part–what happens when a user clicks on our new up/down-vote buttons? Let's look ahead–in the next section, we're going to make our up/down-vote buttons send POST requests at the HTML:
 
 ```HTML
 <form action="/rooms/{{post.room}}/posts/{{post.id}}" method="post" class="inline-form">
@@ -100,6 +102,26 @@ router.post('/:id', auth.requireLogin, (req, res, next) => {
 ```
 <!-- TODO: talk through code, esp. how we determine whether it's an up-vote or down-vote and point out parseInt -->
 
-# Make Buttons That POST
-
 # Sort Posts by Vote
+
+Finally, let's set it up so that we see our top-voted posts at the top of the page. Open `routes/rooms.js` and update the `show` action like so:
+
+```Javascript
+// Rooms show
+router.get('/:id', auth.requireLogin, (req, res, next) => {
+  Room.findById(req.params.id, function(err, room) {
+    if(err) { console.error(err) };
+
+    Post.find({ room: room })
+      .sort({ points: -1 })
+      .exec()
+      .then(function(posts) {
+        res.render('rooms/show', { room: room, posts: posts });
+      });
+  });
+});
+```
+
+<!-- TODO: this code is a lot to unpack, but reiterate that this is why mongoose models are useful, and point the way toward learning about Promises in the future -->
+
+# Conclusion
