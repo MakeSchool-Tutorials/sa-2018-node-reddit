@@ -182,6 +182,8 @@ Now, let's browse to `localhost:3000/rooms`.  Open any of the rooms you've creat
 <!-- # Partials -->
 <!-- TODO: stretch/optional -->
 
-# Posts Delete
+<!-- # Posts Delete -->
+<!-- TODO -->
 
-# Comments
+<!-- # Comments -->
+<!-- TODO -->

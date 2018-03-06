@@ -196,6 +196,7 @@ Create a new file for our view at `views/rooms/show.hbs` and paste in the follow
 </div>
 ```
 
+<!-- TODO: explain slugs better -->
 Then, in our controller we need to render this file when anybody visits `/rooms/:id` (where `:id` is the id of a specific room) and set the value of `room` on the second line.  In `routes/rooms.js`, replace `get('/:id', ...)` with:
 
 ```Javascript
@@ -257,14 +258,3 @@ router.post('/:id', auth.requireLogin, (req, res, next) => {
   });
 });
 ```
-
-
-
-
-
-
-
-
-
-
-.
