@@ -47,6 +47,26 @@ Let's start by adding up-vote and down-vote buttons to our posts. Our posts are 
 
 # Add Points to Post Model
 
+Next, let's add points to our Post model. With MongoDB, as opposed to traditional SQL databases, it isn't really _necessary_ to add attributes to our model. We can pass any attributes we like, any time we like and MongoDB will happily save them for us.  However, adding the attributes to our Mongoose schema (by adding them to the model) lets us use them to query and sort our objects. This app is pretty simple, but as you write bigger apps, with more objects and more complex schemas, these features become really handy.
+
+Open the `models/post.js` file, and update it with the following:
+
+```Javascript
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const PostSchema = new Schema({
+  subject: String,
+  body: String,
+  room: { type: Schema.Types.ObjectId, ref: 'Room' },
+  points: { type: Number, default: 0 },
+});
+
+module.exports = mongoose.model('Post', PostSchema);
+```
+
+<!-- TODO: talk through code, only points line is new -->
+
 # Posts Update Action
 
 # Make Buttons That POST
