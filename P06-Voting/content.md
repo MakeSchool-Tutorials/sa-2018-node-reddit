@@ -69,6 +69,37 @@ module.exports = mongoose.model('Post', PostSchema);
 
 # Posts Update Action
 
+Now for the tricky part–what happens when a user clicks on our new up/down-vote buttons? Let's look again at the HTML:
+
+```HTML
+<form action="/rooms/{{post.room}}/posts/{{post.id}}" method="post" class="inline-form">
+  <input type="hidden" name="points" id="post-points" value="-1">
+  <button type="submit" class="downvote-button">-</button>
+</form>
+
+<form action="/rooms/{{post.room}}/posts/{{post.id}}" method="post" class="inline-form">
+  <input type="hidden" name="points" id="post-points" value="1">
+  <button type="submit" class="upvote-button">+</button>
+</form>
+```
+
+Both of these forms POST to the same endpoint–`/rooms/{{post.room}}/posts/{{post.id}}`. That address will call our posts `update` action (where we alter and save an existing object). Let's open `routes/posts.js` and define an action for `.post('/rooms/{{post.room}}/posts/{{post.id}}', ...)`:
+
+```Javascript
+router.post('/:id', auth.requireLogin, (req, res, next) => {
+  Post.findById(req.params.id, function(err, post) {
+    post.points += parseInt(req.body.points);
+
+    post.save(function(err, post) {
+      if(err) { console.error(err) };
+
+      return res.redirect(`/rooms/${post.room}`);
+    });
+  });
+});
+```
+<!-- TODO: talk through code, esp. how we determine whether it's an up-vote or down-vote and point out parseInt -->
+
 # Make Buttons That POST
 
 # Sort Posts by Vote
