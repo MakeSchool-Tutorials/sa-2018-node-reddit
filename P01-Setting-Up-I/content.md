@@ -70,31 +70,21 @@ Now we have a template for a basic MVC web app. Open the `makereddit` folder in 
 
 ## Hello World
 
-Let's open the `views/index.hbs` file.  Soon we'll learn more about what this file is and how it works, but for right now it's enough to understand that this is our "home page".  This is the file that renders when people first visit our website.
+Let's open the `views/index.hbs` file.  Soon we'll learn more about what an `.hbs` file is and how it works, but for right now it's enough to understand that this is our "home page".  This is the file that renders when people first visit our website.
 
-Let's change `Welcome to {{title}}` to `Hello, world`, so that `views/index.hbs` looks like this:
+Let's change `Welcome to {{title}}` to `Hello, world`, so that our file looks like this:
+
 ```HTML
 <h1>{{title}}</h1>
 <p>Hello, world</p>
 ```
 <!-- [TODO: comment on why 'hello world'] -->
 
-<!-- Now, before we can run our server, we need to install our packages. [TODO explain better] In your terminal, enter: -->
-```
-npm install
-```
+Now, start the server by entering `npm start` into your terminal, then open your web browser and go to `localhost:3000`.  You should see something like this:
 
-And then wait while NPM installs all of the background software our app needs.  This can take anywhere from a few seconds to 10 minutes, so you may need to be patient!
+![hello world](assets/hello_world.png)
 
-Once it's finished–if there were no errors–start the server by entering into your terminal:
-```
-npm start
-```
-
-Then open your browser and go to `localhost:3000`.  You should see something like this:
-<!-- [TODO: screenshot] -->
-
-Congratulations! You just built a web app! We've still got a long way to go before it does anything useful, and we still need to learn about how it works, but we've taken our first big step.
+Congratulations! You just built a web app! We've still got some work to do before it does anything useful, but we've taken our first big step.
 
 ## Nodemon
 
@@ -301,11 +291,6 @@ Let's copy that snippet and paste it in our `views/layout.hbs` file.  Make it th
 
 <!-- [TODO: give students .scss file to include w/ basic styling.  Set up further styling as a stretch challenge] -->
 
-
-After the intro, the tutorial should continue with the core content. Longer tutorials should be broken up into multiple pages.
-
-> [info]
-Each `h1` header (headers created with a single `#`) will create a new tutorial step when it's accessed from the online academy. Make sure each step makes sense as a step. All the content in a step should be related but short enough to be digestible.
 
 <!-- # Summary
 TODO -->
