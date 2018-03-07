@@ -27,19 +27,24 @@ Enter [Express](https://expressjs.com/). It is by far the most popular web frame
 
 ## Express Generator
 
-Express is unopinionated, which means we are free to organize the files in our code however we want.  Some structure can be helpful for getting started.  There are lots of apps and packages to help you start a new project [examples...]  For this tutorial, we're going to use the Express team's own generator, [Express Generator](https://expressjs.com/en/starter/generator.html)
+Express is "unopinionated", which means we can organize the files in our code however we want. Express has very few requirements in terms of what our files and directories are called, or how they work together; it doesn't matter how many files we have, or even how they work together. Some structure can be helpful for getting started.  There are lots of apps and packages to help you start a new project (see examples in the "Further Reading" section at the bottom of this page.) For this tutorial, we're going to use the Express team's recommended tool, [Express Generator](https://expressjs.com/en/starter/generator.html)
 
-We assume you have Node and NPM installed on your computer.  [If not, ...] Open your terminal and enter:
+The following instructions assume you already have Node and NPM installed on your computer. Open your terminal and enter:
+<!-- TODO: where should I direct students who might not have Node/NPM installed? Do we have an environment set up tutorial? -->
+
 ```
 npm install express-generator -g
 ```
-(The `-g` option tells NPM to install the package globally)
+
+The `-g` option tells NPM to install the package globally.
 
 After it's installed, enter:
+
 ```
 express --view=hbs --css=sass makereddit
 ```
-(The `--view=hbs` means that we want to use a package called [Handlebars](http://handlebarsjs.com/) for our views and [Sass](https://sass-lang.com/) for our CSS.  We'll explain these in more detail below.  Express Generator has a ton of options–to see for yourself, enter `express -h`)
+
+The `--view=hbs` option means that we want to use a package called [Handlebars](http://handlebarsjs.com/) for our views and one called [Sass](https://sass-lang.com/) for our CSS.  We'll learn more about these in the section below. Express Generator has a ton of options–to see for yourself, enter `express -h`.
 
 ## Directory Structure
 
@@ -288,7 +293,11 @@ After the intro, the tutorial should continue with the core content. Longer tuto
 > [info]
 Each `h1` header (headers created with a single `#`) will create a new tutorial step when it's accessed from the online academy. Make sure each step makes sense as a step. All the content in a step should be related but short enough to be digestible.
 
-# The end
+# Summary
+
+# Further Reading
+
+Tools for starting a new Express app:
 
 After the core content, summarize what student should know now. Also link to the solution repository.
 
