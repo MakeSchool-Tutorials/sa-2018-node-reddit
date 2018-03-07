@@ -88,20 +88,24 @@ Congratulations! You just built a web app! We've still got some work to do befor
 
 ## Nodemon
 
-Let's add one more useful tool before we move on.  We just want our website to say "hello, world" so we know it's working, but the biggest letters on the page actually say "Express".  If we look back at our code in `views/index.hbs` it seems to be coming from the `<h1>{{title}}</h1>`, but what are those curly braces for, and how does it know `title` is supposed to be `Express`?
+Let's add one more useful tool before we move on. Let me demonstrate a small problem:  
 
-This feature comes from Handlebars (which is why these files end with '.hbs').  We'll learn about Handlebars in more detail further down this page, but for now let's just change that `title` to "Hello, world" instead of "Express".
+We just want our website to say "hello, world" so we know it's working, but the biggest letters on the page actually say "Express".  If we look back at our code in `views/index.hbs` it seems to be coming from the `<h1>{{title}}</h1>`. But what are those curly braces for? And how does it know `title` is supposed to be "Express"?
 
-First, open `/routes/index.js` and lines 5-7 should look like this:
+This feature comes from Handlebars (which is why these files end with `.hbs`).  We'll learn about Handlebars in more detail in the next section, but for now let's just make that `title` be "Hello, world", instead of "Express".
+
+First, open `/routes/index.js`. Lines 5-7 should look like this:
+
 ```Javascript
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 ```
 
-We're going to learn all about routes starting in [part 4], so don't worry if this still seems mysterious–soon, it won't. This just tells our web server that when anybody visits the root path of our website, or the home page, it should render a file called 'index' (`/views/index.hbs`!), and then it assigns the value 'Express' to the key 'title'.
+We're going to learn all about routes in parts 3 and 4, so don't worry if this still seems mysterious–soon, it won't. This just tells our web server that when anybody visits the root path of our website, or the home page, it should render a file called 'index' (`/views/index.hbs`!), and then it assigns the value `'Express'` to the key `title`.
 
 Let's change that 'title' to 'Hello, world', so that the entire `/routes/index.js` file looks like this:
+
 ```Javascript
 var express = require('express');
 var router = express.Router();
@@ -115,32 +119,40 @@ module.exports = router;
 ```
 
 Now–be sure to save your file!–then, let's go back to the browser and hit refresh.  And:
-<!-- [TODO: screenshot] -->
+
+![hello world](assets/hello_world.png)
+
 :flushed:
 
-Unfortunately, Express only reads these files when it's starting.  After that, it ignores any changes we make.  One quick fix is to simply restart the server:
+Unfortunately, Express only reads these files _when it starts_.  After that, it ignores any changes we make. One quick fix is to simply restart the server:
 - Go to the terminal where the server is running
-- Hit `control` + `c` on your keyboard. (This is a very common command for stopping command line programs–get used to it because you'll see it again and again)
+- Hit `control` + `c` on your keyboard. (This is a very common command for stopping command line programs)
 - enter `npm start` to restart the server
 
 Now when we refresh the page:
-<!-- [TODO: screenshot] -->
+
+![hello world](assets/hello_world_2.png)
+
 :relieved:
 
-But it's going to be a huge pain if we have to stop and restart the server after every. single. little. change.  Luckily, there are lots of packages that will take care of restarting the server for us.  As you grow as a developer, you'll eventually want to learn about tools like [Webpack](https://webpack.js.org/) or [Yarn](https://yarnpkg.com/en/).  But for this project, we're going to use a super simple solution called [nodemon](https://nodemon.io/) (short for "Node Monitor").
+But it's a huge pain if we have to stop and restart the server after every. single. little. change.  Luckily, there are lots of packages that will take care of restarting the server for us. As you grow as a developer, you'll eventually learn about tools like [Webpack](https://webpack.js.org/) or [Yarn](https://yarnpkg.com/en/).  But for this project, we're going to use a super simple solution called [nodemon](https://nodemon.io/) (short for "Node Monitor").
 
 First, open your terminal and enter:
+
 ```
 npm install -g nodemon
 ```
-(the `-g` means we're installing it globally, not just for this project)
+
+(the `-g` means we're installing it globally, so it's available anywhere on your system, not just for this project)
 
 Now, instead of typing `npm start`, we'll type `nodemon start`.  Go ahead:  use `control`+`c` to stop the running server, then enter:
+
 ```
 nodemon start
 ```
 
 Now in our `routes/index.js` file, let's set the title on our home page to be our real title, "MakeReddit":
+
 ```Javascript
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'MakeReddit' });
@@ -148,12 +160,18 @@ router.get('/', function(req, res, next) {
 ```
 
 Now, **without** restarting the server, let's go to the browser and refresh the page:
-<!-- [TODO: screenshot] -->
+
+![hello world](assets/hello_world_3.png)
+
 :satisfied:
 
 # Sass and Handlebars
 <!-- TODO: remove bootstrap references -->
-[This tutorial is focused more on the back end than the front end–we're more concerned with how our app works than how it looks.  But thanks to pre-existing CSS libraries, it's really easy to make it look good enough [...]]
+[This tutorial is focused more on the back end than the front end–we're more concerned with learning about how our app works than learning how to style it. But thanks to pre-existing CSS libraries, it's really easy to make it look good enough [...]]
+
+<!-- ## Handlebars -->
+
+<!-- [TODO: no code writing here, just a deeper overview of what Handlebars is, what the `{{...}}` tags are, etc...] -->
 
 ## Layout File
 
@@ -211,9 +229,6 @@ Next, Bootstrap includes some dynamic elements (for example, responsive elements
 
 <!-- [TODO: explain why css goes in the head and js goes in the body, review HTML structure] -->
 
-## Handlebars
-
-<!-- [TODO: no code writing here, just a little deeper overview of what Handlebars is, what the `{{...}}` tags are, etc...] -->
 
 ## Adding a Navbar
 
