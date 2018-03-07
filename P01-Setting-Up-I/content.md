@@ -165,17 +165,24 @@ Now, **without** restarting the server, let's go to the browser and refresh the 
 
 :satisfied:
 
-# Sass and Handlebars
+# Handlebars and Sass
 <!-- TODO: remove bootstrap references -->
-[This tutorial is focused more on the back end than the front end–we're more concerned with learning about how our app works than learning how to style it. But thanks to pre-existing CSS libraries, it's really easy to make it look good enough [...]]
 
 <!-- ## Handlebars -->
 
-<!-- [TODO: no code writing here, just a deeper overview of what Handlebars is, what the `{{...}}` tags are, etc...] -->
+<!-- [TODO: no code writing here, just a quick overview of what Handlebars is, what the `{{...}}` tags are, etc...] -->
 
 ## Layout File
 
-First, let's open the `views/layout.hbs` file.  At first, it should look like this:
+Remember what we learned about HTML in previous tutorials, and then let's look back at `views/index`:
+
+```HTML
+<h1>{{title}}</h1>
+<p>Hello world</p>
+```
+
+what's missing?  This isn't a complete HTML document... Let's open the `views/layout.hbs` file.  At first, it should look like this:
+
 ```HTML
 <!DOCTYPE html>
 <html>
@@ -189,122 +196,112 @@ First, let's open the `views/layout.hbs` file.  At first, it should look like th
 </html>
 ```
 
-Remember what we learned about HTML in previous tutorials, and then let's look back at `views/index` for a moment–what's missing?  This isn't a complete HTML document...
-[...]
+Here's everything missing from `views/index.hbs`. This layout file is special because it will load with every page in our app. The contents of `index.hbs` are rendered in place of `{{{body}}}`.
 
-This layout file is special because it will load every page inside this html.  
-<!-- [TODO: elaborate, include example with wireframes] -->
+<!-- TODO: elaborate, including example with wireframes would be nice -->
 
-First, we'll include the CSS and some meta tags inside the `<head>` tag like this:
+## Adding a Navbar
+
+Let's add a navigation bar that will load at the top of every page in our app. Because we want it on _every_ page, it needs to go in `views/layout.hbs`:
+
 ```HTML
+<!DOCTYPE html>
 <html>
   <head>
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   </head>
   <body>
-  ...
-```
+    <nav>
+      <div class="logo">
+        MakeReddit
+      </div>
 
-Next, Bootstrap includes some dynamic elements (for example, responsive elements rearrange themselves based on the size of the user's screen–if they're using a 4" smart phone or a 32" monitor).  These dynamic elements require some Javascript, and we'll load it at the end of the layout just before the closing `</body>` tag.  Copy/paste the three `<script>` tags into your `layout.hbs` file like this:
-```HTML
-...
-  <body>
-    {{{body}}}
+      <div>
+        log in/log out
+      </div>
+    </nav>
 
-    <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <main>
+      {{{body}}}
+    </main>
   </body>
 </html>
 ```
 
-<!-- [TODO: explain why css goes in the head and js goes in the body, review HTML structure] -->
+Our navigation bar is everything between the `<nav>...</nav>` tags. We're starting really simple; we just want the name of our app on the top left of every page, and a log in/log out link on the top right. We won't actually _implement_ logging in and out until part 3, so for now there's just some placeholder text, "log in/log out".
 
+The other detail we're adding is wrapping `{{{body}}}` in `<main>...</main>` tags. That's not going to make a big visible change, but it's good practice to use [HTML5 semantic tags](https://developer.mozilla.org/en-US/docs/Web/HTML/Element).
 
-## Adding a Navbar
+<!-- TODO: primer/review on HTML5 tags -->
 
-<!-- [TODO: remove bootstrap, use custom css] -->
+<!-- TODO: include wireframe -->
 
-<!-- [TODO: explain what a navbar is, connect to explanation of Handlebars layout] -->
+Now, let's check out that new nav bar:
 
-<!-- [TODO: primer/review on HTML5 tags here] -->
+![nav bar](assets/nav_bar_1.png)
 
+That's obviously not great, let's add some styling.
 
-We'll install the Bootstrap Navbar together, step by step. But first, take a few minutes to [skim the instructions](https://getbootstrap.com/docs/4.0/components/navbar/).  
+## Sass (and Scss)
 
-Bootstrap gives us a ton of options to customize our navbar.  For this app, we only want a simple navbar with a logo and a few links on the left and a login/logout link on the right, like this:
+<!-- TODO: better primer on sass -->
+[Sass](https://sass-lang.com/), short for "Syntactically Awesome StyleSheets", gives us lots of nice options lacking in regular CSS, such as nested rules and variables. But be aware that there are two variants of Sass: `.sass` files and `.scss` files. The only difference is syntax–`.sass` has a distinct syntax, without braces or semicolons, while `.scss` syntax is almost the same as regular `.css`. In fact, a regular CSS file is already valid `.scss`. We want to use `.scss`, but the default is `.sass`. Let's change that.
 
-```
-<!-- [TODO: include wireframe] -->
-```
+Open `app.js`, and find the section of code where we configure Sass. It's probably on lines 24 to 27, and it looks like this:
 
-We'll include that navbar with the following HTML:
-```HTML
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/">MakeReddit</a>
-    </div>
-
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav navbar-right">
-          <li><a href="#">log in/log out</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-```
-<!-- [TODO: (Stretch) explain this snippet] -->
-
-Let's copy that snippet and paste it in our `views/layout.hbs` file.  Make it the first thing inside the `<body>` tag, like so:
-```HTML
-...
-  <body>
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/">MakeReddit</a>
-        </div>
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav navbar-right">
-              <li><a href="#">log in/log out</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    {{{body}}}
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </body>
-...
+```Javascript
+app.use(sassMiddleware({
+  src: path.join(__dirname, 'public'),
+  dest: path.join(__dirname, 'public'),
+  indentedSyntax: true, // true = .sass and false = .scss
+  sourceMap: true
+}));
 ```
 
-<!-- [TODO: give students .scss file to include w/ basic styling.  Set up further styling as a stretch challenge] -->
+We're concerned with the `indentedSyntax` option. By default it's `true`; let's set it to `false`. As the comment says, we want to use `.scss`.
+
+Finally, look in the `public/stylesheets/` directory. There's a file there called `style.sass`. Delete it and create a new file called `style.scss`. Inside, paste the following:
+
+```CSS
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 5rem 3rem 3rem 3rem;
+  background-color: #f4f4f4;
+}
+
+a {
+  color: #00B7FF;
+}
+
+nav {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 4.125em;
+  width: 98vw;
+  z-index: 999;
+
+  left: 0;
+  top: 0;
+
+  background-color: #fff;
+  box-shadow: 0 1px 5px 0 rgba(0,0,0,0.2);
+  padding: 0 1em;
+
+  .logo {
+    font-size: 1.25em;
+  }
+}
+```
+
+And then let's check out our nav bar at `localhost:3000`:
+
+![nav bar](assets/nav_bar_2.png)
+
 
 
 <!-- # Summary
@@ -313,7 +310,9 @@ TODO -->
 # Further Reading
 
 Tools for starting a new Express app:
+ - TODO
+ - TODO
 
-After the core content, summarize what student should know now. Also link to the solution repository.
-
-Finish the tutorial by providing links and resources for the student to dive deeper into the subject.
+[Handlebars](https://handlebarsjs.com)
+[HTML5 Tag Reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)
+[Sass](https://sass-lang.com/)
