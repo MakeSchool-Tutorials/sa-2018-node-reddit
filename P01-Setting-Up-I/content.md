@@ -313,11 +313,11 @@ TODO -->
  - TODO
  - TODO -->
 
-[Express](https://expressjs.com/)
-[Handlebars](https://handlebarsjs.com)
-[HTML5 Tag Reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)
-[Sass](https://sass-lang.com/)
-[Express Generator](https://expressjs.com/en/starter/generator.html)
-[Webpack](https://webpack.js.org/)
-[Yarn](https://yarnpkg.com/en/)
-[nodemon](https://nodemon.io/)
+- [Express](https://expressjs.com/)
+- [Handlebars](https://handlebarsjs.com)
+- [HTML5 Tag Reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)
+- [Sass](https://sass-lang.com/)
+- [Express Generator](https://expressjs.com/en/starter/generator.html)
+- [Webpack](https://webpack.js.org/)
+- [Yarn](https://yarnpkg.com/en/)
+- [nodemon](https://nodemon.io/)
