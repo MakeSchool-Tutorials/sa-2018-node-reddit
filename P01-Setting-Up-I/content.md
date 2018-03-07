@@ -2,10 +2,13 @@
 title: "Setting up our environment"
 slug: 01-setting-up-i
 ---
-In this section we'll set up our environments. [...]
-We're going to learn how to set up a web server using Express, generate HTML using Handlebars, and make it look good using Bootstrap.
+
+We're going to learn how to set up a web server using Express, generate HTML using Handlebars, and make it look good using Sass.
 
 Before we dive in, it's helpful to think about the big picture and understand how these tools work together.  We're going to build our app using an architecture called Model-View-Controller (MVC).
+
+# Web Applications
+<!-- TODO: explain web applications in webpage-web server-database diagram, so that I can project MVC onto it -->
 
 # MVC
 
@@ -46,11 +49,24 @@ express --view=hbs --css=sass makereddit
 
 The `--view=hbs` option means that we want to use a package called [Handlebars](http://handlebarsjs.com/) for our views and one called [Sass](https://sass-lang.com/) for our CSS.  We'll learn more about these in the section below. Express Generator has a ton of options–to see for yourself, enter `express -h`.
 
-## Directory Structure
+When it's finished, you'll see the following instructions:
 
-[Now we have a template for a basic, empty app.  Open that directory in your favorite text editor, and let's look at at the structue... [How much explanation does this need, will they all have the same setup, etc...]]
+```
+install dependencies:
+     $ cd makereddit && npm install
+```
 
-[image of directory structure here]
+Enter `cd makereddit && npm install` to change directories and install dependencies.
+
+## Directory Structure and Important Files
+
+Now we have a template for a basic MVC web app. Open the `makereddit` folder in your favorite text editor, and let's have a look at what's there...
+
+![file tree](assets/file_tree.png)
+
+ Our Models, Views and Controllers will all live in this directory. The `views/` folder is there already. Our Controllers are there too, but Express-Generator calls them 'Routes', and they live in the `routes/` folder. Our Models don't have a place here yet, but soon we'll add another folder for them called `models/`.
+
+ Everything else is mostly configuration, dependencies, and auto-generated system files. A couple of particularly important files: `package.json` is where we keep basic, low-level configuration options like the name of our app, the version, and most importantly, our dependencies. `app.js` holds setup and configuration related to Express and, later, our database. Take a minute to look through these files–don't expect to understand everything in them, but start to get familiar with what these files look like.
 
 ## Hello World
 
@@ -145,13 +161,11 @@ Now, **without** restarting the server, let's go to the browser and refresh the 
 <!-- [TODO: screenshot] -->
 :satisfied:
 
-# Bootstrap and Handlebars
-
+# Sass and Handlebars
+<!-- TODO: remove bootstrap references -->
 [This tutorial is focused more on the back end than the front end–we're more concerned with how our app works than how it looks.  But thanks to pre-existing CSS libraries, it's really easy to make it look good enough [...]]
 
-## Installing Bootstrap
-
-We're going to use one of the most popular CSS frameworks available, [Bootstrap](https://getbootstrap.com/). Installing Bootstrap is really easy, and we'll follow [these instructions](https://getbootstrap.com/docs/4.0/getting-started/introduction/).   [...]
+## Layout File
 
 First, let's open the `views/layout.hbs` file.  At first, it should look like this:
 ```HTML
@@ -293,7 +307,8 @@ After the intro, the tutorial should continue with the core content. Longer tuto
 > [info]
 Each `h1` header (headers created with a single `#`) will create a new tutorial step when it's accessed from the online academy. Make sure each step makes sense as a step. All the content in a step should be related but short enough to be digestible.
 
-# Summary
+<!-- # Summary
+TODO -->
 
 # Further Reading
 
