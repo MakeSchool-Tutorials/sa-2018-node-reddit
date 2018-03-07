@@ -1,6 +1,6 @@
 ---
 title: "Setting up our environment"
-slug: 01-setting-up
+slug: 01-setting-up-i
 ---
 In this section we'll set up our environments. [...]
 We're going to learn how to set up a web server using Express, generate HTML using Handlebars, and make it look good using Bootstrap.
@@ -10,15 +10,14 @@ Before we dive in, it's helpful to think about the big picture and understand ho
 # MVC
 
 Under the MVC architecture, we think of our app as having three main systems that work together:
-  - The View is the part of our app the user sees and clicks on. [...]
-  - The Model is the part where we store information [...]
-  - The Controller is the part in between–the code that gets information from the Models and sends it to the Views, and takes information from the Views and stores it in the Models. [...]
 
-<!-- (This section focuses mostly on Views–we'll get to Models in the next section, and controllers in part 4 [TODO: check if accurate]) -->
+<!-- TODO: MVC diagram -->
 
-The first section of the tutorial should summarize what the student will learn and what tools they'll use. It should also outline any prerequisites for understanding the material and link to resources for getting up to speed. It's usually a good idea to show a screenshot or video of the final product and link to the solution repository.
+  - The View is the part of our app the user sees and clicks on. In a web app, this is usually our HTML pages.
+  - The Model is the part where we store information and define behavior for all of the objects in our database. For example, when a user registers a new account on our app, the Model is responsible for storing their name, email address and password in the database.
+  - The Controller is the part in between–the code that gets information from the Models and sends it to the Views, and takes information from the Views and gives it to the Models. The Views and Models rarely communicate directly; the Controller manages their interactions.
 
-
+In this tutorial, almost all of the code we write will belong to one of these three domains. In this part, we won't work with Models very much–we need a database for that, and that happens in Part 2. We will get a good introduction to Views, and a brief introduction to Controllers (which are called "Routers" in Express).
 
 # Express
 
