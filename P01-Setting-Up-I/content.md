@@ -7,7 +7,7 @@ We're going to learn how to set up a web server using Express, generate HTML usi
 
 Before we dive in, it's helpful to think about the big picture and understand how these tools work together.  We're going to build our app using an architecture called Model-View-Controller (MVC).
 
-# Web Applications
+<!-- # Web Applications -->
 <!-- TODO: explain web applications in webpage-web server-database diagram, so that I can project MVC onto it -->
 
 # MVC
@@ -24,7 +24,7 @@ In this tutorial, almost all of the code we write will belong to one of these th
 
 # Express
 
-[Explain what a web server is] At its most basic, a web server is a machine that receives an HTTP request and returns an HTTP response. (We'll learn more about HTTP in Part 4.) What happens in between receiving the request and sending the response can be dead simple or insanely complicated–it all depends on the situation. A very simple web server might only return static HTML files that you write yourself. In this case, Node.js is good enough to develop your web server because its built-in tools are sufficient for simply returning files. But as we start to add more complex functions, like writing to a database, logging users in and out, writing posts, etc..., we'll need some more powerful tools...
+At its most basic, a web server is a machine that receives an HTTP request and returns an HTTP response. (We'll learn more about HTTP in Part 4.) What happens in between receiving the request and sending the response can be dead simple or insanely complicated–it all depends on the situation. A very simple web server might only return static HTML files that you write yourself. In this case, Node.js is good enough to develop your web server because its built-in tools are sufficient for simply returning files. But as we start to add more complex functions, like writing to a database, logging users in and out, writing posts, etc..., we'll need some more powerful tools...
 
 Enter [Express](https://expressjs.com/). It is by far the most popular web framework in the Node ecosystem, and it's going to provide us with a lot of the basic functions we need to develop our app. For example: setting up dynamically-rendered HTML templates (we're going to make our HTML write itself!); organizing all of the URLs users can visit to see different pages; providing helper methods to set up and connect to databases; create error messages; and so much more...
 
@@ -169,6 +169,7 @@ Now, **without** restarting the server, let's go to the browser and refresh the 
 <!-- TODO: remove bootstrap references -->
 
 <!-- ## Handlebars -->
+<!-- Handlebars is a templating engine. A templating engine is... -->
 
 <!-- [TODO: no code writing here, just a quick overview of what Handlebars is, what the `{{...}}` tags are, etc...] -->
 
@@ -307,7 +308,7 @@ And then let's check out our nav bar at `localhost:3000`:
 <!-- # Summary
 TODO -->
 
-# Resources
+# Links and Resources
 
 <!-- Tools for starting a new Express app:
  - TODO
