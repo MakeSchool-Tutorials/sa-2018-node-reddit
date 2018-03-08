@@ -2,24 +2,22 @@
 title: "Setting up our environment part II"
 slug: 02-setting-up-ii
 ---
-In this section, we'll finish setting up our dev environment by installing and configuring our database.  MongoDB is the database we'll be using, [mLab, Mongo Driver, Mongoose]
+In this section, we'll finish setting up our dev environment by installing and configuring our database.  We will also let users register accounts, and save their info in the database.
 
 <!-- [TODO: Introduction to MongoDB] -->
 <!-- [TODO: now adding users in this section] -->
 
 # mLab
 
-Instead of keeping our database on our local machines, we're going to use a DataBase-as-a-Service (DBaas) called mLab.  Storing our database on mLab's servers offers us two advantages:
-- First, it greatly simplifies the setup process [...]
-- Second, it gives us some handy tools for looking around inside our database [...]
+Installing and configuring MongoDB from scratch is a fairly complicated process, so instead of keeping our database on our local machines, we're going to use a DataBase-as-a-Service (DBaas) called [mLab](https://mlab.com/). Storing our database on mLab's servers offers us two advantages:
+- First, it greatly simplifies the setup process.
+- Second, it gives us some handy tools for looking around inside our database. Normally we would navigate and manage our MongoDB instance on the command line, but mLab has a Graphic Interface–much easier.
 
-In your browser, go to (https://mlab.com/signup/) to create an account.  (Unless you already have an account–in which case you can skip ahead)
+In your browser, go to (https://mlab.com/signup/) to create an account (unless you already have one–in which case, skip ahead).
 
 ![mLab Signup Page](assets/mlab-01-signup.png)
 
-<!-- [TODO: verify mLab account creation steps] -->
-
-[After your account is created, click on `+ Create New` to create a new MongoDB deployment.]  Select 'Amazon Web Services' for your provider and 'Sandbox' for your plan type, as shown below, then click 'Continue'.
+After your account is created, click on `+ Create New` to create a new MongoDB deployment.  Select 'Amazon Web Services' for your provider and 'Sandbox' for your plan type (as shown below) then click 'Continue'.
 
 ![mLab Deployment Creator](assets/mlab-02-setup.png)
 
@@ -35,15 +33,15 @@ And finally, complete the process by clicking 'Submit Order'.
 
 ![mLab Deployment Creator](assets/mlab-05-setup.png)
 
-We're almost finished setting up our database.  We just have one last step, which is to set up a username and password to keep nosy neighbors out of our database.  First, let's open that new database by clicking on its name in your MongoDB Deployments list.
+We're almost finished setting up our database.  There's just one last step, which is to set up a username and password to keep nosy neighbors out.  First, let's open that new database by clicking on its name in your MongoDB Deployments list.
 
 ![mLab Deployment Creator](assets/mlab-06-deployments.png)
 
-Inside the database, you should see something like the screenshot below.  First, there are instructions for connecting to a MongoDB driver and a `mongodb://` URI.  We're not ready for this yet, but I wanted to point it out because we'll be back for it soon.  Down below, let's click on the 'Users' tab.  As expected, we don't have any database users yet, so let's click on '+ Add database user'.
+Inside the database, you should see something like the screenshot below.  First, there are instructions for connecting to a MongoDB driver and a `mongodb://` URI.  We're not quite ready for this yet, but I want to point it out because we'll be back for it soon.  Down below, let's click on the 'Users' tab.  The list will be empty because we don't have any database users yet, so let's click on '+ Add database user'.
 
 ![mLab Deployment Creator](assets/mlab-08-new-user.png)
 
-Use whatever username and password you like (I used username: ms-user, password: makeschool), but be sure to remember it, because we'll need it again soon.  Click on 'Create'.  You should now see one user in your user table.
+Use whatever username and password you like (I used username: ms-user, password: makeschool), but be sure to remember it because we'll need it again soon.  Click on 'Create'.  You should now see one user in your user table.
 
 ![mLab Deployment Creator](assets/mlab-09-users-table.png)
 
@@ -219,4 +217,9 @@ Enter a username and click "Submit".  It should take you to a users index page, 
 
 <!-- [TODO: explain how this proves the db is working, show users on mLab website] -->
 
+<!-- # Summary -->
 <!-- TODO: Conclusion/segue to auth -->
+
+# Links and Resources
+
+- [mLab](https://mlab.com/)

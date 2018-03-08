@@ -1,5 +1,5 @@
 ---
-title: "Setting up our environment"
+title: "Setting up our server"
 slug: 01-setting-up-i
 ---
 
@@ -241,7 +241,7 @@ Now, let's check out that new nav bar:
 
 ![nav bar](assets/nav_bar_1.png)
 
-That's obviously not great, let's add some styling.
+That's obviously not great. Let's add some styling.
 
 ## Sass (and Scss)
 
@@ -307,7 +307,7 @@ And then let's check out our nav bar at `localhost:3000`:
 <!-- # Summary
 TODO -->
 
-# Further Reading
+# Resources
 
 <!-- Tools for starting a new Express app:
  - TODO
