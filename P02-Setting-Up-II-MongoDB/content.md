@@ -47,28 +47,34 @@ Use whatever username and password you like (I used username: ms-user, password:
 
 # MongoDB Driver and Mongoose
 
-Now our database is all set up and ready to go on mLab's servers–but now we need to make our app connect to it.  We need to install two packages to help us do that.  The first one–the MongoDB driver–lets us control a MongoDB database through a Node app. It will do its work mostly behind the scenes, though, because we're going to use [Mongoose](http://mongoosejs.com/) to work with our database.  Writing database code is not difficult (once you learn how), but it is complicated, error-prone and boring;  Mongoose makes things much simpler. [...]
+Now our database is all set up and ready to go on mLab's servers, but we need to connect our app to it.  We're going to install two packages to help us do that. The first one–the MongoDB driver–lets us control a MongoDB database through a Node app. It will do its work mostly behind the scenes, though, because we're going to use an Object Database Manager (ODM) called [Mongoose](http://mongoosejs.com/) to work with our database.  Writing database code is not too difficult–once you learn how–but it is tedious, repetitive, error-prone and boring. An ODM makes database management much simpler by providing simple methods for common database tasks such as searching and saving. So when we want to save an object, for example, we don't have to connect to the database, start a transaction, locate a document, etc...; we can just call `Object.save()`, and Mongoose will do all the heavy lifting.
+
+<!-- TODO: This paragraph feels too dense, concepts too new/big. maybe I should break it out into a few paragraphs and explain carefully, or include a diagram. -->
 
 ## Installing the MongoDB Driver
 
 <!-- [TODO: a step might be missing here.  QA on a computer that hasn't had mongodb installed before] -->
 
 In your terminal, enter
+
 ```
 npm install mongodb --save
 ```
-(the `--save` tag adds the package to our `package.json` file so that will be included any time we run `npm install`)
+
+The `--save` tag adds the package to our `package.json` file so that it will be included any time we run `npm install`. Open `package.json` and check for yourself that it has been added under `"dependencies":`.
 
 ## Installing Mongoose
 
-In your terminal, enter
+In your terminal, enter:
+
 ```
 npm install mongoose --save
 ```
 
 ## Connecting to Our mLab Database
 
-Open `app.js`, and paste the following code at the end of the document, just above the `module.exports = app;` line (probably line 52, but your file might be slightly different from mine):
+Open `app.js` and paste the following code near the end of the document, just above the `module.exports = app;` line (which should be on or near line 52):
+
 ```Javascript
 // Database setup
 const mongoose = require('mongoose');
@@ -76,17 +82,14 @@ const mongoURI = '(your mongodb URI)';
 
 mongoose.connect(mongoURI)
 mongoose.Promise = global.Promise;
-var db = mongoose.connection;
+let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 ```
-
-<!-- [TODO: explain this block of code, or link to Mongoose's Getting Started page at http://mongoosejs.com/docs/index.html, for reference] -->
-
-Notice that mongoURI variable–let's go back to (mLab)[https://mlab.com/home] and click on your database. You'll see your MongoDB URI on that screen:
+This is boilerplate code copy-pasted from [Mongoose's Getting Started guide](http://mongoosejs.com/docs/index.html). But, notice that `mongoURI` variable–we need to update that with the information from your mLab database. Let's go back to (mLab)[https://mlab.com/home] and click on your database. You'll see your MongoDB URI on that screen:
 
 ![mLab Deployment Creator](assets/mlab-06-deployments.png)
 
-We want the address that starts with `mongodb://...`, and be sure to replace `<dbuser>` and `<dbpassword>` with the username and password for the database user we created above. In this example, my MongoDB URI is `mongodb://ms-user:makeschool@ds233228.mlab.com:33228/makereddit1`.
+We want the address that starts with `mongodb://...`. Also, be sure to replace `<dbuser>` and `<dbpassword>` with the username and password we set up with the database user we created above. In this example, my MongoDB URI is `mongodb://ms-user:makeschool@ds233228.mlab.com:33228/makereddit1`.
 
 The last few lines of your `app.js` file should look like the following (except with *your* mongoURI):
 
@@ -108,7 +111,7 @@ const mongoURI = 'mongodb://ms-user:makeschool@ds233228.mlab.com:33228/makereddi
 
 mongoose.connect(mongoURI)
 mongoose.Promise = global.Promise;
-var db = mongoose.connection;
+let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 module.exports = app;
@@ -116,7 +119,7 @@ module.exports = app;
 
 # Adding Users
 
-Before we move on, let's make sure that our database actually works. We're going to add user accounts to our app [so that users can post under their own username, log in and out, have private information, etc...].  [set expectations: We're going to copy-paste a lot of code quickly/don't worry we'll explain it all later/...]
+Before we move on, we want to make sure that our database actually, you know, _works_. We're going to add user accounts to our app [so that users can post under their own username, log in and out, have private information, etc...].  [set expectations: We're going to copy-paste a lot of code quickly/don't worry we'll explain it all later/...]
 
 First, create a new folder in your root directory called 'models', and inside there create a new file called `user.js`.  Your file structure should look like this:
 
