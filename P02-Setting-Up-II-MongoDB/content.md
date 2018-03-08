@@ -73,7 +73,7 @@ npm install mongoose --save
 
 ## Connecting to Our mLab Database
 
-Open `app.js` and paste the following code near the end of the document, just above the `module.exports = app;` line (which should be on or near line 52):
+Setting up a database in Express is really easy–that's one of the major advantages of using a framework. Open `app.js` (this file is for configuring Express) and paste the following code near the end of the document, just above the `module.exports = app;` line (which should be on or near line 52):
 
 ```Javascript
 // Database setup
@@ -119,11 +119,11 @@ module.exports = app;
 
 # Adding Users
 
-Before we move on, we want to make sure that our database actually, you know, _works_. We're going to add user accounts to our app [so that users can post under their own username, log in and out, have private information, etc...].  [set expectations: We're going to copy-paste a lot of code quickly/don't worry we'll explain it all later/...]
+Before we move on, we want to make sure that our database actually, you know, _works_. We're going to add user accounts to our app so that users can post under their own username, log in and out, etc...  Our main purpose is to verify that our database is set up correctly, so we're going to go through a lot of code pretty quickly. Don't worry about understanding everything yet–just follow along, and think of it as a preview of what we'll learn over the next few pages.
 
-First, create a new folder in your root directory called 'models', and inside there create a new file called `user.js`.  Your file structure should look like this:
+First, create a new folder in your root directory called 'models'–obviously, this is for our MVC Models. Inside there, create a new file called `user.js`.  Your file structure should look like this:
 
-<!-- [TODO: add file structure tree] -->
+![file tree](assets/file_tree.png)
 
 Paste the following inside `models/user.js`:
 
@@ -139,7 +139,7 @@ const User = mongoose.model('User', UserSchema);
 module.exports = User;
 ```
 
-We'll learn about what's happening here in detail in later sections but, in short, this file defines what properties our users will have.  To begin with we will only store a username, but in the future we might also store a password, a name, an email address, etc...
+We'll learn more later but, in short, this file defines what properties our users will have.  To begin with, we will only store a username, but in the future we might also store a password, a name, an email address, etc...
 
 Next, open the `routes/users.js` file and delete everything in it. Paste in the following:
 
@@ -148,14 +148,23 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 
+//Users index
 router.get('/', (req, res, next) => {
-  res.render('users/index');
+  User.find({}, 'username', function(err, users) {
+    if(err) {
+      console.error(err);
+    } else {
+      res.render('users/index', { users: users });
+    }
+  });
 });
 
+// Users new
 router.get('/new', (req, res, next) => {
   res.render('users/new');
 })
 
+// Users create
 router.post('/', (req, res, next) => {
   const user = new User(req.body);
 
@@ -168,13 +177,14 @@ router.post('/', (req, res, next) => {
 module.exports = router;
 ```
 
-Again, we'll learn all about routes later on in this tutorial, so don't worry about understanding everything right now.  Basically, this file tells our app what to do when users request certain URLs.  We are inside the `/users` route, so if someone requests `ourwebsite.com/users/`, we will render something called `users/index`.  If someone requests `ourwebsite.com/users/new`, we will render something called `users/new`.  (Don't worry about the `post` right now–we'll get there.)
+This file tells our app what to do when users request certain URLs.  We are inside the `/users` route, so if someone requests `ourwebsite.com/users/`, we will render something called `users/index`.  If someone requests `ourwebsite.com/users/new`, we will render a file called `users/new`. This system for organizing our resources is called REST, and we'll learn about it in part 4.
 
-As for `users/index` and `users/new`, they don't exist yet.  Let's create them. Make a new folder inside the `views/` folder called `users`.  Inside `users`, make two new files called `index.hbs` and `new.hbs`.  Your file structure should look like this:
+As for the files`users/index` and `users/new`, they don't exist yet.  Let's create them. Make a new folder inside the `views/` folder called `users`.  Inside `users`, make two new files called `index.hbs` and `new.hbs`.  Your file structure should look like this:
 
-<!-- [TODO: add file structure tree] -->
+![file tree 2](assets/file_tree_2.png)
 
 In `views/users/index.hbs`, paste this:
+
 ```HTML
 <div>
   Users Index
@@ -189,12 +199,13 @@ In `views/users/index.hbs`, paste this:
 ```
 
 And paste this into `views/users/new.hbs`:
+
 ```HTML
 <div>
   <form action="/users" method="post">
     <legend>New User</legend>
 
-    <div class="form-group">
+    <div class="form-fieldset">
       <label for="user-username">Username</label>
       <input type="text" name="username" class="form-control" id="user-username" placeholder="Username">
     </div>
@@ -204,19 +215,60 @@ And paste this into `views/users/new.hbs`:
     </div>
   </form>
 </div>
-
 ```
 
-With all of these pieces in place, let's create a user. In your terminal, if the server isn't already running, start it with:
+Finally, add this to `public/stylesheets/style.scss`:
+
+```CSS
+button {
+  background-color: #b6b6b6;
+  border: 1px solid #b6b6b6;
+  color: #FFFFFF;
+
+  &.selected {
+    background-color: #777777;
+    border: 1px solid #777777;
+    color: #FFFFFF;
+  }
+
+  &:hover,
+  &.selected:hover {
+    background-color: rgba(119, 119, 119, 0.16);
+    border: solid 1px #777777;
+    color: #777777;
+  }
+}
+
+legend {
+  font-size: 125%;
+  margin-bottom: 1em;
+}
+
+.form-fieldset {
+  input {
+    display: block;
+    border-radius: .3em;
+    border: 1px solid rgba(74,74,74,0.5);
+    font-size: .72em;
+    padding-left: .5em;
+    margin: .5em 0 1em 0;
+  }
+}
+```
+
+With all of these pieces in place, let's create a user. If the server isn't already running, start it with:
 
 ```
 nodemon start
 ```
 
 Then, go to `localhost:3000/users/new` in your browser. There should be a new user form, with a single field for a username, like so:
-<!-- [TODO: add screenshot] -->
 
-Enter a username and click "Submit".  It should take you to a users index page, with a list of all the users in the database (at first there will be only one).  
+![new user 1](assets/new_user_1.png)
+
+Enter a username and click "Submit".  It should take you to a users index page, with a list of all the users in the database (at first there will be only one).
+
+![new user 2](assets/new_user_2.png)
 
 <!-- [TODO: explain how this proves the db is working, show users on mLab website] -->
 
@@ -226,3 +278,5 @@ Enter a username and click "Submit".  It should take you to a users index page, 
 # Links and Resources
 
 - [mLab](https://mlab.com/)
+- [Mongoose](http://mongoosejs.com/)
+- [Mongoose Getting Started guide](http://mongoosejs.com/docs/index.html)
