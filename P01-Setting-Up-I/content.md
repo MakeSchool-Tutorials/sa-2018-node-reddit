@@ -168,23 +168,22 @@ Now, **without** restarting the server, let's go to the browser and refresh the 
 :satisfied:
 
 # Handlebars and Bootstrap
-<!-- TODO: remove bootstrap references -->
 
 <!-- ## Handlebars -->
 <!-- Handlebars is a templating engine. A templating engine is... -->
-
 <!-- [TODO: no code writing here, just a quick overview of what Handlebars is, what the `{{...}}` tags are, etc...] -->
 
 ## Layout File
 
 Remember what we learned about HTML in previous tutorials, and then let's look back at `views/index`:
+<!-- TODO: which previous tutorials? -->
 
 ```HTML
 <h1>{{title}}</h1>
 <p>Hello world</p>
 ```
 
-what's missing?  This isn't a complete HTML document... Let's open the `views/layout.hbs` file.  At first, it should look like this:
+What's missing?  This isn't a complete HTML document... Let's open the `views/layout.hbs` file.  At first, it should look like this:
 
 ```HTML
 <!DOCTYPE html>
@@ -199,7 +198,7 @@ what's missing?  This isn't a complete HTML document... Let's open the `views/la
 </html>
 ```
 
-Here's everything missing from `views/index.hbs`. This layout file is special because it will load with every page in our app. The contents of `index.hbs` are rendered in place of `{{{body}}}`.
+Here's all the missing parts from `views/index.hbs`. This layout file is special because it will load with every page in our app. The contents of `index.hbs` are rendered in place of `{{{body}}}`.
 
 <!-- TODO: elaborate, including example with wireframes would be nice -->
 
@@ -216,7 +215,7 @@ Let's add a navigation bar that will load at the top of every page in our app. B
   </head>
   <body>
     <nav>
-      <div class="logo">
+      <div>
         MakeReddit
       </div>
 
@@ -248,13 +247,54 @@ hmm... That's obviously not great. Let's add some styling.
 
 ## Bootstrap
 
-<!-- TODO -->
+[Bootstrap](https://getbootstrap.com/) is a really popular toolkit for CSS and Javascript, though for this tutorial we'll only use its CSS capabilities. There are [a few different ways to install bootstrap](https://getbootstrap.com/docs/4.0/getting-started/introduction/), but the simplest is to paste the following code inside the `<head>...</head>` tags of `views/layout.hbs`:
+
+```HTML
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+```
+
+And that's it. Bootstrap is installed. To use it, we just need to add the correct classes to our HTML. Bootstrap provides a complete set of pre-styled components, and we want to use their [navbar](https://getbootstrap.com/docs/4.0/components/navbar/). According to those instructions, we just need to add classes to our `<nav>` and `<div>` tags. Update your `views/layout.hbs` file to match the following:
+
+```HTML
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>{{title}}</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="navbar-brand">
+        MakeReddit
+      </div>
+
+      <div class="navbar-text">
+        log in/log out
+      </div>
+    </nav>
+
+    <main>
+      {{{body}}}
+    </main>
+  </body>
+</html>
+```
 
 And then let's check out our nav bar at `localhost:3000`:
 
 ![nav bar](assets/nav_bar_2.png)
-
-
 
 <!-- # Summary
 TODO -->
@@ -267,6 +307,7 @@ TODO -->
 
 - [Express](https://expressjs.com/)
 - [Handlebars](https://handlebarsjs.com)
+- [Bootstrap](https://getbootstrap.com/)
 - [HTML5 Tag Reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)
 - [Express Generator](https://expressjs.com/en/starter/generator.html)
 - [Webpack](https://webpack.js.org/)
