@@ -24,9 +24,11 @@ In this tutorial, almost all of the code we write will belong to one of these th
 
 # Express
 
-At its most basic, a web server is a machine that receives an HTTP request and returns an HTTP response. (We'll learn more about HTTP in Part 4.) What happens in between receiving the request and sending the response can be dead simple or insanely complicated–it all depends on the situation. A very simple web server might only return static HTML files that you write yourself. In this case, Node.js is good enough to develop your web server because its built-in tools are sufficient for simply returning files. But as we start to add more complex functions, like writing to a database, logging users in and out, writing posts, etc..., we'll need some more powerful tools...
+HTTP is the language of the web, and a web server is basically a machine that can receive an HTTP _request_ and return an HTTP _response_. (We'll learn more about HTTP in Part 4.) What happens in between receiving the request and sending the response can be dead simple or insanely complicated–it all depends on the situation. A very simple web server might only return static HTML files that you write yourself. In this simple case, Node.js would be good enough to develop your web server because its built-in tools are sufficient for simply returning files. But as we start to add more complex functions, like writing to a database, logging users in and out, writing posts, etc..., we'll need some more powerful tools...
 
-Enter [Express](https://expressjs.com/). It is by far the most popular web framework in the Node ecosystem, and it's going to provide us with a lot of the basic functions we need to develop our app. For example: setting up dynamically-rendered HTML templates (we're going to make our HTML write itself!); organizing all of the URLs users can visit to see different pages; providing helper methods to set up and connect to databases; create error messages; and so much more...
+<!-- TODO: explain static html in info box, and italicize -->
+
+Enter [Express](https://expressjs.com/). It is by far the most popular web framework in the Node ecosystem, and it's going to provide us with a lot of the basic functions we need to develop our app. For example: setting up _dynamically-rendered_ HTML templates (we're going to make our HTML write itself!); organizing all of the URLs users can visit to see different pages; providing helper methods to set up and connect to databases; create error messages; and so much more...
 
 ## Express Generator
 
