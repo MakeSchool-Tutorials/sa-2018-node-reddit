@@ -3,7 +3,7 @@ title: "Setting up our server"
 slug: 01-setting-up-i
 ---
 
-We're going to learn how to set up a web server using Express, generate HTML using Handlebars, and make it look good using Sass.
+We're going to learn how to set up a web server using Express, generate HTML using Handlebars, and make it look good using Bootstrap.
 
 Before we dive in, it's helpful to think about the big picture and understand how these tools work together.  We're going to build our app using an architecture called Model-View-Controller (MVC).
 
@@ -46,10 +46,10 @@ The `-g` option tells NPM to install the package globally.
 After it's installed, enter:
 
 ```
-express --view=hbs --css=sass makereddit
+express --view=hbs makereddit
 ```
 
-The `--view=hbs` option means that we want to use a package called [Handlebars](http://handlebarsjs.com/) for our views and one called [Sass](https://sass-lang.com/) for our CSS.  We'll learn more about these in the section below. Express Generator has a ton of options–to see for yourself, enter `express -h`.
+The `--view=hbs` option means that we want to use a package called [Handlebars](http://handlebarsjs.com/) for our Views–but we'll learn more about that in the section below. Express Generator has a ton of other options to configure new apps. To see for yourself, enter `express -h`.
 
 When it's finished, you'll see the following instructions:
 
@@ -167,7 +167,7 @@ Now, **without** restarting the server, let's go to the browser and refresh the 
 
 :satisfied:
 
-# Handlebars and Sass
+# Handlebars and Bootstrap
 <!-- TODO: remove bootstrap references -->
 
 <!-- ## Handlebars -->
@@ -244,62 +244,11 @@ Now, let's check out that new nav bar:
 
 ![nav bar](assets/nav_bar_1.png)
 
-That's obviously not great. Let's add some styling.
+hmm... That's obviously not great. Let's add some styling.
 
-## Sass (and Scss)
+## Bootstrap
 
-<!-- TODO: better primer on sass -->
-[Sass](https://sass-lang.com/), short for "Syntactically Awesome StyleSheets", gives us lots of nice options lacking in regular CSS, such as nested rules and variables. But be aware that there are two variants of Sass: `.sass` files and `.scss` files. The only difference is syntax–`.sass` has a distinct syntax, without braces or semicolons, while `.scss` syntax is almost the same as regular `.css`. In fact, a regular CSS file is already valid `.scss`. We want to use `.scss`, but the default is `.sass`. Let's change that.
-
-Open `app.js`, and find the section of code where we configure Sass. It's probably on lines 24 to 27, and it looks like this:
-
-```Javascript
-app.use(sassMiddleware({
-  src: path.join(__dirname, 'public'),
-  dest: path.join(__dirname, 'public'),
-  indentedSyntax: true, // true = .sass and false = .scss
-  sourceMap: true
-}));
-```
-
-We're concerned with the `indentedSyntax` option. By default it's `true`; let's set it to `false`. As the comment says, we want to use `.scss`.
-
-Finally, look in the `public/stylesheets/` directory. There's a file there called `style.sass`. Delete it and create a new file called `style.scss`. Inside, paste the following:
-
-```CSS
-body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  margin: 0;
-  padding: 5rem 3rem 3rem 3rem;
-  background-color: #f4f4f4;
-}
-
-a {
-  color: #00B7FF;
-}
-
-nav {
-  position: fixed;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  height: 4.125em;
-  width: 98vw;
-  z-index: 999;
-
-  left: 0;
-  top: 0;
-
-  background-color: #fff;
-  box-shadow: 0 1px 5px 0 rgba(0,0,0,0.2);
-  padding: 0 1em;
-
-  .logo {
-    font-size: 1.25em;
-  }
-}
-```
+<!-- TODO -->
 
 And then let's check out our nav bar at `localhost:3000`:
 
@@ -319,7 +268,6 @@ TODO -->
 - [Express](https://expressjs.com/)
 - [Handlebars](https://handlebarsjs.com)
 - [HTML5 Tag Reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)
-- [Sass](https://sass-lang.com/)
 - [Express Generator](https://expressjs.com/en/starter/generator.html)
 - [Webpack](https://webpack.js.org/)
 - [Yarn](https://yarnpkg.com/en/)
