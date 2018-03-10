@@ -143,21 +143,30 @@ Now that our users have passwords, and we're saving them so securely that even w
 
 # Authentication: Log in
 
-Let's start with this idea: our users should log in by going to `/login`.  If we try that right now–in your browser, visit `localhost:3000/login`–what happens? [It doesn't work, that's what happens](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).  We never defined that endpoint–which is to say, we never told our app what to do if someone visits that address.
+Let's start with the URL–where should our users go to log in? The usual way is to have our users go to `/login`. If we try that right now–in your browser, visit `localhost:3000/login`–what happens?
 
-Let's open the `routes/index.js` file. (Users get their own routes file in `routes/users.js`, and other resources will get their own files, too.  But login/logout is kind of special, so we'll keep them right in the index). Let's add a login route, like this:
+![404](assets/404.png)
+
+[It doesn't work, that's what happens](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).  We never defined that endpoint–which is to say, we never told our app what to do if someone visits that address.
+
+Let's open the `routes/index.js` file. Users get their own routes file in `routes/users.js`, and other resources will get their own files, too.  But login and logout are kind of special, along with the root (`/`), so we'll keep them right in `index.js`. Let's add a login route, like this:
 
 ```Javascript
+// login
 router.get('/login', (req, res, next) => {
   res.render('login');
 });
 ```
 
+Here we're telling our Controller (or _router_, as it's called in Express) what to do if we receive a GET request to `http://your-site.com/login`. When that happens, our app will fire the callback we provide, which takes three arguments: `req`, `res`, and `next`. We've seen `next` before–that's a callback function provided by Express at runtime, and we usually don't need to think about it too much. `req` and `res` represent the HTTP request and HTTP response–basically, `req` is whatever the browser sends to the server, and `res` is whatever the server sends back to the browser.
+
+<!-- TODO: define runtime  -->
+
 Now let's visit `localhost:3000/login` again.  It still doesn't work, but what's wrong now?
 
-<!-- TODO: add 'Failed to lookup view "login" in views directory' screenshot -->
+![missing file](assets/missing_file.png)
 
-It's trying to load a view, so it looks in the `/views` directory for a file called "login", just like we told it to, but that file isn't there. Let's create the file `views/login.hbs`, and paste the following form inside:
+In our `/login` route, we told our app to render a file called `'login'`. So it looks in the `/views` directory expecting a file called "login", just like we told it to, but that file isn't there. Let's create it–`views/login.hbs`, and paste the following form inside:
 
 ```HTML
 <form action="/login" method="post">
@@ -178,15 +187,17 @@ It's trying to load a view, so it looks in the `/views` directory for a file cal
   </div>
 </form>
 ```
+<!-- TODO: update new user form to have submit button in 'text-right' div -->
 
 Now when we visit `localhost:3000/login`, we see our login form.
 
-<!-- TODO: add screenshot -->
+![login view](assets/login_view.png)
 
 But if we try to log in now, what do you expect to happen?  It won't work yet.  When we submit a form, where does it send that data?  (Hint: check the form's `action`)
-
 <!-- TODO: review HTTP verbs -->
+
 Open `routes/index.js`.  We need to define a POST route to `/login`, so include the following snippet:
+
 ```Javascript
 router.post('/login', (req, res, next) => {
   console.log('logging in!');
@@ -196,7 +207,7 @@ router.post('/login', (req, res, next) => {
 });
 ```
 
-Now, with all of our groundwork laid, we're finally ready to authenticate users.
+This tells our app what to do if ever it receives a POST request to `http://your-site.com/login`. It's the same URL as above, but our app will behave differently depending on whether it receives a GET or a POST request. We're not doing anything yet, except printing some information to the console. But with all of our groundwork laid, we're ready to authenticate users.
 
 # Authentication
 
