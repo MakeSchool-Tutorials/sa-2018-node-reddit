@@ -3,27 +3,25 @@ title: "Authentication and Authorization"
 slug: 03-auth
 ---
 
-<!-- TODO: [In this section we will save users in the database, and learn how to require a username and password.  By the end we will have a Registration page where users can sign up, a log in page, and a button for logging out ...] -->
+<!-- TODO: [In this section we will learn how to require a username and password.  By the end we will have a Registration page where users can sign up, a log in page, and a button for logging out ...] -->
 
 <!-- TODO: Authentication vs. Authorization -->
-Authentication and authorization are closely related, but they're not actually the same thing, and it's important to understand the difference.  Authentication is determining who someone is, and if they truly are who they say–in a web application, we typically authenticate with a username and password.  Authorization happens *after* authentication, and has to do with permissions and access.  In a web app, requiring admin privileges to access a certain page is a form of authentication.
-
-The word "auth" can refer to either authentication, authorization or both of them together.
+The word "auth" can refer to either authentication, authorization or both of them together. Authentication is determining who if someone truly is who they say they are–in a web application, we typically authenticate with a username and password. Authorization happens _after_ authentication, and has to do with permissions and access.  In a web app, requiring admin privileges to access a certain page is a form of authorization.
 
 # Authentication: Passwords
 
-User registration, authentication and authorization are pretty basic features needed by almost every web app, so there are lots of tools for us to choose from to help us get started.  The main package we'll use here is called [Passport](http://www.passportjs.org/).
-<!-- TODO: a little more background on passport and alternatives, and passport-local -->
+User registration, authentication and authorization are pretty basic features needed by almost every web app, and there are lots of tools to help developers with the process. However, in this tutorial we're going to build our own _auth_ solution so that we can learn what goes on under-the-hood. Our solution is also going to be really basic–just username, password, log in, log out, that's it. If you want to add more advanced features, like email verification, password reset, or google/facebook/twitter login, you'll want to use a tool like [Passport](https://passportjs.com).
 
-Passport requires us to install a couple more packages as dependencies.  [Bcrypt](https://www.npmjs.com/package/bcrypt) is a cryptography package used by Passport to *hash* users' passwords (we'll talk about that more below), and [express-session](https://github.com/expressjs/session), which will let us store encrypted cookies called *sessions* in a user's browser where we can store user data.
+Even though we're building our system _mostly_ from scratch, we'll install a couple of tools to help us out.  [Bcrypt](https://www.npmjs.com/package/bcrypt) is a cryptography package used to *hash* users' passwords (we'll talk about _hashing_ below), and [express-session](https://github.com/expressjs/session), which will let us store encrypted data called *sessions* in a user's browser.
 
-Let's install all of these packages by entering the following command into your terminal:
+Let's install these packages by entering the following command into your terminal:
 
 ```
-npm install passport passport-local bcrypt express-session --save
+npm install bcrypt express-session --save
 ```
 
-Now that the packages are all installed, let's configure our app to use them.  Start by opening the `models/user.js` file so that we can let our users have passwords. Add `password: { type: String, required: true }` into the UserSchema so that your file looks like this:
+Now that the packages are all installed, let's set our app up to use them.  Let's start by giving our users passwords. Open the `models/user.js` file, and add `password: { type: String, required: true }` into the UserSchema. Your file should look like this:
+
 ```Javascript
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
@@ -39,9 +37,9 @@ module.exports = User;
 
 (Don't forget to add the comma (`,`) at the end of the `username` line!)
 
-Now that our users can have a password (actually, _must_ have a password...), let's give them a place to set it up.
+Now that our users can have a password (actually, _must_ have a password since we said `required: true`...), let's give them a way to set it up.
 
-Open the `views/users/new.hbs` file.  Notice that it contains a form with only one input, for a username.  Try to add a 'Password' input field yourself.  When you're done, compare your file with the solution below.
+Open the `views/users/new.hbs`.  Notice that it contains a form with only one input, for a username.  Try to add a 'Password' input field yourself.  When you're done, compare your file with the solution below.
 
 <!-- TODO: fold behind solution -->
 
@@ -67,23 +65,27 @@ Open the `views/users/new.hbs` file.  Notice that it contains a form with only o
 </div>
 ```
 
-(Pay special attention to the input type, `<input type="password"`: it's password, instead of text.  This will give our password field some extremely useful properties, such as hiding users' passwords when they type)
+Pay special attention to the input type of that password field, `<input type="password"`, not `text`. This will give our password field some useful properties such as hiding users' passwords when they type.
 
 Let's try it out!  Go to `localhost:3000/users/new`, and now you should see a form with a username and a password field.
 
-<!-- TODO: add screenshot -->
+![new user](assets/new_user_1.png)
 
 Enter any username and password you like, click 'Submit', and our new user should appear on our user index page.
 
-<!-- TODO: add screenshot -->
+![new user](assets/new_user_2.png)
 
-That looks good.  Let's check out the new user on mLab to see what it looks like in the database:
+That looks good.  Let's check out the new user on mLab to see what it looks like in the database. Go to (mlab.com)[https://mlab.com/home], click on your `makereddit` database, click on `Users` to see the documents, and find your new user in the list:
 
-<!-- TODO: add screenshot -->
+![mlab user](assets/mlab_user_1.png)
 
-Great, our users have passwords now! But if you look in the database you can see that the password I entered is 'password', and that's not so great.  Forget about the fact that 'password' is really, really not secure, we have a bigger issue.  If you only learn one rule about web security, learn this: NEVER STORE PLAIN TEXT PASSWORDS.  It's a bad idea.  Databases are not magically secure, and storing passwords there makes them very easy to steal.
+Great, our users have passwords now! If you look in the database you can see that my new password is 'password', and that's not so great.  Forget about the fact that 'password' is really, really not secure. We have a bigger problem–you know my password! If you only learn one rule about web security, learn this: NEVER STORE PLAIN TEXT PASSWORDS. It's a bad idea.  Databases are not magically secure, and storing passwords there makes them very easy to steal.
 
-That's why we installed Bcrypt.  Let's open our user model at `models/user.js`.  Require bcrypt at the top of the file (use `const bcrypt = require('bcrypt')`), then paste the following in after you define the UserSchema:
+The trick to avoiding plain text passwords is _hashing_. That's why we installed *Bcrypt*. Bcrypt is like a black box where we can put in a regular password, and take out a _hash_, a version of our password that has been irreversibly scrambled. This way, we never know the user's password. Later, when we implement logging in, the user will enter their password into the log in form, we'll _hash_ it, and then compare the _hashes_. However, it would be almost impossible for us to guess what password produced the hash.
+
+<!-- TODO: this could be explained so much better, and a diagram would be useful -->
+
+Let's open our user model at `models/user.js`.  Require bcrypt at the top of the file (use `const bcrypt = require('bcrypt')`), then paste the following in, after you define the UserSchema:
 
 ```Javascript
 UserSchema.pre('save', function(next) {
@@ -97,11 +99,16 @@ UserSchema.pre('save', function(next) {
   })
 });
 ```
-<!-- TODO: walk through this code -->
 
-When you're done, `models/user.js` should look exactly as it does in the solution below.
+This code comes from the [Bcrypt documentation page](https://github.com/kelektiv/node.bcrypt.js). First, we call the `.pre()` method on `UserSchema`, which takes a callback that fires _before_ (pre-) the action you pass as the first argument. So here we're saying, "before we 'save', call this function." If we wanted the function to happen _after_ we save, we could call `.post()`.
 
-<!-- TODO: fold behind solution -->
+Before we save a user to the database, we call Bcrypt's `.hash()` method, which gives us the hash of the user's password. We then save the _hash_ to the database, _not the password_.
+
+`next()` is a callback that will be supplied by the system later. It's a very common feature in Express apps and part of a feature called [middleware](https://expressjs.com/en/guide/using-middleware.html). You don't need to know all about it right now; you'll get used to seeing it.
+
+<!-- TODO: info box on encryption (2-way) vs hashing (1-way) -->
+
+When you're done, `models/user.js` should look exactly as it does below.
 
 ```Javascript
 const mongoose = require('mongoose');
@@ -128,11 +135,11 @@ const User = mongoose.model('User', UserSchema);
 module.exports = User;
 ```
 
-Let's make sure this works as expected. Go back to `localhost:3000/users/new` and make another new user.  Then, go over to mLab and check the new user in the database–pay special attention to the password, because it should look like a long string of random characters. This is a *hashed* password.
+Let's make sure this works as expected. Go back to `localhost:3000/users/new` and make another new user.  Then, go over to mLab and check the new user in the database–pay special attention to the password, because it should look like a long string of random characters. This is our _hashed_ password.
 
-<!-- TODO: explain hashing (and encryption), and why we're using hashing here -->
+![mlab user](assets/mlab_user_1.png)
 
-Now that our users have passwords, and we're saving them so securely that even we can never know what they are, let's give our users the ability to log in.
+Now that our users have passwords, and we're saving them so securely that even we can never know what they are, let's give them the ability to log in.
 
 # Authentication: Log in
 
