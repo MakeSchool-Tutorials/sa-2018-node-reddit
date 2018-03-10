@@ -217,6 +217,18 @@ And paste this into `views/users/new.hbs`:
 </div>
 ```
 
+And finally, let's add a _little_ extra CSS to make things look a little cleaner. Open `public/stylesheets/style.css` and add this:
+
+```CSS
+main {
+  padding: 1em 2em;
+}
+
+form {
+  max-width: 20em;
+}
+```
+
 With all of these pieces in place, let's create a user. If the server isn't already running, start it with:
 
 ```
