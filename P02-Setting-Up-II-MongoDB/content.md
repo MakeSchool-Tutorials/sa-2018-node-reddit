@@ -205,7 +205,7 @@ And paste this into `views/users/new.hbs`:
   <form action="/users" method="post">
     <legend>New User</legend>
 
-    <div class="form-fieldset">
+    <div class="form-group">
       <label for="user-username">Username</label>
       <input type="text" name="username" class="form-control" id="user-username" placeholder="Username">
     </div>
@@ -215,45 +215,6 @@ And paste this into `views/users/new.hbs`:
     </div>
   </form>
 </div>
-```
-
-Finally, add this to `public/stylesheets/style.scss`:
-
-```CSS
-button {
-  background-color: #b6b6b6;
-  border: 1px solid #b6b6b6;
-  color: #FFFFFF;
-
-  &.selected {
-    background-color: #777777;
-    border: 1px solid #777777;
-    color: #FFFFFF;
-  }
-
-  &:hover,
-  &.selected:hover {
-    background-color: rgba(119, 119, 119, 0.16);
-    border: solid 1px #777777;
-    color: #777777;
-  }
-}
-
-legend {
-  font-size: 125%;
-  margin-bottom: 1em;
-}
-
-.form-fieldset {
-  input {
-    display: block;
-    border-radius: .3em;
-    border: 1px solid rgba(74,74,74,0.5);
-    font-size: .72em;
-    padding-left: .5em;
-    margin: .5em 0 1em 0;
-  }
-}
 ```
 
 With all of these pieces in place, let's create a user. If the server isn't already running, start it with:
