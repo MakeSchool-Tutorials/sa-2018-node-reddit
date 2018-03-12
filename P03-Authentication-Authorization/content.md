@@ -211,24 +211,20 @@ This tells our app what to do if ever it receives a POST request to `http://your
 
 # Authentication
 
-How does logging in even work?  It's gotta be crazy complicated, right?  Some parts are, actually.  We're going to use something called the Blowfish Cypher (hence: `bcrypt`).  You can read all about it in [this Wikipedia article](https://en.wikipedia.org/wiki/Blowfish_(cipher))–but, it may be best not to get too far down that rabbit hole.  The hard parts have been done for us and we have a convenient package to use.  And the basic principles of how secure logins work are pretty easy to understand.
+But how does logging in even work?  It's gotta be crazy complicated, right?  Some parts are, actually.  We're going to use something called the Blowfish Cypher (hence: `bcrypt`).  You can read all about it in [this Wikipedia article](https://en.wikipedia.org/wiki/Blowfish_(cipher))–but, it may be best not to go too far down that rabbit hole. The hard parts have already been done for us, and we have a convenient package that's easy to use. And the basic principles behind secure logins are pretty easy to understand.
 
-When our users visit `/login`, we will present them with a login form.  In that form, they enter a username and password.  We take the username and use it to find them in the database.  If they exist, we check if they entered the correct password... but I think you can see the problem with that.
+When our users visit `/login`, they see a login form.  They enter their username and password, and submit the form. Finally, there's a two-step authentication process–first, we search the database for a user with the given username and, if they exist, we check if their password is correct.
 
-We don't know what the user's password is supposed to be (because we NEVER EVER STORE PLAIN TEXT PASSWORDS IN OUR DATABASE).  We have the function that hashed their password in the first place, so we can hash the password they just entered, and see if that matches the hashed password in our database.  In fact, that's what we'll do.
+The tricky part is that we don't know what the user's password is supposed to be. (Because we NEVER EVER STORE PLAIN TEXT PASSWORDS IN OUR DATABASE). But we do have the _hashed_ form of their password, so if we hash the password they just entered we can see if it matches the hashed password in our database.  
+
+<!-- TODO: a diagram would be immensely useful -->
 
 <!-- Wait.  If that's all there is to it, couldn't anybody with access to our database go read [this Wikipedia article about the Blowfish cypher](https://en.wikipedia.org/wiki/Blowfish_(cipher)), or just go download the [bcrypt NPM package](https://www.npmjs.com/package/bcrypt) and un-hash all the users' hashed passwords? Two things protect us from attacks this simple:
 - First, _hashing_ is generally one-way, unlike _encryption_, which is usually designed to be _decrypted_.  So even if you have the hashed password _and_ the algorithm that hashed it, you still need the original password to get anywhere.
-- Second, _salt_. In this case, _salt_ is a secret string that bcrypt adds to the formula for our app.  It's defined in .  [[TODO: Eep.  Am I salting? --yes, in ]] -->
+- Second, _salt_. In this case, _salt_ is a secret string that bcrypt adds to the formula for our app.  It's defined in . -->
 
-<!-- TODO: set up sessions in app.js-->
-<!-- var session = require('express-session');
-app.use(session({ secret: 'jf0832po8', cookie: { maxAge: 3600000 }, resave: true, saveUninitialized: true })); -->
+Let's open `models/user.js` to add an `.authenticate()` method to our users, so that the entire file looks like this:
 
-Let's open `models/user.js` to add an `.authenticate()` method to our users.
-<!-- TODO: talk through method -->
-
-let's add the `.authenticate()` function declaration to `models/user.js`, so that the entire file looks like this:
 ```Javascript
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
@@ -273,17 +269,24 @@ UserSchema.statics.authenticate = function(username, password, next) {
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
 ```
+<!-- TODO: briefly talk through code,  will define `next` in section below  -->
+<!-- TODO: briefly explain `.statics.`, also point out the 'next()' middleware pattern -->
 
-<!-- TODO: briefly explain `.statics.` -->
 
-What's next? Somewhere we can call `User.authenticate('myusername', 'secretpassword')` to log our user in, but where do we do that?  We want to authenticate users when they send us their password, which happens when they submit the login form.  Where does that send the password?
+Now let's take a step back and look at the big picture–we have a `User.authenticate('myusername', 'secretpassword')` method to log our user in, but how/when/where do we do that?  We want to call `authenticate()` when users send us their password, which happens when they submit the login form. Check the HTML form in `views/login.hbs`–where does it go when we submit?
 
-<!-- TODO: fold behind solution -->
+```HTML
+<form action="/login" method="post">
+  ...
+```
+<!-- TODO: Again, really feel like this needs a diagram -->
 
-We wrote code for POST requests to `/login` in `routes/index.js`, so let's open that file.  Our call to `User.authenticate()` looks like this:
+This tells the form to send a POST request to `/login`, which we define in `routes/index.js`–let's open that file.  Let's define a POST request to `/login` like this:
 
 ```Javascript
-User.authenticate(req.body.username, req.body.password, (err, user) => {
+// POST login
+router.post('/login', (req, res, next) => {
+  User.authenticate(req.body.username, req.body.password, (err, user) => {
     if (err || !user) {
       const next_error = new Error("Username or password incorrect");
       next_error.status = 401;
@@ -295,26 +298,29 @@ User.authenticate(req.body.username, req.body.password, (err, user) => {
       return res.redirect('/') ;
     }
   });
+});
 ```
 
-Let's take a minute to understand what's happening here.
-<!-- TODO: talk through code -->
+Inside `.post('/login', ...)`, the first thing we do is call the `.authenticate()` method, passing in the login form data and a callback (`req` represents the HTTP request object, and form data lives in the `body` of those requests). The callback (`(err, user) => {...}`) becomes the `next()` function in `UserSchema.statics.authenticate`, defined in `models/user.js`.
+<!-- TODO: talk through UserSchema.statics.authenticate code here, not above-->
 
 In the end, your complete `/routes/index.js` file should look like this:
 
 ```Javascript
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
 
+// home page
 router.get('/', (req, res, next) => {
   res.render('index', { title: 'MakeReddit' });
 });
 
+// login
 router.get('/login', (req, res, next) => {
   res.render('login');
 });
 
+// POST login
 router.post('/login', (req, res, next) => {
   User.authenticate(req.body.username, req.body.password, (err, user) => {
     if (err || !user) {
@@ -332,6 +338,21 @@ router.post('/login', (req, res, next) => {
 
 module.exports = router;
 ```
+
+There's just one final detail before our user can log in–we need to set our app up to use _session cookies_. We installed the `express-sessions` way up at the top of this page, but we never configured Express to use them. We configure Express in `app.js`, so open that file and add the following:
+
+```Javascript
+// configure sessions
+const session = require('express-session');
+app.use(session({ secret: 'secret-unique-code', cookie: { maxAge: 3600000 }, resave: true, saveUninitialized: true }));
+```
+
+(This code comes from the [Express Session documentation](https://github.com/expressjs/session).)
+
+
+<!-- TODO: define session cookies, probably in an info box -->
+
+Now, let's go to `localhost:3000/login` in your browser, enter your username and password, click submit, and... well, hopefully there's no error message, but it's hard to know what, if anything, happened under the hood. Let's get our app to show us whether we're logged in or not.
 
 # Toggle "Log in"/"Log out" Link
 
