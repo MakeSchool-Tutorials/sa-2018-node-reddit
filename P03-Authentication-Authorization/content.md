@@ -356,45 +356,51 @@ Now, let's go to `localhost:3000/login` in your browser, enter your username and
 
 # Toggle "Log in"/"Log out" Link
 
-Go to `localhost:3000` in your browser and notice the header at the top, particularly the 'log in/log out' text on the right.  Obviously, this isn't how log in buttons are supposed to work–it isn't even a real link.  Let's add a bit of logic that checks if a user is logged in–if they're not logged in, we'll offer them a 'log in' link; if they are, the link will say 'log out'.
+In your browser, notice the 'log in/log out' text on the right side of the header.  Obviously, this isn't how log in buttons are supposed to work–it isn't even a real link.  Let's add some logic that checks if a user is logged in–and if they're not, we'll offer them a 'log in' link; if they are, the link will say 'log out'.
 
 The header is defined in our layout file.  Open `views/layout.hbs`, and replace the `<nav>` section with the following code:
 
 ```HTML
-<nav>
-  <div class="logo">
+<nav class="navbar navbar-dark bg-dark">
+  <div class="navbar-brand">
     MakeReddit
   </div>
 
-  {{# if current_user}}
-    <a href="/logout">log out</a>
-  {{else}}
-    <a href="/login">log in</a>
-  {{/if}}
+  <div class="navbar-text">
+    {{# if currentUserId}}
+      <a class="nav-link" href="/logout">log out</a>
+    {{else}}
+      <a class="nav-link" href="/login">log in</a>
+    {{/if}}
+  </div>
 </nav>
 ```
 
-<!-- TODO: talk through code -->
+This code has some new syntax, the `{{# if ...}} {{else}} {{/if}}` statement in Handlebars. This is one of several built-in [Handlebars helpers](http://handlebarsjs.com/block_helpers.html); we saw `{{#each}}` in an earlier section.
 
-However, this doesn't work yet.  Try it if you like–go to `localhost:3000/login`, enter your username and password... and still be offered a link to log _in_.  Take another look at that `{{if}}` statement.  Do you see the problem?  We never assign any value to `current_user`, so it's not possible to avoid the `{{else}}` branch; `current_user` will always be `undefined`.
+However, this doesn't work yet.  Try it if you like–go to `localhost:3000/login`, enter your username and password... and still be offered a link to log _in_.  Take another look at that `{{# if}}` statement. Can you spot the problem?  We never assign any value to `currentUser`, so it's not possible to avoid the `{{else}}` branch; `current_user` will always be `undefined`.
 
-We need to define the variables for this view in the controller (or in this case, our routes file at `routes/index.js`).   
+We need to define the variables for this view in the controller (or in this case, our routes file) at `routes/index.js`.   
 
-Let's modify the GET request for our root route to check the session for the existence of a `userId` and pass that value, if it exists, to our view.  Replace the existing `router.get('/', ...)` function with the code below:
+Let's modify the GET request for our root route to check the session for a `userId` and pass that value–if it exists–to our view. Replace the existing `router.get('/', ...)` function with the code below:
 
 ```Javascript
+// home page
 router.get('/', (req, res, next) => {
-  const currentUser = req.session.userId;
+  const currentUserId = req.session.userId;
 
-  res.render('index', { title: 'MakeReddit', currentUser: currentUser });
+  res.render('index', { title: 'MakeReddit', currentUserId: currentUserId });
 });
 ```
 
 And now let's try logging in.  Assuming you remembered your password correctly, you should be back at the home page and in the upper right-hand corner it _should_ say "Log out". Nice! But we're not quite finished yet...
 
-Go back to `localhost:3000/login`, and what happens to our "Log in/Log out" link? It's back to "Log in", which means that either we're not logged in anymore (don't worry; we are), or that our layout forgot.  If you look back at `routes/index.js`, you might notice that when we call `res.render` in our `router.get('login', ...)` function, we don't pass any values for  `title` or `currentUser`.  This means that when we go to `/login`, the view (Handlebars) doesn't know what `currentUser` is, so it renders a "Log in" link.  (You might have noticed that the title is missing, too).
+Go back to `localhost:3000/login`, and what happens to our "Log in/Log out" link? It's back to "Log in"–which means that either we're not logged in anymore (we are), or that our layout forgot.  If you look back at `routes/index.js`, you might notice that when we call `res.render` in our `router.get('login', ...)` function, we don't pass any values for  `title` or `currentUser`.  This means that when we go to `/login`, the view (Handlebars) doesn't know what `currentUser` is, so it renders a "Log in" link.  (You might have noticed that the title is missing, too).
 
-<!-- TODO: explain middleware, add the following to routes/index.js -->
+<!-- TODO: Add infobox for middleware, point out how often we've used the pattern -->
+
+We can write a simple _middleware_ function to assign values to `title` and `currentUserId` before every router action by adding the following code to `routers/index.js`:
+
 ```Javascript
 // set layout variables
 router.use(function(req, res, next) {
@@ -405,7 +411,56 @@ router.use(function(req, res, next) {
 })
 ```
 
-<!-- TODO: remove passing locals to view in get('/'), verify all works as expected. -->
+<!-- TODO:  explain `res` and `locals` -->
+
+While we have `routers/index.js` open, let's also remove the references to currentUserId we added to `router.get('/', ...)`, so that the whole file looks like this:
+
+```Javascript
+const express = require('express');
+const router = express.Router();
+const User = require('../models/user');
+
+// set layout variables
+router.use(function(req, res, next) {
+  res.locals.title = "MakeReddit";
+  res.locals.currentUserId = req.session.userId;
+
+  next();
+})
+
+// home page
+router.get('/', (req, res, next) => {
+  res.render('index');
+});
+
+// login
+router.get('/login', (req, res, next) => {
+  res.render('login');
+});
+
+// POST login
+router.post('/login', (req, res, next) => {
+  User.authenticate(req.body.username, req.body.password, (err, user) => {
+    if (err || !user) {
+      const next_error = new Error("Username or password incorrect");
+      next_error.status = 401;
+
+      return next(next_error);
+    } else {
+      req.session.userId = user._id;
+
+      return res.redirect('/') ;
+    }
+  });
+});
+
+module.exports = router;
+```
+
+And if we go back to `localhost:3000/login` and submit our username and password, we should see a 'log out' link in the upper-right corner.
+
+![log out](assets/log_out.png)
+<!-- TODO: this section needs visuals, screenshots and diagrams -->
 
 # Logout
 
