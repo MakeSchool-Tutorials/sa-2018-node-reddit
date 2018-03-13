@@ -37,13 +37,15 @@ const RoomSchema = new Schema({
 module.exports = mongoose.model('Room', RoomSchema);
 ```
 
-This is very similar to the User model we set up in Part 1, so please review that if any of this code seems mysterious. Before we can check whether this works the way we expect, we need a way to add rooms to our database.  Let's set up `new` and `create` actions for our Rooms to do just that.
+This is very similar to the User model we set up in Part 1, so please review that if any of this code seems mysterious. Before we can check whether this works the way we expect, we need a way to add rooms to our database.  Let's set up _new_ and _create_ actions for our Rooms to do just that.
 
 <!-- TODO: here reference REST diagram that doesn't exist yet -->
 
-# Room New and Create
+# Rooms New and Create
 
-Following the REST convention, we expect to go to `rooms/new` to find the form to create a new room, and then POST a form to `rooms` to add it to our database. Let's create a new file to hold our room routes called `routes/rooms.js`, and paste in the following:
+Following the REST convention, we expect to go to `rooms/new` to find the form to create a new room, and then POST a form to `rooms/` to add it to our database. Let's create a new file to hold our room routes called `routes/rooms.js`, and paste in the following:
+
+<!-- TODO: edit to reference REST diagram -->
 
 ```Javascript
 const express = require('express');
@@ -84,18 +86,17 @@ router.post('/', auth.requireLogin, (req, res, next) => {
 
 module.exports = router;
 ```
-<!-- TODO: explain the routes (note that there's no delete action) -->
 
-Notice that we are requiring login for every route except the index. Any user may see what topics are being discussed, but they'll need to register and log in to read the conversations.
+Here we have six of the seven REST actions defined–we will leave the _delete_ action off for now–and we'll fill them all in over the next few sections.
 
-<!-- TODO: Also add these routes to routes/index.js -->
-```Javascript
-app.use('/rooms', rooms);
-```
+Notice that we are requiring _authorization_ for every route except the index. Any user may see what topics are being discussed, but they'll need to register and log in to read the conversations.
 
-Recall that the sole purpose of our `new` action is to show users the form they need to make a new room, so we need to create a view with a form on it, then configure `get.('/new', ...)` in `routes/rooms.js` to return that view.
+## New
+
+The single purpose of our `new` action is to show users the form they need to make a new room, so we need to create a view with a form on it, then configure our _controller_ in `routes/rooms.js` to return that view.
 
 Create a file (in a new `views/rooms` folder) called `views/rooms/new.hbs` and paste in the following code, which will render a web form for creating a new room:
+
 ```HTML
 <div>
   <form action="/rooms" method="post">
@@ -120,9 +121,24 @@ router.get('/new', auth.requireLogin, (req, res, next) => {
   res.render('rooms/new');
 });
 ```
+
+And one last detail to tie it all together–notice that we're defining our action on `'/new'`. We want to make our URL be `makereddit.com/rooms/new` to be RESTful, not `makereddit.com/new`. So inside our `app.js` file, let's add the following:
+
+```Javascript
+const rooms = require('./routes/rooms');
+
+// ...
+
+app.use('/rooms', rooms);
+```
+
+This tells our index router to _namespace_ all of the routes we define in `routes/rooms.js` under `rooms/`.
+
 Visit `localhost:3000/rooms/new` (be sure you're logged in!), and you should see this:
 
-<!-- TODO: add screenshot -->
+![new room](assets/new_room.png)
+
+## Create
 
 Now, recall that our `create` action listens for a POST request to `/rooms`, then uses the data from that request to store a new Room object in the database. So let's look at `routes/rooms.js`, and replace `.post('/', ...)` with:
 
@@ -146,7 +162,7 @@ Now when you submit a new form on `rooms/new`, you won't get anything back becau
 
 # Rooms Index
 
-Our Rooms `index` action lists all of the rooms in our database.  Notice that our `create` action above redirects users to the rooms index (`/rooms`).
+Our Rooms _index_ action lists all of the rooms in our database.  Notice that our `create` action above redirects users to the rooms index (`/rooms`).
 
 Let's set up the view at `views/rooms/index.hbs`.  Paste the following inside that file:
 
