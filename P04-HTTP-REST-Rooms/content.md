@@ -22,11 +22,9 @@ REST is a system that calls for organizing our URLs by _resource_. Each _resourc
 
 # Room Models
 
-Let's start by defining what a "room" is supposed to look like when we store it in our database. In other words, what attributes does a room have that we need to store in the database?
+<!-- TODO: creating an ERD or some diagram of the completed models so that I can reference it throughout section. -->
 
-We're going to begin really simple and create rooms that will each have a single attribute, a `topic`. Each room will also have many posts about that topic as people start conversations,
-
-Create a file for our room model called `models/room.js` and paste the following code into it:
+Let's start by defining what a "room" is supposed to look like when we store it in our database. We're going to begin really simple and create rooms that will each have a single attribute, a `topic`. Each room will also have many posts about that topic as people start conversations, but we'll deal with that in the next part of this tutorial. For now, create a file for our room model called `models/room.js` and paste the following code into it:
 
 ```Javascript
 const mongoose = require('mongoose');
@@ -39,9 +37,9 @@ const RoomSchema = new Schema({
 module.exports = mongoose.model('Room', RoomSchema);
 ```
 
-<!-- TODO: talk through code -->
+This is very similar to the User model we set up in Part 1, so please review that if any of this code seems mysterious. Before we can check whether this works the way we expect, we need a way to add rooms to our database.  Let's set up `new` and `create` actions for our Rooms to do just that.
 
-Before we can check whether this works the way we expect, we need a way to add rooms to our database.  Let's set up `new` and `create` actions for our Rooms to do just that.
+<!-- TODO: here reference REST diagram that doesn't exist yet -->
 
 # Room New and Create
 
