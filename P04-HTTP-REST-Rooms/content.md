@@ -9,14 +9,22 @@ TODO: In the next section we'll implement all of these actions–after we introd
 
 # HTTP and REST
 
-<!-- TODO -->
-<!-- TODO: explain that advantage of REST is organizing by resources -->
+<!-- ## HTTP -->
+<!-- HTTP is the language of the internet. TODO: copy whatever Chase wrote in htiw -->
+
+## REST
+
+Our web app is made of web pages, and each of those web pages has a URL. As your apps become more complicated and generate more pages, you're going to have to manage an increasing number of those URLs, and it becomes very important to have some system to manage them all.
+
+REST is a system that calls for organizing our URLs by _resource_. Each _resource_ should have seven actions, as in the following chart:
+
+<!-- TODO: REST chart -->
 
 # Room Models
 
-TODO: Does this belong in the next section?
+Let's start by defining what a "room" is supposed to look like when we store it in our database. In other words, what attributes does a room have that we need to store in the database?
 
-Let's start by defining what a "room" is supposed to look like when we store it in our database–that is, what attributes does a room have and what information should we keep there?
+We're going to begin really simple and create rooms that will each have a single attribute, a `topic`. Each room will also have many posts about that topic as people start conversations,
 
 Create a file for our room model called `models/room.js` and paste the following code into it:
 
