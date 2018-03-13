@@ -213,13 +213,13 @@ In the end, we should be able to visit `localhost:3000/rooms/new`, save a new ro
 
 # Rooms Show
 
-Where an `index` shows a collection of items, such as all the rooms in our database, the `show` action lets us look at a single object.  At first our rooms `show` views won't be very interesting–we have to wait until the next section to create posts and comments–but all of the links on our `index` view are broken right now, and we can at least fix that.
+Where an `index` shows a collection of items, such as all the rooms in our database, the `show` action lets us look at a single object.  At first our rooms' _show_ views won't be very interesting–we'll fill it with posts in the next section–but all of the links on our `index` view are broken right now, and we can at least fix that.
 
 Create a new file for our view at `views/rooms/show.hbs` and paste in the following:
 
 ```HTML
 <div>
-  {{room.title}}
+  <h2>{{room.topic}}</h2>
 </div>
 
 <div>
@@ -227,7 +227,6 @@ Create a new file for our view at `views/rooms/show.hbs` and paste in the follow
 </div>
 ```
 
-<!-- TODO: explain slugs better -->
 Then, in our controller we need to render this file when anybody visits `/rooms/:id` (where `:id` is the id of a specific room) and set the value of `room` on the second line.  In `routes/rooms.js`, replace `get('/:id', ...)` with:
 
 ```Javascript
@@ -236,18 +235,18 @@ router.get('/:id', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.id, function(err, room) {
     if(err) { console.error(err) };
 
-    Post.find({ room: room }, function(err, posts) {
-      if(err) { console.error(err) };
-
-      res.render('rooms/show', { room: room, posts: posts });
-    })
+    res.render('rooms/show', { room: room });
   });
 });
 ```
 
-<!-- TODO: Talk through code, especially about slugs and router order (keep slugs after named routes) -->
+This code is really similar to the Rooms _index_ action we added above. The key difference is that instead of calling `Room.find()` to get multiple Room documents, we call `Room.findById()` to get back a specific room, that we already have the ID for.
 
-<!-- TODO: segue and screenshot -->
+<!-- TODO: infobox to explain slugs and route order (keep slugs after named routes) -->
+
+Now if you visit `localhost:3000/rooms` and click on a Room topic (not the edit links–those are still broken), you should see that Room's _show_ view.
+
+![room show](assets/room_show.png)
 
 # Rooms Edit and Update
 
