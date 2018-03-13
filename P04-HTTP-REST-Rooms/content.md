@@ -158,13 +158,15 @@ router.post('/', auth.requireLogin, (req, res, next) => {
 
 Now when you submit a new form on `rooms/new`, you won't get anything back because we haven't implemented our `index` action yet (that's next). If we check out our database on `mlab.com`, however, we can see that rooms are being saved in our database.
 
-<!-- TODO: add mLab screenshot  -->
+![mlab rooms](assets/mlab_rooms.png)
+
+<!-- TODO: add file tree -->
 
 # Rooms Index
 
-Our Rooms _index_ action lists all of the rooms in our database.  Notice that our `create` action above redirects users to the rooms index (`/rooms`).
+Our Rooms _index_ action will show users a page that lists all of the rooms in our database.  Notice that our `create` action above redirects users to the rooms index (`/rooms`).
 
-Let's set up the view at `views/rooms/index.hbs`.  Paste the following inside that file:
+Let's set up the view at `views/rooms/index.hbs`. Create that file and paste the following inside:
 
 ```HTML
 <div>
@@ -182,7 +184,10 @@ Let's set up the view at `views/rooms/index.hbs`.  Paste the following inside th
 <div>
 ```
 
-Now we need to set up our `index` controller action in `routes/rooms.js`.  (Remember that, by default, Express calls its controller files 'routes' files, and we'll sometimes switch between saying 'controller' and 'routes').  Replace the `.get('/', ...)` function with:
+(Notice that I included an `edit` link for each of the rooms. They won't work until we implement our _edit_ and _update_ actions, which we'll do a little further down the page.)
+
+Now we need to set up our `index` controller action in `routes/rooms.js`. Replace the existing `Rooms index` action with:
+
 ```Javascript
 // Rooms index
 router.get('/', (req, res, next) => {
@@ -196,11 +201,15 @@ router.get('/', (req, res, next) => {
 });
 ```
 
-<!-- TODO: talk through code, draw attention to assigning rooms variable -->
+This is similar to our home page action in `routes/index.js`, but with one big difference–all of our logic happens inside a _callback function_ that we pass to `Room.find()`. `Room.find` is the method we use when we want to find a particular document or documents that match some criteria. For example, if we want to find the room with a 'sports' topic (if it exists), we would call `Room.find({ 'topic': 'sports' }, 'topic', function(err, rooms) {...})`. Passing an empty object (`{}`) for the first argument will return all of the documents for that model.
+
+For detailed information on how Mongoose queries work, check out [their documentation](http://mongoosejs.com/docs/queries.html).
+
+<!-- TODO: info box about arrow functions and mongodb -->
 
 In the end, we should be able to visit `localhost:3000/rooms/new`, save a new room, and then see something like this:
 
-<!-- TODO: rooms index screenshot -->
+![rooms index](assets/room_index.png)
 
 # Rooms Show
 
