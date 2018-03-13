@@ -468,9 +468,9 @@ And if we go back to `localhost:3000/login` and submit our username and password
 
 # Authorization
 
-And now we come to _authorization_.
+And now we come to _authorization_. Keep in mind that all the steps up to this point have been about _authentication_, or making our users prove who they are. Now that they're authenticated, we want to _authorize_ (or _allow_) them to view some pages.
 
-The key to our authorization strategy will be another piece of middleware that will allow users to access pages if they are logged in, and redirect them to the login page if they are not.  Remember that to the system, being "logged in" just means that your browser has an encrypted cookie with your user id in it.  To check if someone is logged in, we just need to check for the existence of that value.
+Our authorization strategy will be another piece of _middleware_ that will allow users to access pages if they are logged in, and redirect them to the login page if they are not.  Remember that to the system, being "logged in" just means that your browser has a _session cookie_ with your user id in it.  To check if someone is logged in, we just need to check for the existence of that value.
 
 Let's create a new file, and a new folder, called `routes/helpers/auth.js` and paste the following code inside:
 
@@ -487,75 +487,61 @@ exports.requireLogin = (req, res, next) => {
 }
 ```
 
-<!-- TODO: talk through code -->
+This function might look complicated, but it is really simple. It just checks for the existence of a `session`, and a `userId` value on that session. If they both exist, we call `next()` and continue on; otherwise we redirect the user to the login page.
 
-Let's see an example of how to use this code by requiring authorization for users to view our users index–the list of all the users in the system.  To start, open the users routes file (`routes/users.js`) and include our authorization helpers at the top (`const auth = require('./helpers/auth')`). Now for any route where we want to require authorization, we can simply pass our `auth.requireLogin` middleware as the second argument when we declare the route.  So, `router.get('/', (req, res, next) => { ... })` becomes `router.get('/', auth.requireLogin, (req, res, next) => { ... })`.
+Let's see an example of how to use this code by requiring authorization for users to view our users index–the list of all the users in the system.  To start, open the users routes file (`routes/users.js`) and include our authorization helpers at the top (`const auth = require('./helpers/auth')`).
 
-At this point, our full `routes/index.js` should look like this:
+We usually define routes in Express like this:
+
+```Javascript
+// login
+router.get('/login', (req, res, next) => {...})
+```
+
+Here, the `.get()` method takes two arguments–the path it will respond to and a callback that accepts the `req`, `res` and `next` arguments. Any time we want to use _middleware_, though, Express will let us pass a middleware function as the second argument. In other words, we can pass `auth.requireLogin` as the second argument to require login.
+
+In `routes/users.js`, add `auth.requireLogin` to the Users index action, so that the whole file looks like this:
 
 ```Javascript
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const auth = require('./helpers/auth')
 
-// set layout variables
-router.use(function(req, res, next) {
-  res.locals.title = "MakeReddit";
-  res.locals.currentUserId = req.session.userId;
-
-  next();
-})
-
-
-/* GET home page. */
-router.get('/', (req, res, next) => {
-  // const currentUser = req.session.userId;
-  console.log("locals:");
-  console.log(res.locals);
-
-  res.render('index');
-});
-
-router.get('/login', (req, res, next) => {
-  res.render('login');
-});
-
-router.post('/login', (req, res, next) => {
-  console.log('logging in!');
-  console.log(req.body);
-
-  User.authenticate(req.body.username, req.body.password, (err, user) => {
-    console.log(err);
-    console.log(user);
-    if (err || !user) {
-      const next_error = new Error("Username or password incorrect");
-      next_error.status = 401;
-
-      return next(next_error);
+//Users index
+router.get('/', auth.requireLogin, (req, res, next) => {
+  User.find({}, 'username', function(err, users) {
+    if(err) {
+      console.error(err);
     } else {
-      req.session.userId = user._id;
-      console.log(req.session);
-
-      // TODO: implement users/show
-      // return res.redirect(`/users/${user._id}`);
-      return res.redirect('/') ;
+      res.render('users/index', { users: users });
     }
   });
 });
 
-router.get('/logout', (req, res, next) => {
-  if(req.session) {
-    req.session.destroy((err) => {
-      if(err) {
-        return next(err);
-      } else {
-        return res.redirect('/login');
-      }
-    });
-  }
-});
+// Users new
+router.get('/new', (req, res, next) => {
+  res.render('users/new');
+})
+
+// Users create
+router.post('/', (req, res, next) => {
+  const user = new User(req.body);
+
+  user.save(function(err, user) {
+    if(err) console.log(err);
+    return res.redirect('/users');
+  });
+})
 
 module.exports = router;
 ```
 
-Before we move on, let's make sure everything here works: be sure that you're logged out of the app (you should see a "Log in" link in the upper right) and try to visit `localhost:3000/users`.  If you're redirected to `localhost:3000/login`, we're ready to move on.
+<!-- TODO: also include file tree -->
+Let's make sure everything here works: be sure that you're logged out of the app (you should see a "Log in" link in the upper right) and try to visit `localhost:3000/users`.  If you're redirected to `localhost:3000/login`, we're ready to move on.
+
+<!-- # Summary -->
+<!-- TODO -->
+
+<!-- # Links and Resources -->
+<!-- TODO -->
