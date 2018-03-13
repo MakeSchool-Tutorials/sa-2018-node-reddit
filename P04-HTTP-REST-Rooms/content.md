@@ -213,7 +213,7 @@ In the end, we should be able to visit `localhost:3000/rooms/new`, save a new ro
 
 # Rooms Show
 
-Where an `index` shows a collection of items, such as all the rooms in our database, the `show` action lets us look at a single object.  At first our rooms' _show_ views won't be very interesting–we'll fill it with posts in the next section–but all of the links on our `index` view are broken right now, and we can at least fix that.
+Where an `index` shows a collection of items, such as all the rooms in our database, the `show` action lets us look at a single object.  At first our rooms' _show_ views won't be very interesting–we'll fill it with posts in the next part of this tutorial–but all of the links on our `index` view are broken right now, and we can at least fix that.
 
 Create a new file for our view at `views/rooms/show.hbs` and paste in the following:
 
@@ -243,6 +243,7 @@ router.get('/:id', auth.requireLogin, (req, res, next) => {
 This code is really similar to the Rooms _index_ action we added above. The key difference is that instead of calling `Room.find()` to get multiple Room documents, we call `Room.findById()` to get back a specific room, that we already have the ID for.
 
 <!-- TODO: infobox to explain slugs and route order (keep slugs after named routes) -->
+<!-- TODO: infobox on `req.body` and `req.params` (or add to section where req.body first appears) -->
 
 Now if you visit `localhost:3000/rooms` and click on a Room topic (not the edit links–those are still broken), you should see that Room's _show_ view.
 
@@ -251,6 +252,17 @@ Now if you visit `localhost:3000/rooms` and click on a Room topic (not the edit 
 # Rooms Edit and Update
 
 <!-- TODO: point out how new/create mirrors edit/update, give a few code snippets, ask students to try implementing, and hide final code behind a solution fold.  Esp., point out that we need the room id in the form action, so we need to pass that in from the controller -->
+
+The Rooms _edit_ and _update_ actions work together the same way that the _new_ and _create_ actions do. The _edit_ action (a GET request to `/rooms/:id/edit`) returns a form for users to enter new information, and the _update_ action (a POST request to `/rooms/:id`) saves the updated information to the database.
+<!-- TODO: create REST diagram and reference here -->
+
+## Rooms edit
+
+First, you're going to need to create a file for your view at `views/rooms/edit.hbs`. This file will be similar to `views/rooms/new.hbs`, but you'll need to change the form's `action` from `action="/rooms"` to `action="/rooms/{{room.id}}"`, and update the `input` field to `<input type="text" name="topic" class="form-control" id="room-topic" value="{{room.topic}}">`.
+
+Notice that both of these snippets reference a `room` variable–this is just like our `views/rooms/show.hbs` file. There, we had to pass a `room` from our Rooms _controller_'s _show_ action to the view, and here we'll pass one from the _edit_ action. In the Rooms controller_show_ action, we find the Room document by using `Room.findById()`–you'll need to do the same thing here. And just like in the _show_ action, you can get the Room's ID from `req.params.id`.
+
+<!-- TODO: hide solutions behind fold -->
 
 `views/rooms/edit.hbs`:
 ```HTML
@@ -268,7 +280,7 @@ Now if you visit `localhost:3000/rooms` and click on a Room topic (not the edit 
 </div>
 ```
 
-and `routes/rooms.js`:
+`routes/rooms.js`:
 ```Javascript
 // Rooms edit
 router.get('/:id/edit', auth.requireLogin, (req, res, next) => {
@@ -278,7 +290,13 @@ router.get('/:id/edit', auth.requireLogin, (req, res, next) => {
     res.render('rooms/edit', { room: room });
   });
 });
+```
 
+## Rooms update
+
+Our Rooms _update_ action is very similar to our _create_ action in that they are both POST requests, and they both save a document to the database. However, Mongoose gives us a really useful helper method, `findByIdAndUpdate()`, that makes the syntax pretty different. In our Rooms controller (`routes/rooms.js`), make the _update_ action like this:
+
+```Javascript
 // Rooms update
 router.post('/:id', auth.requireLogin, (req, res, next) => {
   Room.findByIdAndUpdate(req.params.id, req.body, function(err, room) {
@@ -288,3 +306,5 @@ router.post('/:id', auth.requireLogin, (req, res, next) => {
   });
 });
 ```
+
+<!-- # Summary -->
