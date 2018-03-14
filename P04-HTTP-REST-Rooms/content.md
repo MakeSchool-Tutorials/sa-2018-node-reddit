@@ -209,7 +209,7 @@ For detailed information on how Mongoose queries work, check out [their document
 
 In the end, we should be able to visit `localhost:3000/rooms/new`, save a new room, and then see something like this:
 
-![rooms index](assets/room_index.png)
+![rooms index](assets/rooms_index.png)
 
 # Rooms Show
 

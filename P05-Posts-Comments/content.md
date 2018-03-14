@@ -27,20 +27,15 @@ Try it yourself, then check the solution below.
 ```Javascript
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+//
 const MessageSchema = new Schema({
   subject: String,
   body: String,
   room: { type: Schema.Types.ObjectId, ref: 'Room' },
 });
-
+//
 module.exports = mongoose.model('Message', MessageSchema);
 ```
-
-This is not part of the box.
-<!-- TODO: remove -->
-
-
 
 <!-- # Nested Routes -->
 
