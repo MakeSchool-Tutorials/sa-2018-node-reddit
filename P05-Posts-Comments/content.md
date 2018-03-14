@@ -23,12 +23,9 @@ The relationship we're concerned about here is the one between rooms and posts. 
 
 First, let's define our Message model so that we can save it to the database.  Just like with Users and Rooms, we'll need to make a file for our model.  In that file, well define a `MessageSchema` that has a subject and a body (both Strings), and references its room.
 
-Try it yourself, then check the solution below.
-
-<!-- TODO: Hide solution behind fold -->
+Check out `models/room.js` and `models/user.js` to remind yourself of the syntax, then try it yourself. When you're done, check the solution below.
 
 > [solution]
-> This content is hidden until the user hovers over the box. Check it out with ms-markdown-preview!
 >
 ```Javascript
 const mongoose = require('mongoose');
@@ -47,11 +44,11 @@ module.exports = mongoose.model('Message', MessageSchema);
 
 <!-- TODO: include code for nesting posts inside rooms -->
 
-# Post Routes (__not__ POST routes...)
+# Messages Routes
 
-We won't create exactly the same set of options for Posts that we did for Rooms. For one thing, we won't have an `index`, because the Room's `show` action will basically serve that purpose by displaying all of the posts for that room.  And, although they could be useful, we won't create `show` or `edit` actions right now, either. So we're starting with only
+We won't create exactly the same set of REST actions for Messages that we did for Rooms. For one thing, we won't have an `index`–the Room's `show` action will basically serve that purpose by displaying all of the messages for that room.  And, although they could _possibly_ be useful, we won't create `show` or `edit` actions right now, either. We're starting with only _new_ and _create_.
 
-For now, let's create a new file called `routes/posts.js` and paste in the following:
+For now, let's create a new file called `routes/messages.js` and paste in the following:
 
 ```Javascript
 const express = require('express');
@@ -59,18 +56,20 @@ const router = express.Router({mergeParams: true});
 const auth = require('./helpers/auth');
 const Room = require('../models/room');
 
-// Posts new
+// Messages new
 router.get('/new', auth.requireLogin, (req, res, next) => {
   // TODO
 });
 
-// Posts create
+// Messages create
 router.post('/', auth.requireLogin, (req, res, next) => {
   // TODO
 })
 
 module.exports = router;
 ```
+
+Of course, we'll fill in these actions over the next few sections.
 
 # Posts New and Create
 
