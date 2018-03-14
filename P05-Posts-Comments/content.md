@@ -1,17 +1,23 @@
 ---
-title: "Posts, One-to-Many Relationships, Nested Routes"
-slug: 05-posts
+title: "Messages, Database Relationships, Nested Routes"
+slug: 05-messages
 ---
 
 In this section we will give users the ability to create posts and comment on existing posts.  Along the way we'll also learn a little about nested routes–what they are, how they work, and why you would want them.
 
 # Database Relationships
 
-Objects in our database can be related to each other in different ways. For example, we might have a database of houses where each house has one owner and, for this system, each owner can have only one house–this is a *one-to-one* relationship.  Or, say you're building a music app where users can make playlists. Then, a playlist can have a bunch of different songs on it, and any of those songs could be on any number of other playlists–this is a *many-to-many* relationship.
+Objects in our database can be related to each other in different ways. For example, we might have a database of houses where each house has one owner and (for this system) each owner can have only one house–this is a _one-to-one_ relationship. One owner, one house, that's all.
 
-The relationship we're concerned about here is the one between rooms and posts. Each room has a topic, and users are free to discuss that topic as much as they want, so one room needs to be able to contain multiple posts–this is a *many-to-many* relationship.
+<!-- TODO: diagram & schema -->
 
-<!-- TODO: include schemas to demonstrate 3 options to set up in MongoDB, and introduce code for referencing other objects and finding by reference -->
+Or, say you're building a music app where users can make playlists. Then, a playlist can have a bunch of different songs on it, and any of those songs could be on any number of other playlists–this is a _many-to-many_ relationship.
+
+<!-- TODO: diagram & schema -->
+
+The relationship we're concerned about here is the one between rooms and posts. Each room has a topic, and users are free to discuss that topic by posting as many messages as they like. So, one room needs to be able to contain multiple posts, and each post belongs to exactly one room–this is a _one-to-many_ relationship.
+
+<!-- TODO: diagram & schema -->
 
 # Message Model
 
