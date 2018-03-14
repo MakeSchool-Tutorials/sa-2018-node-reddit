@@ -7,9 +7,6 @@ We're going to learn how to set up a web server using Express, generate HTML usi
 
 Before we dive in, it's helpful to think about the big picture and understand how these tools work together.  We're going to build our app using an architecture called Model-View-Controller (MVC).
 
-<!-- # Web Applications -->
-<!-- TODO: explain web applications in webpage-web server-database diagram, so that I can project MVC onto it -->
-
 # MVC
 
 Under the MVC architecture, we think of our app as having three main systems that work together:

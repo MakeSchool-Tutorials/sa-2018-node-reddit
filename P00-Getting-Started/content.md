@@ -7,7 +7,9 @@ This is the sixth and final tutorial of Make School's full-stack web series! In 
 
 # What's a Web App?
 
-<!-- TODO -->
+In an earlier tutorial, we learned what a _web page_ is. A bunch of web pages together make up a _web site_. For example, the web site for a small restaurant might have a landing page, a menu page, and a 'Contact Us' page–all together, that's their website.
+
+A _web app_ is the next step up from a web site. Like a web site, it's made of many web pages, but unlike a simple web site, a web app is backed by a server that can perform complex tasks, and probably a database. Google and Facebook are examples of web apps. The most distinguishing feature of web apps is that their web pages are _dynamically_ generated (as opposed to static HTML).  When you open your Facebook Feed and see a bunch of posts, there's not a person sitting somewhere typing up all of the HTML–it's made of templates that are filled in and combined to make web pages.
 
 # Who Is This For?
 
