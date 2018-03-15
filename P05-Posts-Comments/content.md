@@ -42,13 +42,13 @@ module.exports = mongoose.model('Message', MessageSchema);
 
 <!-- # Nested Routes -->
 
-<!-- TODO: include code for nesting posts inside rooms -->
+<!-- TODO: include adding code for nesting posts inside rooms -->
 
 # Messages Routes
 
 We won't create exactly the same set of REST actions for Messages that we did for Rooms. For one thing, we won't have an `index`–the Room's `show` action will basically serve that purpose by displaying all of the messages for that room.  And, although they could _possibly_ be useful, we won't create `show` or `edit` actions right now, either. We're starting with only _new_ and _create_.
 
-For now, let's create a new file called `routes/messages.js` and paste in the following:
+Let's create a new file called `routes/messages.js` and paste in the following:
 
 ```Javascript
 const express = require('express');
@@ -71,67 +71,73 @@ module.exports = router;
 
 Of course, we'll fill in these actions over the next few sections.
 
-# Posts New and Create
+# Messages New and Create
 
-First, let's give our users a way to create new posts and save them to our database. This is going to be very similar to the `new` and `create` actions we set up for rooms, but...
+Let's give our users a way to create new posts and save them in our database through these _new_ and _create_ actions. This is going to be very similar to the _new_ and _create_ actions we set up for rooms, but with one added twist–_nested routes_.
 
-<!-- TODO: set up and give code snippets, then ask students to implement -->
+When we set up our Rooms _new_ view in the previous part (`views/rooms/new.hbs`), we didn't have to pass any values from the controller–unlike in our _edit_ view for example (`views/rooms/edit.hbs`), where we have to pass a `room` object from the _controller_ (`routes/rooms.js`). In nested routes, you'll _always_ have to pass a value. Because all of our messages will be associated with a room, we need to know _which_ room when we create a new message. Luckily, our route is `rooms/:roomId/messages/new` (see the section on REST in the previous part of this tutorial), which means we always have the `roomId`.
 
-<!-- TODO: hide solutions behind fold -->
+Your _new_ controller action can access the `roomId` value as `req.params.roomId`, and it will use this to find the correct room by calling `Room.findById()`. Review the Rooms _edit_ controller action (in `routes/rooms.js`) for an example of how to do it.
 
+Try to implement the Messages _new_ and _create_ actions, then make sure your code matches the solutions below:
+
+>![solution]
+>
 `views/posts/new.hbs`
+>
 ```HTML
 <div>
-  <form action="/rooms/{{room.id}}/posts" method="post">
-    <legend>New Post</legend>
-
+  <form action="/rooms/{{room.id}}/messages" method="post">
+    <legend>New Message</legend>
+//
     <div class="form-group">
-      <label for="post-title">Subject</label>
-      <input type="text" name="subject" class="form-control" id="post-subject" placeholder="Subject">
+      <label for="message-subject">Subject</label>
+      <input type="text" name="subject" class="form-control" id="message-subject">
     </div>
-
+//
     <div class="form-group">
-      <label for="post-title">Body</label>
-      <input type="text" name="body" class="form-control" id="post-body" placeholder="Body">
+      <label for="message-body">Body</label>
+      <input type="text" name="body" class="form-control" id="message-body">
     </div>
-
+//
     <div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
 </div>
 ```
-
-'routes/posts.js'
+>
+'routes/messages.js'
+>
 ```Javascript
 const express = require('express');
 const router = express.Router({mergeParams: true});
 const auth = require('./helpers/auth');
 const Room = require('../models/room');
-
+//
 router.get('/new', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.roomId, function(err, room) {
     if(err) { console.error(err) };
 
-    res.render('posts/new', { room: room });
+    res.render('messages/new', { room: room });
   });
 });
-
+//
 router.post('/', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.roomId, function(err, room) {
     if(err) { console.error(err) };
-
-    let post = new Post(req.body);
-    post.room = room;
-
-    post.save(function(err, post) {
+//
+    let message = new Message(req.body);
+    message.room = room;
+//
+    message.save(function(err, post) {
       if(err) { console.error(err) };
-
+//
       return res.redirect(`/rooms/${room._id}`);
     });
   });
 })
-
+//
 module.exports = router;
 ```
 
@@ -193,7 +199,7 @@ Now, let's browse to `localhost:3000/rooms`.  Open any of the rooms you've creat
 <!-- TODO: stretch/optional -->
 
 <!-- # Posts Delete -->
-<!-- TODO -->
+<!-- TODO/stretch -->
 
 <!-- # Comments -->
-<!-- TODO -->
+<!-- TODO/student assigned -->
