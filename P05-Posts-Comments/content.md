@@ -81,7 +81,7 @@ Your _new_ controller action can access the `roomId` value as `req.params.roomId
 
 Try to implement the Messages _new_ and _create_ actions, then make sure your code matches the solutions below:
 
->![solution]
+>[solution]
 >
 `views/posts/new.hbs`
 >
@@ -89,17 +89,17 @@ Try to implement the Messages _new_ and _create_ actions, then make sure your co
 <div>
   <form action="/rooms/{{room.id}}/messages" method="post">
     <legend>New Message</legend>
-//
+>
     <div class="form-group">
       <label for="message-subject">Subject</label>
       <input type="text" name="subject" class="form-control" id="message-subject">
     </div>
-//
+>
     <div class="form-group">
       <label for="message-body">Body</label>
       <input type="text" name="body" class="form-control" id="message-body">
     </div>
-//
+>
     <div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
@@ -141,65 +141,73 @@ router.post('/', auth.requireLogin, (req, res, next) => {
 module.exports = router;
 ```
 
-# Add Posts to Rooms Show View
+# Add Messagess to Rooms Show View
 
-When we go into a room, we expect to see all of the posts on that topic.  Let's update the Rooms show view so that when we go to a room, we find all of the related posts and render them on the page.
+When we go into a room, we expect to see all of the messages posted about that topic.  Let's update the Rooms _show_ view so that when we go to a room, we find all of the related messages and render them on the page. Let's start with the view itself.  
 
-Let's start with the view itself.  Open `views/rooms/show.hbs` and replace the contents with the following:
-
+>[action]
+>
+Open `views/rooms/show.hbs` and replace the contents with the following:
+<!-- TODO: update css & html w/ bootstrap -->
+>
 ```HTML
 <div>
   <h1>{{room.topic}}</h1>
 </div>
-
+>
 <div>
-  {{#each posts as |post|}}
-    <div class="post-div">
-      <h3>{{post.subject}}</h3>
-      <p>{{post.body}}</p>
+  {{#each messages as |message|}}
+    <div class="message-div">
+      <h3>{{message.subject}}</h3>
+      <p>{{message.body}}</p>
     </div>
   {{/each}}
 </div>
-
+>
 <div>
-  <a href="/rooms/{{room.id}}/posts/new">New Post</a>
+  <a href="/rooms/{{room.id}}/messages/new">New Message</a>
 </div>
 ```
+>
+Here we see another [Handlebars Helper](http://handlebarsjs.com/block_helpers.html) in the form of `#each`. If we have a collection of objects, such as all of the messages that belong in a room, we can create a block of HTML for _each_ one of them. Also notice the `<a>...</a>` tag towards the bottom–it's another example of using nested routes.
 
-<!-- TODO: walk through code.  esp:, do I need to intro or review #each? New Post link is new, also-->
+Before we can use the `messages` collection in that view, we need to define it in our controller (`routes/rooms.js`).  
 
-Let's define `posts` in `routes/rooms.js`.  Update the `show` action to the following:
-
+>[action]
+>
+Require the Message model at the top of the file, so that Javascript knows what a `Message` is, and update the _show_ action to the following:
+>
 ```Javascript
+// ...
+const Post = require('../models/post');
+>
+// ...
+>
 // Rooms show
 router.get('/:id', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.id, function(err, room) {
     if(err) { console.error(err) };
-
+>
     Post.find({ room: room }, function(err, posts) {
       if(err) { console.error(err) };
-
+>
       res.render('rooms/show', { room: room, posts: posts });
     });
   });
 });
 ```
 
-And let's require our Post model at the top of the file, so that Javascript knows what a `Post` is:
+Let's check that it works. Browse to `localhost:3000/rooms`.  Open any of the rooms you've created, then click on 'New Post'. Add your new post to the database, and you should be redirected to `room/:id`–which should display your post.
 
-```Javascript
-const Post = require('../models/post');
-```
-
-<!-- TODO: walk through code -->
-
-Now, let's browse to `localhost:3000/rooms`.  Open any of the rooms you've created, then click on 'New Post'. Add your new post to the database, and you should be redirected to `room/:id`–which should display your post.
+<!-- TODO: add a screenshot -->
 
 <!-- # Partials -->
-<!-- TODO: stretch/optional -->
+<!-- TODO: stretch/optional/probably won't do -->
 
 <!-- # Posts Delete -->
-<!-- TODO/stretch -->
+<!-- TODO/stretch/probably won't do -->
 
-<!-- # Comments -->
+<!-- # Comments
+
+So far our users can create rooms to discuss topics, and post messages in those rooms–this is starting to look like a real discussion app! But so far,  -->
 <!-- TODO/student assigned -->
