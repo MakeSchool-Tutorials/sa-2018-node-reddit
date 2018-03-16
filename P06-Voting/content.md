@@ -56,19 +56,21 @@ Our posts are rendered on our Rooms `show` view, so let's open `views/rooms/show
 
 Next, let's add points to our Post model. With MongoDB, as opposed to traditional SQL databases, it isn't really _necessary_ to add attributes to our model. We can pass any attributes we like, any time we like and MongoDB will happily save them for us.  However, adding the attributes to our Mongoose schema (by adding them to the model) lets us use them to query and sort our objects. This app is pretty simple, but as you write bigger apps, with more objects and more complex schemas, these features become really handy.
 
+>[action]
+>
 Open the `models/post.js` file, and update it with the following:
-
+>
 ```Javascript
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+>
 const PostSchema = new Schema({
   subject: String,
   body: String,
   room: { type: Schema.Types.ObjectId, ref: 'Room' },
   points: { type: Number, default: 0 },
 });
-
+>
 module.exports = mongoose.model('Post', PostSchema);
 ```
 
@@ -90,16 +92,20 @@ Now for the tricky part–what happens when a user clicks on our new up/down-vot
 </form>
 ```
 
-Both of these forms POST to the same endpoint–`/rooms/{{post.room}}/posts/{{post.id}}`. That address will call our posts `update` action (where we alter and save an existing object). Let's open `routes/posts.js` and define an action for `.post('/rooms/{{post.room}}/posts/{{post.id}}', ...)`:
+Both of these forms POST to the same endpoint–`/rooms/{{post.room}}/posts/{{post.id}}`. That address will call our posts `update` action (where we alter and save an existing object).
 
+>[action]
+>
+Let's open `routes/posts.js` and define an action for `.post('/rooms/{{post.room}}/posts/{{post.id}}', ...)`:
+>
 ```Javascript
 router.post('/:id', auth.requireLogin, (req, res, next) => {
   Post.findById(req.params.id, function(err, post) {
     post.points += parseInt(req.body.points);
-
+>
     post.save(function(err, post) {
       if(err) { console.error(err) };
-
+>
       return res.redirect(`/rooms/${post.room}`);
     });
   });
@@ -109,14 +115,18 @@ router.post('/:id', auth.requireLogin, (req, res, next) => {
 
 # Sort Posts by Vote
 
-Finally, let's set it up so that we see our top-voted posts at the top of the page. Open `routes/rooms.js` and update the `show` action like so:
+Finally, let's set it up so that we see our top-voted posts at the top of the page.
 
+>[action]
+>
+Open `routes/rooms.js` and update the `show` action like so:
+>
 ```Javascript
 // Rooms show
 router.get('/:id', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.id, function(err, room) {
     if(err) { console.error(err) };
-
+>
     Post.find({ room: room })
       .sort({ points: -1 })
       .exec()
@@ -129,4 +139,5 @@ router.get('/:id', auth.requireLogin, (req, res, next) => {
 
 <!-- TODO: this code is a lot to unpack, but reiterate that this is why mongoose models are useful, and point the way toward learning about Promises in the future -->
 
-# Conclusion
+<!-- # Conclusion
+TODO -->
