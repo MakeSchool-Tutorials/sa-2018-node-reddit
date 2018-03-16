@@ -7,15 +7,20 @@ The final step–and the main feature that separates Reddit from any other messa
 
 # Add Voting to Posts View
 
-Let's start by adding up-vote and down-vote buttons to our posts. Our posts are rendered on our Rooms `show` view, so let's open `views/rooms/show.hbs`.
+Let's start by adding up-vote and down-vote buttons to our posts.
 
+>[action]
+>
+Our posts are rendered on our Rooms `show` view, so let's open `views/rooms/show.hbs`, and replace everything inside the `{{#each}}...{{/each}}` loop like so:
+>
 ```HTML
 <div>
   <h1>{{room.topic}}</h1>
 </div>
-
+>
 <div>
   {{#each posts as |post|}}
+    <!-- New code below: -->
     <div class="post-div">
       <h3>{{post.subject}}</h3>
       <p>{{post.body}}</p>
@@ -36,7 +41,7 @@ Let's start by adding up-vote and down-vote buttons to our posts. Our posts are 
     </div>
   {{/each}}
 </div>
-
+>
 <div>
   <a href="/rooms/{{room.id}}/posts/new">New Post</a>
 </div>
