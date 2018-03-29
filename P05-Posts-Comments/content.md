@@ -89,17 +89,17 @@ Try to implement the Messages _new_ and _create_ actions, then make sure your co
 <div>
   <form action="/rooms/{{room.id}}/messages" method="post">
     <legend>New Message</legend>
-//
+>
     <div class="form-group">
       <label for="message-subject">Subject</label>
       <input type="text" name="subject" class="form-control" id="message-subject">
     </div>
-//
+>
     <div class="form-group">
       <label for="message-body">Body</label>
       <input type="text" name="body" class="form-control" id="message-body">
     </div>
-//
+>
     <div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
@@ -114,7 +114,7 @@ const express = require('express');
 const router = express.Router({mergeParams: true});
 const auth = require('./helpers/auth');
 const Room = require('../models/room');
-//
+>
 router.get('/new', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.roomId, function(err, room) {
     if(err) { console.error(err) };
@@ -122,36 +122,40 @@ router.get('/new', auth.requireLogin, (req, res, next) => {
     res.render('messages/new', { room: room });
   });
 });
-//
+>
 router.post('/', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.roomId, function(err, room) {
     if(err) { console.error(err) };
-//
+>
     let message = new Message(req.body);
     message.room = room;
-//
+>
     message.save(function(err, post) {
       if(err) { console.error(err) };
-//
+>
       return res.redirect(`/rooms/${room._id}`);
     });
   });
 })
-//
+>
 module.exports = router;
 ```
 
+<!-- TODO: 'messages' or 'posts'? -->
+
 # Add Posts to Rooms Show View
 
-When we go into a room, we expect to see all of the posts on that topic.  Let's update the Rooms show view so that when we go to a room, we find all of the related posts and render them on the page.
+When we go into a room, we expect to see all of the posts on that topic. Let's update the Rooms show view so that when we go to a room, we find and render all of its related posts on the page.
 
+>[action]
+>
 Let's start with the view itself.  Open `views/rooms/show.hbs` and replace the contents with the following:
-
+>
 ```HTML
 <div>
   <h1>{{room.topic}}</h1>
 </div>
-
+>
 <div>
   {{#each posts as |post|}}
     <div class="post-div">
@@ -160,7 +164,7 @@ Let's start with the view itself.  Open `views/rooms/show.hbs` and replace the c
     </div>
   {{/each}}
 </div>
-
+>
 <div>
   <a href="/rooms/{{room.id}}/posts/new">New Post</a>
 </div>
