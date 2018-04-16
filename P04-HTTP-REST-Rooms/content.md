@@ -57,60 +57,64 @@ Before we can check whether this works the way we expect, we need to add some ro
 
 # Rooms New and Create
 
-Following the REST convention, we expect to go to `rooms/new` to find the form to create a new room, and then POST a form to `rooms/` to add it to our database. Let's create a new file to hold our room routes called `routes/rooms.js`, and paste in the following:
+Following the REST convention, we expect that if we go to `/rooms/new`, we should see a form to make a new room. When we submit the form, it should send a `POST` request to `/rooms`, and we will add it to our database.
 
-<!-- TODO: edit to reference REST diagram -->
-
+>[action]
+>
+Let's create a new file to hold our room routes called `routes/rooms.js`, and paste in the following:
+>
 ```Javascript
 const express = require('express');
 const router = express.Router();
-
+>
 const auth = require('./helpers/auth');
 const Room = require('../models/room');
-
+>
 // Rooms index
 router.get('/', (req, res, next) => {
   // TODO
 });
-
+>
 // Rooms new
 router.get('/new', auth.requireLogin, (req, res, next) => {
   // TODO
 });
-
+>
 // Rooms show
 router.get('/:id', auth.requireLogin, (req, res, next) => {
   // TODO
 });
-
+>
 // Rooms edit
 router.get('/:id/edit', auth.requireLogin, (req, res, next) => {
   // TODO
 });
-
+>
 // Rooms update
 router.post('/:id', auth.requireLogin, (req, res, next) => {
   // TODO
 });
-
+>
 // Rooms create
 router.post('/', auth.requireLogin, (req, res, next) => {
   // TODO
 });
-
+>
 module.exports = router;
 ```
-
-Here we have six of the seven REST actions defined–we will leave the _delete_ action off for now–and we'll fill them all in over the next few sections.
-
-Notice that we are requiring _authorization_ for every route except the index. Any user may see what topics are being discussed, but they'll need to register and log in to read the conversations.
+>
+Here we have six of the seven REST actions defined–we will leave the `delete` action off for now–and we'll fill them all in over the next few sections.
+>
+Also notice that we are requiring authorization for every route except the index. Any user may see what topics are being discussed, but they'll need to register and log in to read the conversations.
 
 ## New
 
 The single purpose of our `new` action is to show users the form they need to make a new room, so we need to create a view with a form on it, then configure our _controller_ in `routes/rooms.js` to return that view.
 
+>[action]
+>
 Create a file (in a new `views/rooms` folder) called `views/rooms/new.hbs` and paste in the following code, which will render a web form for creating a new room:
-
+>
 ```HTML
 <div>
   <form action="/rooms" method="post">
@@ -119,7 +123,7 @@ Create a file (in a new `views/rooms` folder) called `views/rooms/new.hbs` and p
       <label for="room-title">Topic</label>
       <input type="text" name="topic" class="form-control" id="room-topic" placeholder="Topic">
     </div>
-
+>
     <div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
@@ -127,8 +131,10 @@ Create a file (in a new `views/rooms` folder) called `views/rooms/new.hbs` and p
 </div>
 ```
 
+>[action]
+>
 And in `routes/rooms.js`, replace `router.get('/new', (req, res, next) => { ... });` with:
-
+>
 ```Javascript
 // Rooms new
 router.get('/new', auth.requireLogin, (req, res, next) => {
@@ -136,16 +142,18 @@ router.get('/new', auth.requireLogin, (req, res, next) => {
 });
 ```
 
-And one last detail to tie it all together–notice that we're defining our action on `'/new'`. We want to make our URL be `makereddit.com/rooms/new` to be RESTful, not `makereddit.com/new`. So inside our `app.js` file, let's add the following:
-
+>[action]
+>
+And one last detail to tie it all together–notice that we're defining our action on `'/new'`. Following the REST convention, our `new` action should be on URL `makereddit.com/rooms/new`, not `makereddit.com/new`. So inside our `app.js` file, let's add the following:
+>
 ```Javascript
 const rooms = require('./routes/rooms');
-
+>
 // ...
-
+>
 app.use('/rooms', rooms);
 ```
-
+>
 This tells our index router to _namespace_ all of the routes we define in `routes/rooms.js` under `rooms/`.
 
 Visit `localhost:3000/rooms/new` (be sure you're logged in!), and you should see this:
