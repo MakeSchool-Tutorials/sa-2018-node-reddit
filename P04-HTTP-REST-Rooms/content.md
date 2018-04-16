@@ -28,28 +28,32 @@ There are a few confusing points about REST. First, notice that some behavior re
 
 Another tricky aspect is that some of these actions use the same URL–in the example table above, `index` and `create` both point to `/items`; `show`, `update` and `destroy` all point to `/items/:id`. The difference is the HTTP _verbs_, `GET`, `POST`, `PUT` (or `PATCH`, both are OK) and `DELETE`. In REST, it's really important to send the proper HTTP verb.
 
-There's one last issue that also relates to the HTTP methods–the only HTTP methods available to us in HTML are `GET` and `POST`. The other HTTP methods (here, `PUT`, `PATCH` and `DELETE`) require more advanced frameworks than we're using here, so we'll make a few adjustments to accommodate that.
+There's one last issue that also relates to the HTTP methods–the only HTTP methods available to us in HTML are `GET` and `POST`. The other HTTP methods (here, `PUT`, `PATCH` and `DELETE`) require more advanced frameworks than we're using here, so we'll make a few adjustments to work around that.
 
 # Room Models
 
-<!-- TODO: creating an ERD or some diagram of the completed models so that I can reference it throughout section. -->
+<!-- TODO: room ERD (so simple, only a topic, but add ERDs for every model (user, room , post, comment)) -->
 
-Let's start by defining what a "room" is supposed to look like when we store it in our database. We're going to begin really simple and create rooms that will each have a single attribute, a `topic`. Each room will also have many posts about that topic as people start conversations, but we'll deal with that in the next part of this tutorial. For now, create a file for our room model called `models/room.js` and paste the following code into it:
+Let's start by defining what a "room" will look like when we store it in our database. We're going to begin really simple and create rooms that each have a single attribute–a `topic`. Each room will also contain posts about that topic as people start conversations, but we'll come to that in the next part of this tutorial.
 
+>[action]
+>
+For now, create a file for our room model called `models/room.js` and paste the following code into it:
+>
 ```Javascript
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+>
 const RoomSchema = new Schema({
   topic: { type: String, required: true },
 });
-
+>
 module.exports = mongoose.model('Room', RoomSchema);
 ```
+>
+This is very similar to the User model we set up in Part 1, so please review that if any of this code seems confusing.
 
-This is very similar to the User model we set up in Part 1, so please review that if any of this code seems mysterious. Before we can check whether this works the way we expect, we need a way to add rooms to our database.  Let's set up _new_ and _create_ actions for our Rooms to do just that.
-
-<!-- TODO: here reference REST diagram that doesn't exist yet -->
+Before we can check whether this works the way we expect, we need to add some rooms to our database.  Let's set up _new_ and _create_ actions for our Rooms to do just that.
 
 # Rooms New and Create
 
