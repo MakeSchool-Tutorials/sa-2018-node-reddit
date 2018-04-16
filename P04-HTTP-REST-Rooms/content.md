@@ -5,7 +5,7 @@ slug: 04-http-rooms
 
 In this section we will create "rooms" for our users to have discussions in.  Along the way, we'll learn more about how web apps rely on HTTP to communicate over the internet and how to follow REST conventions so that other developers will be able to predictably work with our app.
 
-TODO: In the next section we'll implement all of these actions–after we introduce CRUD concepts–but in this section we'll just
+<!-- TODO: In the next section we'll implement all of these actions–after we introduce CRUD concepts–but in this section we'll just -->
 
 # HTTP and REST
 
@@ -16,9 +16,19 @@ TODO: In the next section we'll implement all of these actions–after we introd
 
 Our web app is made of web pages, and each of those web pages has a URL. As your apps become more complicated and generate more pages, you're going to have to manage an increasing number of those URLs, and it becomes very important to have some system to manage them all.
 
-REST is a system that calls for organizing our URLs by _resource_. Each _resource_ should have seven actions, as in the following chart:
+REST is a system that calls for organizing our URLs by _resource_. Each _resource_ can have seven basic actions, as in the following chart:
 
 <!-- TODO: REST chart -->
+
+These seven actions should cover most situations you'll come across in a web app. Often, you won't need all of the actions, just one or two–that's totally OK. Occasionally, you'll need an _extra_ action–it's better to avoid that if possible, but sometimes you can't avoid it, and that's OK too. The nice thing about REST is that it's just a convention–if you do things differently it will still _work_, but if you stick closely to the convention, you'll have to make fewer decisions, and other developers will be able to more easily work with your code.
+
+There are a few confusing points about REST. First, notice that some behavior requires _two_ actions. `new` and `create`, for example, are both needed to create a new object–the `create` action is a `POST` request that receives data from the user to store in the database, while the 'new' action is a `GET` request sends the user a web form to collect that information. `edit` and `update` have a similar relationship.
+
+<!-- TODO: new/create workflow -->
+
+Another tricky aspect is that some of these actions use the same URL–in the example table above, `index` and `create` both point to `/items`; `show`, `update` and `destroy` all point to `/items/:id`. The difference is the HTTP _verbs_, `GET`, `POST`, `PUT` (or `PATCH`, both are OK) and `DELETE`. In REST, it's really important to send the proper HTTP verb.
+
+There's one last issue that also relates to the HTTP methods–the only HTTP methods available to us in HTML are `GET` and `POST`. The other HTTP methods (here, `PUT`, `PATCH` and `DELETE`) require more advanced frameworks than we're using here, so we'll make a few adjustments to accommodate that.
 
 # Room Models
 
