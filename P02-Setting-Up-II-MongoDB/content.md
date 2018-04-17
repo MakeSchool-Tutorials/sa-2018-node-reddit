@@ -2,16 +2,17 @@
 title: "Setting up our environment part II"
 slug: 02-setting-up-ii
 ---
-In this section, we'll finish setting up our dev environment by installing and configuring our database.  We will also let users register accounts, and save their info in the database.
+
+In this section, we'll finish setting up our dev environment by installing and configuring our database, [MongoDB](https://www.mongodb.com/).  We will also let users register accounts and save their info in the database.
 
 <!-- [TODO: Introduction to MongoDB] -->
-<!-- [TODO: now adding users in this section] -->
+<!-- TODO: preview steps we'll be going through -->
 
 # mLab
 
-Installing and configuring MongoDB from scratch is a fairly complicated process, so instead of keeping our database on our local machines, we're going to use a DataBase-as-a-Service (DBaas) called [mLab](https://mlab.com/). Storing our database on mLab's servers offers us two advantages:
+Installing and configuring MongoDB from scratch is a fairly complicated process, and our time for this tutorial is limited. So instead of keeping our database on our local machines, we're going to use a DataBase-as-a-Service (DBaas) called [mLab](https://mlab.com/). Storing our database on mLab's servers offers us two advantages:
 - First, it greatly simplifies the setup process.
-- Second, it gives us some handy tools for looking around inside our database. Normally we would navigate and manage our MongoDB instance on the command line, but mLab has a Graphic Interface–much easier.
+- Second, it gives us some handy tools for looking around inside our database. Normally we would navigate and manage our MongoDB instance by typing commands in the terminal, but mLab has a Graphic Interface–much easier.
 
 In your browser, go to (https://mlab.com/signup/) to create an account (unless you already have one–in which case, skip ahead).
 
@@ -33,7 +34,7 @@ And finally, complete the process by clicking 'Submit Order'.
 
 ![mLab Deployment Creator](assets/mlab-05-setup.png)
 
-We're almost finished setting up our database.  There's just one last step, which is to set up a username and password to keep nosy neighbors out.  First, let's open that new database by clicking on its name in your MongoDB Deployments list.
+We're almost finished setting up our database.  There's just one last step, which is to set up a username and password to keep nosy neighbors out. First, let's open that new database by clicking on its name in your MongoDB Deployments list.
 
 ![mLab Deployment Creator](assets/mlab-06-deployments.png)
 
@@ -52,8 +53,6 @@ Now our database is all set up and ready to go on mLab's servers, but we need to
 <!-- TODO: This paragraph feels too dense, concepts too new/big. maybe I should break it out into a few paragraphs and explain carefully, or include a diagram. -->
 
 ## Installing the MongoDB Driver
-
-<!-- [TODO: a step might be missing here.  QA on a computer that hasn't had mongodb installed before] -->
 
 In your terminal, enter
 

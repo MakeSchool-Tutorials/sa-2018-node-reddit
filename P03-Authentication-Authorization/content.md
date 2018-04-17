@@ -3,34 +3,49 @@ title: "Authentication and Authorization"
 slug: 03-auth
 ---
 
-<!-- TODO: [In this section we will learn how to require a username and password.  By the end we will have a Registration page where users can sign up, a log in page, and a button for logging out ...] -->
+<!-- TODO: Authentication vs. Authorization infobox -->
+The word "auth" can refer to either authentication, authorization or both of them together. Authentication is determining if someone truly is who they say they are–in a web application, we typically authenticate with a username and password. Authorization happens _after_ authentication, and has to do with permissions and access–for example, in a web app requiring login (_authentication_) to access certain pages is a form of _authorization_.
 
-<!-- TODO: Authentication vs. Authorization -->
-The word "auth" can refer to either authentication, authorization or both of them together. Authentication is determining who if someone truly is who they say they are–in a web application, we typically authenticate with a username and password. Authorization happens _after_ authentication, and has to do with permissions and access.  In a web app, requiring admin privileges to access a certain page is a form of authorization.
+<!-- TODO: [In this section we will learn how to require a username and password.  By the end we will have a Registration page where users can sign up, a log in page, and a button for logging out ...] -->
 
 # Authentication: Passwords
 
-User registration, authentication and authorization are pretty basic features needed by almost every web app, and there are lots of tools to help developers with the process. However, in this tutorial we're going to build our own _auth_ solution so that we can learn what goes on under-the-hood. Our solution is also going to be really basic–just username, password, log in, log out, that's it. If you want to add more advanced features, like email verification, password reset, or google/facebook/twitter login, you'll want to use a tool like [Passport](https://passportjs.com).
+User registration, authentication and authorization are basic features needed by almost every web app, and there are lots of tools to help developers with the process. However, in this tutorial we're going to build our own _auth_ solution so that we can learn what goes on under the hood. Our solution is also going to be really basic–just username, password, log in, log out–that's it.
 
-Even though we're building our system _mostly_ from scratch, we'll install a couple of tools to help us out.  [Bcrypt](https://www.npmjs.com/package/bcrypt) is a cryptography package used to *hash* users' passwords (we'll talk about _hashing_ below), and [express-session](https://github.com/expressjs/session), which will let us store encrypted data called *sessions* in a user's browser.
+> [info]
+>
+If you want to add more advanced features, like email verification, password reset, or google/facebook/twitter login, you'll want to use a tool like [Passport](https://passportjs.com).
+
+Even though we're building our system _mostly_ from scratch, we'll install a couple of tools to help us out.  [Bcrypt](https://www.npmjs.com/package/bcrypt) is a _cryptography_ package used to _hash_ users' passwords (we'll talk about _hashing_ below), and [express-session](https://github.com/expressjs/session), which will let us safely store a user's login and account information on the user's browser.
+
+<!-- TODO: diagram how session cookies work -->
 
 Let's install these packages by entering the following command into your terminal:
 
+<!-- TODO: define cryptography, hashing, etc -->
+<!-- TODO: look for action blocks -->
+
+> [action]
+>
 ```
 npm install bcrypt express-session --save
 ```
 
-Now that the packages are all installed, let's set our app up to use them.  Let's start by giving our users passwords. Open the `models/user.js` file, and add `password: { type: String, required: true }` into the UserSchema. Your file should look like this:
+Now that the packages are all installed, let's set our app up to use them.  Let's start by giving our users passwords.
 
+>[action]
+>
+Open the `models/user.js` file, and add `password: { type: String, required: true }` into the UserSchema. Your file should look like this:
+>
 ```Javascript
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+>
 const UserSchema = new Schema({
   username: { type: String, required: true },
   password: { type: String, required: true }
 });
-
+>
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
 ```
@@ -39,32 +54,39 @@ module.exports = User;
 
 Now that our users can have a password (actually, _must_ have a password since we said `required: true`...), let's give them a way to set it up.
 
-Open the `views/users/new.hbs`.  Notice that it contains a form with only one input, for a username.  Try to add a 'Password' input field yourself.  When you're done, compare your file with the solution below.
+Open the `views/users/new.hbs`.  Notice that it contains a form with only one input, for a username.  
 
-<!-- TODO: fold behind solution -->
+> [challenge]
+>
+Try to add a 'Password' input field yourself.
 
+When you're done, compare your file with the solution below.
+
+> [solution]
+>
 ```HTML
 <div>
   <form action="/users" method="post">
     <legend>New User</legend>
-
+>
     <div class="form-group">
       <label for="user-username">Username</label>
       <input type="text" name="username" class="form-control" id="user-username" placeholder="Username">
     </div>
-
+>
+    <!-- New code below: -->
     <div class="form-group">
       <label for="user-password">Password</label>
       <input type="password" name="password" class="form-control" id="user-password" placeholder="Password">
     </div>
-
+>
     <div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
 </div>
 ```
-
+>
 Pay special attention to the input type of that password field, `<input type="password"`, not `text`. This will give our password field some useful properties such as hiding users' passwords when they type.
 
 Let's try it out!  Go to `localhost:3000/users/new`, and now you should see a form with a username and a password field.
@@ -79,11 +101,14 @@ That looks good.  Let's check out the new user on mLab to see what it looks like
 
 ![mlab user](assets/mlab_user_1.png)
 
-Great, our users have passwords now! If you look in the database you can see that my new password is 'password', and that's not so great.  Forget about the fact that 'password' is really, really not secure. We have a bigger problem–you know my password! If you only learn one rule about web security, learn this: NEVER STORE PLAIN TEXT PASSWORDS. It's a bad idea.  Databases are not magically secure, and storing passwords there makes them very easy to steal.
+Great, our users have passwords now! If you look in the database you can see that my new password is 'password'–and that's not so great.  Forget about the fact that 'password' is really, really insecure. We have a bigger problem–you know my password! If you only learn one rule about web security, learn this: NEVER STORE PLAIN TEXT PASSWORDS. It's a bad idea.  Databases are not magically secure, and storing plain-text passwords there makes them very easy to steal.
 
-The trick to avoiding plain text passwords is _hashing_. That's why we installed *Bcrypt*. Bcrypt is like a black box where we can put in a regular password, and take out a _hash_, a version of our password that has been irreversibly scrambled. This way, we never know the user's password. Later, when we implement logging in, the user will enter their password into the log in form, we'll _hash_ it, and then compare the _hashes_. However, it would be almost impossible for us to guess what password produced the hash.
+The trick to avoiding plain-text passwords is a technique called _hashing_. That's why we installed _Bcrypt_. Bcrypt is like a black box where we can put in a regular plain-text password, and take out a _hash_–a version of our password that has been irreversibly scrambled.
+
+<!-- This way, we never know the user's password. Later, when we implement logging in, the user will enter their password into the log in form, we'll _hash_ it, and then compare the _hashes_. However, it would be almost impossible for us to guess what password produced the hash. -->
 
 <!-- TODO: this could be explained so much better, and a diagram would be useful -->
+<!-- TODO: a given password will always produce the same hash, no two passwords will ever produce the same hash (very unlikely), hashing cannot be reversed -->
 
 Let's open our user model at `models/user.js`.  Require bcrypt at the top of the file (use `const bcrypt = require('bcrypt')`), then paste the following in, after you define the UserSchema:
 
@@ -100,44 +125,46 @@ UserSchema.pre('save', function(next) {
 });
 ```
 
-This code comes from the [Bcrypt documentation page](https://github.com/kelektiv/node.bcrypt.js). First, we call the `.pre()` method on `UserSchema`, which takes a callback that fires _before_ (pre-) the action you pass as the first argument. So here we're saying, "before we 'save', call this function." If we wanted the function to happen _after_ we save, we could call `.post()`.
+This code comes from the [Bcrypt documentation page](https://github.com/kelektiv/node.bcrypt.js). First, we call the `.pre()` method on `UserSchema`, which takes a callback. It fires _before_ (pre-) the action you pass as the first argument (in this case, `user.password`). So here we're saying, "before we 'save', call this function." If we wanted the function to happen _after_ we save, we could call `.post()`.
 
 Before we save a user to the database, we call Bcrypt's `.hash()` method, which gives us the hash of the user's password. We then save the _hash_ to the database, _not the password_.
 
+>[info]
+>
 `next()` is a callback that will be supplied by the system later. It's a very common feature in Express apps and part of a feature called [middleware](https://expressjs.com/en/guide/using-middleware.html). You don't need to know all about it right now; you'll get used to seeing it.
 
-<!-- TODO: info box on encryption (2-way) vs hashing (1-way) -->
-
+>[solution]
+>
 When you're done, `models/user.js` should look exactly as it does below.
-
+>
 ```Javascript
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
-
+>
 const UserSchema = new Schema({
   username: { type: String, required: true },
   password: { type: String, required: true }
 });
-
+>
 UserSchema.pre('save', function(next) {
   let user = this;
-
+>
   bcrypt.hash(user.password, 10, function (err, hash){
     if (err) return next(err);
-
+>
     user.password = hash;
     next();
   })
 });
-
+>
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
 ```
 
 Let's make sure this works as expected. Go back to `localhost:3000/users/new` and make another new user.  Then, go over to mLab and check the new user in the database–pay special attention to the password, because it should look like a long string of random characters. This is our _hashed_ password.
 
-![mlab user](assets/mlab_user_1.png)
+![mlab user](assets/mlab_user_2.png)
 
 Now that our users have passwords, and we're saving them so securely that even we can never know what they are, let's give them the ability to log in.
 
@@ -149,8 +176,12 @@ Let's start with the URL–where should our users go to log in? The usual way is
 
 [It doesn't work, that's what happens](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).  We never defined that endpoint–which is to say, we never told our app what to do if someone visits that address.
 
-Let's open the `routes/index.js` file. Users get their own routes file in `routes/users.js`, and other resources will get their own files, too.  But login and logout are kind of special, along with the root (`/`), so we'll keep them right in `index.js`. Let's add a login route, like this:
+Let's open the `routes/index.js` file. Users get their own routes file in `routes/users.js`, and other resources will get their own files, too.  But login and logout are kind of special (along with the root (`/`)) so we'll keep them right in `index.js`. Let's add a login route.
 
+>[action]
+>
+Add a login route to `routes/index.js`:
+>
 ```Javascript
 // login
 router.get('/login', (req, res, next) => {
@@ -158,7 +189,7 @@ router.get('/login', (req, res, next) => {
 });
 ```
 
-Here we're telling our Controller (or _router_, as it's called in Express) what to do if we receive a GET request to `http://your-site.com/login`. When that happens, our app will fire the callback we provide, which takes three arguments: `req`, `res`, and `next`. We've seen `next` before–that's a callback function provided by Express at runtime, and we usually don't need to think about it too much. `req` and `res` represent the HTTP request and HTTP response–basically, `req` is whatever the browser sends to the server, and `res` is whatever the server sends back to the browser.
+Here we're telling our _controller_ (or _router_, as it's called in Express) what to do when we receive a GET request to `http://your-site.com/login`. When that happens, our app will fire the callback we provide, which takes three arguments: `req`, `res`, and `next`. We've seen `next` before–that's a callback function provided by Express at _runtime_, and we usually don't need to think about it too much. `req` and `res` represent the HTTP request and HTTP response–basically, `req` is whatever the browser sends to the server, and `res` is whatever the server sends back to the browser.
 
 <!-- TODO: define runtime  -->
 

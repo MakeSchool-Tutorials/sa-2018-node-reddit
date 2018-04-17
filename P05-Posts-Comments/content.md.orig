@@ -141,6 +141,7 @@ router.post('/', auth.requireLogin, (req, res, next) => {
 module.exports = router;
 ```
 
+<<<<<<< HEAD
 <!-- TODO: 'messages' or 'posts'? -->
 
 # Add Posts to Rooms Show View
@@ -150,6 +151,16 @@ When we go into a room, we expect to see all of the posts on that topic. Let's u
 >[action]
 >
 Let's start with the view itself.  Open `views/rooms/show.hbs` and replace the contents with the following:
+=======
+# Add Messagess to Rooms Show View
+
+When we go into a room, we expect to see all of the messages posted about that topic.  Let's update the Rooms _show_ view so that when we go to a room, we find all of the related messages and render them on the page. Let's start with the view itself.  
+
+>[action]
+>
+Open `views/rooms/show.hbs` and replace the contents with the following:
+<!-- TODO: update css & html w/ bootstrap -->
+>>>>>>> eb9784068d035cb01d1effcb3306b69ead8e147c
 >
 ```HTML
 <div>
@@ -172,7 +183,15 @@ Let's start with the view itself.  Open `views/rooms/show.hbs` and replace the c
 >
 Here we see another [Handlebars Helper](http://handlebarsjs.com/block_helpers.html) in the form of `#each`. If we have a collection of objects, such as all of the messages that belong in a room, we can create a block of HTML for _each_ one of them. Also notice the `<a>...</a>` tag towards the bottom–it's another example of using nested routes.
 
+<<<<<<< HEAD
+<!-- TODO: walk through code.  esp:, do I need to intro or review #each? New Post link is new, also -->
+
+<!-- TODO: info box about partials -->
+
+Let's define `posts` in `routes/rooms.js`.  Update the `show` action to the following:
+=======
 Before we can use the `messages` collection in that view, we need to define it in our controller (`routes/rooms.js`).  
+>>>>>>> eb9784068d035cb01d1effcb3306b69ead8e147c
 
 >[action]
 >
