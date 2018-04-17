@@ -298,11 +298,14 @@ The Rooms _edit_ and _update_ actions work together the same way that the _new_ 
 
 First, you're going to need to create a file for your view at `views/rooms/edit.hbs`. This file will be similar to `views/rooms/new.hbs`, but you'll need to change the form's `action` from `action="/rooms"` to `action="/rooms/{{room.id}}"`, and update the `input` field to `<input type="text" name="topic" class="form-control" id="room-topic" value="{{room.topic}}">`.
 
-Notice that both of these snippets reference a `room` variable–this is just like our `views/rooms/show.hbs` file. There, we had to pass a `room` from our Rooms _controller_'s _show_ action to the view, and here we'll pass one from the _edit_ action. In the Rooms controller_show_ action, we find the Room document by using `Room.findById()`–you'll need to do the same thing here. And just like in the _show_ action, you can get the Room's ID from `req.params.id`.
+Notice that both of these snippets reference a `room` variable–this is just like our `views/rooms/show.hbs` file. There, we had to pass a `room` variable from our Rooms controller's `show` action to the view–here we'll pass one from the `edit` action. In the Rooms controller `show` action, we find the room we want by using `Room.findById()`–you'll do the same thing here. And just like in the `show` action, you can get the Room's ID from `req.params.id`.
 
-<!-- TODO: hide solutions behind fold -->
+Try to work through these steps yourself. When you're finished, compare your solution with the one below:
 
+>[solution]
+>
 `views/rooms/edit.hbs`:
+>
 ```HTML
 <div>
   <form action="/rooms/{{room.id}}" method="post">
@@ -317,14 +320,15 @@ Notice that both of these snippets reference a `room` variable–this is just li
   </form>
 </div>
 ```
-
+>
 `routes/rooms.js`:
+>
 ```Javascript
 // Rooms edit
 router.get('/:id/edit', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.id, function(err, room) {
     if(err) { console.error(err) };
-
+>
     res.render('rooms/edit', { room: room });
   });
 });
