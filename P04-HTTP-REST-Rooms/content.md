@@ -191,15 +191,17 @@ Now when you submit a new form on `rooms/new`, you won't get anything back becau
 
 # Rooms Index
 
-Our Rooms _index_ action will show users a page that lists all of the rooms in our database.  Notice that our `create` action above redirects users to the rooms index (`/rooms`).
+Now that we can create rooms and store them in our database, we need to create a place for our users to see all the rooms they created. Our Rooms _index_ action will show users a page that lists all of the rooms in the database.  Notice that our `create` action above redirects users to this page (`/rooms`).
 
+>[action]
+> >
 Let's set up the view at `views/rooms/index.hbs`. Create that file and paste the following inside:
-
+>
 ```HTML
 <div>
   Rooms Index
 </div>
-
+>
 <div>
   <ul>
     {{#each rooms as |room|}}
@@ -210,11 +212,13 @@ Let's set up the view at `views/rooms/index.hbs`. Create that file and paste the
   </ul>
 <div>
 ```
+>
+(Notice that I included an `edit` link for each of the rooms. They won't work until we implement our _edit_ and _update_ actions, which we'll do a little further down the page, after we set up the `show` action.)
 
-(Notice that I included an `edit` link for each of the rooms. They won't work until we implement our _edit_ and _update_ actions, which we'll do a little further down the page.)
-
+>[action]
+>
 Now we need to set up our `index` controller action in `routes/rooms.js`. Replace the existing `Rooms index` action with:
-
+>
 ```Javascript
 // Rooms index
 router.get('/', (req, res, next) => {
@@ -227,9 +231,9 @@ router.get('/', (req, res, next) => {
   });
 });
 ```
-
-This is similar to our home page action in `routes/index.js`, but with one big difference–all of our logic happens inside a _callback function_ that we pass to `Room.find()`. `Room.find` is the method we use when we want to find a particular document or documents that match some criteria. For example, if we want to find the room with a 'sports' topic (if it exists), we would call `Room.find({ 'topic': 'sports' }, 'topic', function(err, rooms) {...})`. Passing an empty object (`{}`) for the first argument will return all of the documents for that model.
-
+>
+This is similar to our home page action in `routes/index.js`, but with one big difference–all of our logic happens inside a _callback function_ that we pass to `Room.find()`. `Room.find()` is a method provided by Mongoose that we can use when we want to find a particular document or documents. For example, if we want to find a room with a 'sports' topic (if it exists), we would call `Room.find({ 'topic': 'sports' }, 'topic', function(err, rooms) {...})`. Passing an empty object (`{}`) for the first argument will return all of the documents for that model (like this: `Room.find({}, function(err, rooms) { ... })`).
+>
 For detailed information on how Mongoose queries work, check out [their documentation](http://mongoosejs.com/docs/queries.html).
 
 <!-- TODO: info box about arrow functions and mongodb -->

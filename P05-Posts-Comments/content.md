@@ -170,7 +170,9 @@ Let's start with the view itself.  Open `views/rooms/show.hbs` and replace the c
 </div>
 ```
 
-<!-- TODO: walk through code.  esp:, do I need to intro or review #each? New Post link is new, also-->
+<!-- TODO: walk through code.  esp:, do I need to intro or review #each? New Post link is new, also -->
+
+<!-- TODO: info box about partials -->
 
 Let's define `posts` in `routes/rooms.js`.  Update the `show` action to the following:
 
