@@ -162,23 +162,28 @@ Visit `localhost:3000/rooms/new` (be sure you're logged in!), and you should see
 
 ## Create
 
-Now, recall that our `create` action listens for a POST request to `/rooms`, then uses the data from that request to store a new Room object in the database. So let's look at `routes/rooms.js`, and replace `.post('/', ...)` with:
+Now, recall that our `create` action listens for a POST request to `/rooms`, then uses the data from that request to store a new Room object in the database.
 
+>[action]
+>
+So let's look at `routes/rooms.js`, and replace `.post('/', ...)` with:
+>
 ```Javascript
 // Rooms create
 router.post('/', auth.requireLogin, (req, res, next) => {
   let room = new Room(req.body);
-
+>
   room.save(function(err, room) {
     if(err) { console.error(err) };
-
+>
     return res.redirect('/rooms');
   });
 });
 ```
-<!-- TODO: talk through code -->
+>
+First, we create a new Room using the Room model we made earlier. Then we save the model and pass a callback that redirects the user to the Rooms Index (`/rooms`).  If there is an error, we will print it to the browser console–this is generally not good practice for production code because users can see the browser console, but it's very valuable for troubleshooting during development.
 
-Now when you submit a new form on `rooms/new`, you won't get anything back because we haven't implemented our `index` action yet (that's next). If we check out our database on `mlab.com`, however, we can see that rooms are being saved in our database.
+Now when you submit a new form on `rooms/new`, you won't get anything back because we haven't implemented our Rooms `index` action yet (that's next). If we check out our database on `mlab.com`, however, we can see rooms are being saved in our database.
 
 ![mlab rooms](assets/mlab_rooms.png)
 
