@@ -236,7 +236,11 @@ This is similar to our home page action in `routes/index.js`, but with one big d
 >
 For detailed information on how Mongoose queries work, check out [their documentation](http://mongoosejs.com/docs/queries.html).
 
-<!-- TODO: info box about arrow functions and mongodb -->
+>[info]
+>
+Throughout this tutorial, we usually use the ES6 style "arrow functions", where the syntax looks like this: `() => {...}`, rather than traditional functions, with syntax like this: `function() {...}`. However, these function styles don't just _look_ different–they _behave_ differently. We won't go into exactly why they're different in this tutorial (if you're curious, you can [read the docs here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)), but it's important to know that **arrow functions don't work with Mongoose**. Mongoose only takes classic-style `function() {}` functions for its callbacks.
+>
+[Mongoose also has a very nice Promise-style interface](http://mongoosejs.com/docs/promises.html) that makes callback functions unnecessary, but that is beyond the scope of this tutorial.
 
 In the end, we should be able to visit `localhost:3000/rooms/new`, save a new room, and then see something like this:
 
