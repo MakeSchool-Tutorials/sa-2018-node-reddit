@@ -9,17 +9,19 @@ In this section we will give users the ability to create posts and comment on ex
 
 Objects in our database can be related to each other in different ways. For example, we might have a database of houses where each house has one owner and (for this system) each owner can have only one house–this is a _one-to-one_ relationship. One owner, one house, that's all.
 
-<!-- TODO: diagram & schema -->
+<!-- TODO: [stretch] diagram & schema -->
 
-Or, say you're building a music app where users can make playlists. Then, a playlist can have a bunch of different songs on it, and any of those songs could be on any number of other playlists–this is a _many-to-many_ relationship.
+Or, say you're building a music app where users can make playlists. In this case, a playlist can have a bunch of different songs on it, and any of those songs could be on multiple playlists–this is a _many-to-many_ relationship.
 
-<!-- TODO: diagram & schema -->
+<!-- TODO: [stretch] diagram & schema -->
 
-The relationship we're concerned about here is the one between rooms and posts. Each room has a topic, and users are free to discuss that topic by posting as much as they like. So, one room needs to be able to contain multiple posts, and each post belongs to exactly one room–this is a _one-to-many_ relationship.
+The relationship we're concerned about here is the one between rooms and posts. Each room has a topic, and users are free to discuss that topic by making as many posts as they like. So, one room needs to be able to have many posts, and each post belongs to exactly one room–this is a _one-to-many_ relationship.
 
-<!-- TODO: diagram & schema -->
+<!-- TODO: [stretch] diagram & schema -->
 
 # Post Model
+
+<!-- TODO: add schema for all Models -->
 
 First, let's define our Post model so that we can save it to the database.  Just like with Users and Rooms, we'll need to make a file for our model.  In that file, well define a `PostSchema` that has a subject and a body (both Strings), and references its room.
 
@@ -27,26 +29,24 @@ Check out `models/room.js` and `models/user.js` to remind yourself of the syntax
 
 > [solution]
 >
+`models/posts.js`:
+>
 ```Javascript
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-//
+>
 const PostSchema = new Schema({
   subject: String,
   body: String,
   room: { type: Schema.Types.ObjectId, ref: 'Room' },
 });
-//
+>
 module.exports = mongoose.model('Post', PostSchema);
 ```
 
-<!-- # Nested Routes -->
-
-<!-- TODO: include adding code for nesting posts inside rooms -->
-
 # Post Routes
 
-We won't create exactly the same set of REST actions for Posts that we did for Rooms. For one thing, we won't have an `index`–the Room's `show` action will basically serve that purpose by displaying all of the posts for that room.  And, although they could _possibly_ be useful, we won't create `show` or `edit` actions right now, either. We're starting with only _new_ and _create_.
+We won't create exactly the same set of REST actions for Posts that we did for Rooms. For one thing, we won't have an `index`–later the Room's `show` action will display all of its related posts, and that will serve the purpose of an `index`.  And, although they could _possibly_ be useful, we won't create `show` or `edit` actions right now, either. We're starting with only _new_ and _create_.
 
 Let's create a new file called `routes/posts.js` and paste in the following:
 
@@ -70,6 +70,32 @@ module.exports = router;
 ```
 
 Of course, we'll fill in these actions over the next few sections.
+
+## Nested Routes
+
+![Matryoshka Dolls](assets/matryoshka-dolls.jpg)
+
+The REST routes we've seen so far have all been really simple–`/rooms` will give you all of the rooms, and `/rooms/:id` will give you a room with a specific ID. Now we want to do something a little more complicated–because every post belongs to a room (and exactly one room–never 0, never 2 or more), we can _nest the routes_. Nested routes look like `/rooms/:id/posts` or `/rooms/:id/posts/new`. We still have all seven REST actions, but now all of the routes will be appended to `rooms/:id`
+<!-- TODO: include adding code for nesting posts inside rooms -->
+
+>[action]
+>
+In order to nest the routes, open the Rooms controller at `routes/rooms.js`, and add the following two lines of code:
+>
+```Javascript
+const express = require('express');
+const router = express.Router();
+>
+// Add this line to require the Posts controller
+const posts = require('./posts');
+>
+// { Existing code here... }
+>
+// Add this line to nest the routes
+router.use('/:roomId/posts', posts)
+>
+module.exports = router;
+```
 
 # Posts New and Create
 
