@@ -75,8 +75,7 @@ Of course, we'll fill in these actions over the next few sections.
 
 ![Matryoshka Dolls](assets/matryoshka-dolls.jpg)
 
-The REST routes we've seen so far have all been really simple–`/rooms` will give you all of the rooms, and `/rooms/:id` will give you a room with a specific ID. Now we want to do something a little more complicated–because every post belongs to a room (and exactly one room–never 0, never 2 or more), we can _nest the routes_. Nested routes look like `/rooms/:id/posts` or `/rooms/:id/posts/new`. We still have all seven REST actions, but now all of the routes will be appended to `rooms/:id`
-<!-- TODO: include adding code for nesting posts inside rooms -->
+The REST routes we've seen so far have all been really simple–`/rooms` will give you all of the rooms, and `/rooms/:id` will give you a room with a specific ID. Now we want to do something a little more complicated–because every post belongs to a room (and exactly one room–never 0, never 2 or more), we can _nest the routes_. Nested routes look like `/rooms/:roomId/posts` or `/rooms/:roomId/posts/new`. We still have all seven REST actions, but now all of the routes will be appended to `rooms/:id`
 
 >[action]
 >
@@ -99,17 +98,19 @@ module.exports = router;
 
 # Posts New and Create
 
-Let's give our users a way to create new posts and save them in our database through these _new_ and _create_ actions. This is going to be very similar to the _new_ and _create_ actions we set up for rooms, but with one added twist–_nested routes_.
+Let's give our users a way to create new posts and save them in our database through these `new` and `create` actions. This is going to be very similar to the _new_ and _create_ actions we set up for rooms, but with one added twist–our views must reflect our newly nested routes.
 
-When we set up our Rooms _new_ view in the previous part (`views/rooms/new.hbs`), we didn't have to pass any values from the controller–unlike in our _edit_ view for example (`views/rooms/edit.hbs`), where we have to pass a `room` object from the _controller_ (`routes/rooms.js`). In nested routes, you'll _always_ have to pass a value. Because all of our posts will be associated with a room, we need to know _which_ room when we create a new post. Luckily, our route is `rooms/:roomId/posts/new` (see the section on REST in the previous part of this tutorial), which means we always have the `roomId`.
+Compare the URL we will use for a new Room (`rooms/new`–) to the URL we will use for a new Post(`rooms/:id/posts/new`). We need an extra piece of information for the Post–the ID of the room. This also means that when we render any forms, we have to know the Room's ID to correctly set the form's `action` attribute. At first, this might seem like kind of a bad idea–why restrict ourselves this way? One reason is that we want to design our app so that a Post _must_ belong to a Room, and nested routes are a straightforward way to enforce the requirement.
 
-Your _new_ controller action can access the `roomId` value as `req.params.roomId`, and it will use this to find the correct room by calling `Room.findById()`. Review the Rooms _edit_ controller action (in `routes/rooms.js`) for an example of how to do it.
+When we set up our Rooms _new_ view in the previous part (`views/rooms/new.hbs`), we didn't have to pass any values from the controller–and remember that this was different in our `edit` view for example (`views/rooms/edit.hbs`), where we have to pass a `room` object from the _controller_ (`routes/rooms.js`). With nested routes, you'll _always_ have to pass some value into your views. Because all of our posts will be associated with a room, we need to know _which_ Room to use when we create a new Post. Luckily, our route is `rooms/:roomId/posts/new` (see the section on REST in the previous part of this tutorial), which means we always have access to the `roomId`.
 
-Try to implement the Posts _new_ and _create_ actions, then make sure your code matches the solutions below:
+In your controller, you can access the `roomId` value as `req.params.roomId`, and it will use this to find the correct room by calling `Room.findById()`. Review the Rooms `edit` controller action (in `routes/rooms.js`) for an example of how to do it.
+
+Try to implement the Posts `new` and `create` actions, then make sure your code matches the solutions below:
 
 >[solution]
 >
-`views/posts/new.hbs`
+`views/posts/new.hbs`:
 >
 ```HTML
 <div>
@@ -133,7 +134,7 @@ Try to implement the Posts _new_ and _create_ actions, then make sure your code 
 </div>
 ```
 >
-'routes/posts.js'
+'routes/posts.js':
 >
 ```Javascript
 const express = require('express');
@@ -167,8 +168,6 @@ router.post('/', auth.requireLogin, (req, res, next) => {
 module.exports = router;
 ```
 
-<!-- TODO: 'messages' or 'posts'? -->
-
 # Add Posts to Rooms Show View
 
 When we go into a room, we expect to see all of the posts on that topic. Let's update the Rooms show view so that when we go to a room, we find and render all of its related posts on the page.
@@ -196,7 +195,7 @@ Let's start with the view itself.  Open `views/rooms/show.hbs` and replace the c
 </div>
 ```
 >
-Here we see another [Handlebars Helper](http://handlebarsjs.com/block_helpers.html) in the form of `#each`. If we have a collection of objects, such as all of the posts that belong in a room, we can create a block of HTML for _each_ one of them. Also notice the `<a>...</a>` tag towards the bottom–it's another example of using nested routes.
+Here we see another [Handlebars Helper](http://handlebarsjs.com/block_helpers.html) in the form of `#each`. If we have a collection of objects, such as all of the posts that belong in a room, we can create a block of HTML for _each_ one of them. Also notice the `<a>` tag towards the bottom–it's another example of using nested routes.
 
 Before we can use the `posts` collection in that view, we need to define it in our controller (`routes/rooms.js`).  
 
@@ -205,11 +204,14 @@ Before we can use the `posts` collection in that view, we need to define it in o
 Require the Post model at the top of the file, so that Javascript knows what a `Post` is, and update the `show` action to the following:
 >
 ```Javascript
-// ...
+// { existing code... }
+>
+// Add this line:
 const Post = require('../models/post');
 >
-// ...
+// { existing code... }
 >
+// Add the following:
 // Rooms show
 router.get('/:id', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.id, function(err, room) {
@@ -234,7 +236,70 @@ Let's check that it works. Browse to `localhost:3000/rooms`.  Open any of the ro
 <!-- # Posts Delete -->
 <!-- TODO/stretch/probably won't do -->
 
-<!-- # Comments
+# Comments
 
-So far our users can create rooms to discuss topics, and post in those rooms–this is starting to look like a real discussion app! But so far,  -->
-<!-- TODO/student assigned -->
+So far our users can create rooms to discuss topics, and post in those rooms–this is starting to look like a real discussion app! But what we have so far still doesn't feel interactive. We can make posts, but the posts don't feel related to each other. On Reddit, users can reply to posts, and other users can reply to those posts, and conversations can become deeply nested. We won't go quite that far in this tutorial (although I encourage you to try it on your own!), but we will let users reply to posts by making comments.
+
+The process of implementing comments will be almost the same as implementing posts (with a *little* extra complexity), so for the next few sections I'll give you hints and let you try to implement each section on your own. Of course, I'll provide my solutions in case you get stuck.
+
+## Comments Model
+
+>[action]
+>
+First, you'll define your `Comment` model in a `models/comment.js` file. The schema will be really simple, containing only one string attribute called `body`. Like this:
+>
+```
+Comment: {
+  body: String
+}
+```
+>
+Look back at `models/post.js` to check the syntax for creating a new Mongoose Schema. (And note that the above example is **not** valid syntax – it's just to show what attributes the Schema needs.)
+>
+You might notice an important difference between our `Post` model and our `Comment` model – `Post` has an attribute to record the room it belongs to. We *could* do that here, but this is a great opportunity to explore the other way to relate Schemas with MongoDB. Rather than each `Comment` recording its `Post`, we'll update our `Post`s  in `models/post.js` to hold an Array of all their comments:
+>
+```
+Post: {
+  subject: String,
+  body: String,
+  room: Room,
+  points: Number,
+  comments: [Comment]
+}
+```  
+
+When you're done, you should have something similar to the solutions below:
+
+>[solution]
+>
+`models/comment.js`:
+>
+```Javascript
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+>
+const CommentSchema = new Schema({
+  body: String,
+});
+>
+module.exports = mongoose.model('Comment', CommentSchema);
+```
+>
+`models/post.js`:
+>
+```Javascript
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+>
+const PostSchema = new Schema({
+  subject: String,
+  body: String,
+  room: { type: Schema.Types.ObjectId, ref: 'Room' },
+  points: { type: Number, default: 0 },
+  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+});
+>
+module.exports = mongoose.model('Post', PostSchema);
+```
+
+## Comments Controller
