@@ -3,38 +3,41 @@ title: "HTTP, REST and Discussion Rooms"
 slug: 04-http-rooms
 ---
 
-In this section we will create "rooms" for our users to have discussions in.  Along the way, we'll learn more about how web apps rely on HTTP to communicate over the internet and how to follow REST conventions so that other developers will be able to predictably work with our app.
+In this section we will:
 
-<!-- TODO: In the next section we'll implement all of these actions–after we introduce CRUD concepts–but in this section we'll just -->
+- Learn about REST architecture
+- Add Discussion Rooms to our Database
+- Let users create new rooms
+- Let users view Rooms
+- Let users edit and update existing rooms
 
-# HTTP and REST
+# REST
 
-<!-- ## HTTP -->
-<!-- HTTP is the language of the internet. TODO: copy whatever Chase wrote in htiw -->
+Our web app is made of web pages, and each page has a URL. As your apps become more complicated and include more and more pages, you're going to have to manage an increasing number of those URLs, and it becomes very important to have some system to manage them all.
 
-## REST
+REST is a system that calls for organizing our URLs by _resource_. Each _resource_ has several basic actions:
 
-Our web app is made of web pages, and each of those web pages has a URL. As your apps become more complicated and generate more pages, you're going to have to manage an increasing number of those URLs, and it becomes very important to have some system to manage them all.
+- Index, `GET items/`, lists all of the items
+- Show, `GET items/{:id}`, displays information for one item
+- New, `GET items/new`, returns a form for creating a new item
+- Create, `POST items/`, saves a new item in the database
+- Edit, `GET items/{:id}/edit`, returns a form for editing and existing item
+- Update, `PUT/PATCH items/{:id}`, updates an existing item in the database
+- Destroy, `DELETE items/{:id}`, deletes an existing item
 
-REST is a system that calls for organizing our URLs by _resource_. Each _resource_ can have seven basic actions, as in the following chart:
-
-<!-- TODO: REST chart -->
-
-These seven actions should cover most situations you'll come across in a web app. Often, you won't need all of the actions, just one or two–that's totally OK. Occasionally, you'll need an _extra_ action–it's better to avoid that if possible, but sometimes you can't avoid it, and that's OK too. The nice thing about REST is that it's just a convention–if you do things differently it will still _work_, but if you stick closely to the convention, you'll have to make fewer decisions, and other developers will be able to more easily work with your code.
+These seven actions should cover most situations you'll come across in a web app. Often, you won't need all of the actions, just one or two–that's totally OK. Occasionally, you'll need an _extra_ action–it's better to avoid that if possible, but sometimes you can't, and that's OK too. The nice thing about REST is that it's just a convention – if you do things differently it will still _work_, but if you stick closely to the convention you'll have to make fewer decisions, and other developers will be able to more easily work with your code.
 
 There are a few confusing points about REST. First, notice that some behavior requires _two_ actions. `new` and `create`, for example, are both needed to create a new object–the `create` action is a `POST` request that receives data from the user to store in the database, while the 'new' action is a `GET` request sends the user a web form to collect that information. `edit` and `update` have a similar relationship.
 
 <!-- TODO: new/create workflow -->
 
-Another tricky aspect is that some of these actions use the same URL–in the example table above, `index` and `create` both point to `/items`; `show`, `update` and `destroy` all point to `/items/:id`. The difference is the HTTP _verbs_, `GET`, `POST`, `PUT` (or `PATCH`, both are OK) and `DELETE`. In REST, it's really important to send the proper HTTP verb.
+Another tricky aspect is that some of these actions use the same URL–in the example table above, `index` and `create` both point to `/items`; `show`, `update` and `destroy` all point to `/items/{:id}`. The difference is the HTTP _verbs_, `GET`, `POST`, `PUT` (or `PATCH`, both are OK) and `DELETE`. In REST, it's really important to use the proper HTTP verb.
 
 There's one last issue that also relates to the HTTP methods–the only HTTP methods available to us in HTML are `GET` and `POST`. The other HTTP methods (here, `PUT`, `PATCH` and `DELETE`) require more advanced frameworks than we're using here, so we'll make a few adjustments to work around that.
 
 # Room Models
 
-<!-- TODO: room ERD (so simple, only a topic, but add ERDs for every model (user, room , post, comment)) -->
-
-Let's start by defining what a "room" will look like when we store it in our database. We're going to begin really simple and create rooms that each have a single attribute–a `topic`. Each room will also contain posts about that topic as people start conversations, but we'll come to that in the next part of this tutorial.
+Let's start by defining what a "room" will look like when we store it in our database. We're going to begin really simple and create rooms that each have a single attribute–a `topic`. Each room will also contain posts about that topic as people start conversations, but we'll get to that in the next section.
 
 >[action]
 >
@@ -53,7 +56,7 @@ module.exports = mongoose.model('Room', RoomSchema);
 >
 This is very similar to the User model we set up in Part 1, so please review that if any of this code seems confusing.
 
-Before we can check whether this works the way we expect, we need to add some rooms to our database.  Let's set up _new_ and _create_ actions for our Rooms to do just that.
+Before we can check whether this works the way we expect, we need to add some rooms to our database. Let's set up _new_ and _create_ actions for our Rooms to do just that.
 
 # Rooms New and Create
 
@@ -144,7 +147,7 @@ router.get('/new', auth.requireLogin, (req, res, next) => {
 
 >[action]
 >
-And one last detail to tie it all together–notice that we're defining our action on `'/new'`. Following the REST convention, our `new` action should be on URL `makereddit.com/rooms/new`, not `makereddit.com/new`. So inside our `app.js` file, let's add the following:
+And one last detail to tie it all together–notice that we're defining our action on `'/new'`. Following the REST convention, our `new` action should be on URL `makereddit.com/rooms/new`, not `makereddit.com/new`. We need to _namespace_ our routes under `rooms`. So inside our `app.js` file, let's add the following:
 >
 ```Javascript
 const rooms = require('./routes/rooms');
@@ -154,7 +157,7 @@ const rooms = require('./routes/rooms');
 app.use('/rooms', rooms);
 ```
 >
-This tells our index router to _namespace_ all of the routes we define in `routes/rooms.js` under `rooms/`.
+This tells our index router that all of the URLs we define in `routes/rooms.js` should be accessed under `rooms/`.
 
 Visit `localhost:3000/rooms/new` (be sure you're logged in!), and you should see this:
 
@@ -187,14 +190,13 @@ Now when you submit a new form on `rooms/new`, you won't get anything back becau
 
 ![mlab rooms](assets/mlab_rooms.png)
 
-<!-- TODO: add file tree -->
 
 # Rooms Index
 
 Now that we can create rooms and store them in our database, we need to create a place for our users to see all the rooms they created. Our Rooms _index_ action will show users a page that lists all of the rooms in the database.  Notice that our `create` action above redirects users to this page (`/rooms`).
 
 >[action]
-> >
+>
 Let's set up the view at `views/rooms/index.hbs`. Create that file and paste the following inside:
 >
 ```HTML
@@ -238,9 +240,9 @@ For detailed information on how Mongoose queries work, check out [their document
 
 >[info]
 >
-Throughout this tutorial, we usually use the ES6 style "arrow functions", where the syntax looks like this: `() => {...}`, rather than traditional functions, with syntax like this: `function() {...}`. However, these function styles don't just _look_ different–they _behave_ differently. We won't go into exactly why they're different in this tutorial (if you're curious, you can [read the docs here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)), but it's important to know that **arrow functions don't work with Mongoose**. Mongoose only takes classic-style `function() {}` functions for its callbacks.
+Throughout this tutorial, we usually use the ES6 style "arrow functions", where the syntax looks like this: `() => {...}`, rather than traditional functions, with syntax like this: `function() {...}`. However, these function styles don't just _look_ different–they _behave_ differently. Most of the time the different behavior doesn't matter, and we won't dig deeply into why they're different in this tutorial (if you're curious, you can [read the docs here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)), but it's important to know that **arrow functions don't work with Mongoose**. Mongoose only takes classic-style `function() {}` functions for its callbacks.
 >
-[Mongoose also has a very nice Promise-style interface](http://mongoosejs.com/docs/promises.html) that makes callback functions unnecessary, but that is beyond the scope of this tutorial.
+[Mongoose also has a very nice Promise-style interface](http://mongoosejs.com/docs/promises.html) that makes callback functions unnecessary, but that is also outside the scope of this tutorial.
 
 In the end, we should be able to visit `localhost:3000/rooms/new`, save a new room, and then see something like this:
 
@@ -248,7 +250,7 @@ In the end, we should be able to visit `localhost:3000/rooms/new`, save a new ro
 
 # Rooms Show
 
-Where an `index` shows a collection of items, such as all the rooms in our database, the `show` action lets us look at a single object.  At first our rooms' 'show' views won't be very interesting–we'll fill it with posts in the next part of this tutorial–but all of the links on our `index` view are broken right now, and we can at least fix that.
+Where an `index` shows a collection of items, such as all the rooms in our database, the `show` action lets us look at a single object.  At first, our rooms' 'show' views won't be very interesting – we'll fill it with content in the next part of this tutorial – but all of the links on our `index` view are broken right now, and we can at least fix that.
 
 >[action]
 >
@@ -285,14 +287,11 @@ This code is really similar to the Rooms _index_ action we added above. The key 
 
 Now if you visit `localhost:3000/rooms` and click on a Room topic (not the "edit" links–those are still broken), you should see that Room's `show` view.
 
-![room show](assets/room_show.png)
+![room show](assets/rooms_show.png)
 
 # Rooms Edit and Update
 
-<!-- TODO: point out how new/create mirrors edit/update, give a few code snippets, ask students to try implementing, and hide final code behind a solution fold.  Esp., point out that we need the room id in the form action, so we need to pass that in from the controller -->
-
 The Rooms _edit_ and _update_ actions work together the same way that the _new_ and _create_ actions do. The _edit_ action (a GET request to `/rooms/:id/edit`) returns a form for users to enter new information, and the _update_ action (a POST request to `/rooms/:id`) saves the updated information to the database.
-<!-- TODO: create REST diagram and reference here -->
 
 ## Rooms edit
 
@@ -338,6 +337,10 @@ router.get('/:id/edit', auth.requireLogin, (req, res, next) => {
 
 Our Rooms `update` action is very similar to our `create` action–they are both POST requests, and they both save a document to the database. However, Mongoose gives us a really useful helper method, `findByIdAndUpdate()`, that makes the syntax pretty different.
 
+>[info]
+>
+Update actions should typically be PUT or PATCH requests. However, these options are not available to us with plain HTML, so we are substituting in a POST request.
+
 >[action]
 >
 In our Rooms controller (`routes/rooms.js`), make the _update_ action like this:
@@ -353,4 +356,8 @@ router.post('/:id', auth.requireLogin, (req, res, next) => {
 });
 ```
 
-<!-- # Summary -->
+<!-- TODO: prove it works -->
+
+# Summary
+
+In this section, we learned about REST and set up Rooms along with actions for our users to create new rooms and edit existing ones. In the next section, we'll let our users make posts in these rooms.

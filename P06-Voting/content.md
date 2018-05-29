@@ -5,56 +5,69 @@ slug: 06-voting
 
 The final step–and the main feature that separates Reddit from any other message board–is up-voting and down-voting posts. We'll sort all of the posts by their number of votes so that (in theory) the most interesting content will always be at the top.
 
+<!--
+- add buttons to view
+- store points on the model
+- sort the posts by their point values
+ -->
+
 # Add Voting to Posts View
 
-Let's start by adding up-vote and down-vote buttons to our posts.
+Let's start by adding up-vote and down-vote buttons to our posts. We want to add them so that our posts look like this:
+
+![Post with voting buttons](assets/post-with-voting.png)
 
 >[action]
 >
-Our posts are rendered on our Rooms `show` view, so let's open `views/rooms/show.hbs`, and replace everything inside the `{{#each}}...{{/each}}` loop like so:
+Our posts are rendered on our Rooms `show` view, so let's open `views/rooms/show.hbs`, and add voting buttons to every Post object inside the `{{#each}}...{{/each}}` loop. For styling, we'll use [Bootstrap's built in card footer](https://getbootstrap.com/docs/4.0/components/card/#header-and-footer). Add the following code:
 >
 ```HTML
-<div>
-  <h1>{{room.topic}}</h1>
-</div>
+<!-- { ... Existing code ... } -->
 >
-<div>
-  {{#each posts as |post|}}
-    <!-- New code below: -->
-    <div class="post-div">
-      <h3>{{post.subject}}</h3>
-      <p>{{post.body}}</p>
-      <div class="vote-div">
-        <span class="points-span">{{post.points}} points </span>
-        <span class="downvote-span">
-          <form action="/rooms/{{post.room}}/posts/{{post.id}}" method="post" class="inline-form">
-            <input type="hidden" name="points" id="post-points" value="-1">
-            <button type="submit" class="downvote-button">-</button>
-          </form>
-        </span> | <span class="upvote-span">
-          <form action="/rooms/{{post.room}}/posts/{{post.id}}" method="post" class="inline-form">
-            <input type="hidden" name="points" id="post-points" value="1">
-            <button type="submit" class="upvote-button">+</button>
-          </form>
-        </span>
+<div class="row justify-content-center">
+  <div class="col-8">
+    {{#each posts as |post|}}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h3 class="card-title text-center">{{post.subject}}</h3>
+          <p>{{post.body}}</p>
+        </div>
+>
+        <!-- Add the following section: -->
+        <div class="card-footer text-muted text-right">
+          <span class="points-span">{{post.points}} points </span>
+>
+          <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-success">+</button>
+            <button type="button" class="btn btn-danger">-</button>
+          </div>
+        </div>
+>
       </div>
-    </div>
-  {{/each}}
+>
+      <ul>
+        {{#each post.comments as |comment|}}
+          <li>{{comment.body}}</li>
+        {{/each}}
+        <li><a href="/rooms/{{../room.id}}/posts/{{post.id}}/comments/new">New comment</a></li>
+      </ul>
+>
+    {{/each}}
+>
+  </div>
 </div>
 >
-<div>
-  <a href="/rooms/{{room.id}}/posts/new">New Post</a>
-</div>
+<!-- { ... Existing code ... } -->
 ```
 
-<!-- TODO: talk through code, esp. why these are in forms, classes to make forms like buttons (or even links), end on discussing post.points for segue -->
+These new buttons don't do anything yet, of course, because we haven't given them anything to do. We also won't get any value for our points:
 
-<!-- # Make Buttons That POST -->
-<!-- TODO: replace forms in above HTML w/ +/- signs, put and discuss forms in this section. -->
+![post-no-points](assets/post-no-points.png)
+
 
 # Add Points to Post Model
 
-Next, let's add points to our Post model. With MongoDB, as opposed to traditional SQL databases, it isn't really _necessary_ to add attributes to our model. We can pass any attributes we like, any time we like and MongoDB will happily save them for us.  However, adding the attributes to our Mongoose schema (by adding them to the model) lets us use them to query and sort our objects. This app is pretty simple, but as you write bigger apps, with more objects and more complex schemas, these features become really handy.
+Let's add a `points` attribute to our Post model. With MongoDB, as opposed to traditional SQL databases, it isn't really _necessary_ to add attributes to our model. We can pass any attributes we like and MongoDB will happily save them for us.  However, adding the attributes to our Mongoose schema (by adding them to the model) lets us use more advanced functions, like querying and sorting our objects. This app is pretty simple, but as you write bigger apps, with more objects and more complex schemas, knowing how to use these features will become invaluable.
 
 >[action]
 >
@@ -68,18 +81,29 @@ const PostSchema = new Schema({
   subject: String,
   body: String,
   room: { type: Schema.Types.ObjectId, ref: 'Room' },
+
+  // Add this line:
   points: { type: Number, default: 0 },
 });
 >
 module.exports = mongoose.model('Post', PostSchema);
 ```
 
-<!-- TODO: talk through code, only points line is new -->
+Now you should see "0 points" on any Post.
+
+![Post with voting buttons and points](assets/post-with-voting.png)
 
 # Posts Update Action
 
-Now for the tricky part–what happens when a user clicks on our new up/down-vote buttons? Let's look ahead–in the next section, we're going to make our up/down-vote buttons send POST requests at the HTML:
+Now things get a little trickier–what happens when a user clicks on our new up/down-vote buttons? At the moment, nothing.  They have no assigned functions or values.
 
+We need our up/down-vote buttons to send POST requests with the value of a user's vote, and then we can update the Post's `points` attribute accordingly.
+
+>[action]
+>
+Open `views/rooms/show.hbs` and update the following code to make our +/- buttons full forms:
+>
+<!-- TODO: Make this work with bootstrap -->
 ```HTML
 <form action="/rooms/{{post.room}}/posts/{{post.id}}" method="post" class="inline-form">
   <input type="hidden" name="points" id="post-points" value="-1">
@@ -91,12 +115,14 @@ Now for the tricky part–what happens when a user clicks on our new up/down-vot
   <button type="submit" class="upvote-button">+</button>
 </form>
 ```
+>
+Notice that both of these forms POST to the same endpoint–`/rooms/{{post.room}}/posts/{{post.id}}`. That address will call our posts `update` action (where we alter and save an existing object). Also notice that each of these forms will have a hard-coded value: The first is a form that always submits "-1", and the second always submits "1".
 
-Both of these forms POST to the same endpoint–`/rooms/{{post.room}}/posts/{{post.id}}`. That address will call our posts `update` action (where we alter and save an existing object).
+Now let's add an update action to our Posts controller.
 
 >[action]
 >
-Let's open `routes/posts.js` and define an action for `.post('/rooms/{{post.room}}/posts/{{post.id}}', ...)`:
+Open `routes/posts.js` and define an action for `.post('/rooms/{{post.room}}/posts/{{post.id}}', ...)`:
 >
 ```Javascript
 router.post('/:id', auth.requireLogin, (req, res, next) => {
@@ -111,15 +137,16 @@ router.post('/:id', auth.requireLogin, (req, res, next) => {
   });
 });
 ```
-<!-- TODO: talk through code, esp. how we determine whether it's an up-vote or down-vote and point out parseInt -->
+>
+When we receive a request to this action, we first find the correct Post object. Then we add the value of `req.body.points` to the Post object's points – if the user clicked the "+" form we will add 1, increasing its points, and if the user clicked "-" we will add -1, decreasing its score.
 
 # Sort Posts by Vote
 
-Finally, let's set it up so that we see our top-voted posts at the top of the page.
+Finally, let's set it up so that we see our top-voted posts at the top of the page. Because our view displays the posts in whatever order the controller sends them, we only need to add code in the controller that returns the posts already sorted by their points.
 
 >[action]
 >
-Open `routes/rooms.js` and update the `show` action like so:
+Open the Rooms controller at `routes/rooms.js` and update the `show` action as below:
 >
 ```Javascript
 // Rooms show
@@ -127,17 +154,19 @@ router.get('/:id', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.id, function(err, room) {
     if(err) { console.error(err) };
 >
-    Post.find({ room: room })
-      .sort({ points: -1 })
-      .exec()
-      .then(function(posts) {
-        res.render('rooms/show', { room: room, posts: posts });
-      });
+    Post.find({ room: room }, function(err, posts) {
+      if(err) { console.error(err) };
+>
+      // Add this line:
+      posts = posts.sort({ points: -1 });
+>
+      res.render('rooms/show', { room: room, posts: posts, roomId: req.params.id });
+    });
   });
 });
 ```
 
-<!-- TODO: this code is a lot to unpack, but reiterate that this is why mongoose models are useful, and point the way toward learning about Promises in the future -->
+<!-- TODO: talk through code -->
 
 <!-- # Conclusion
 TODO -->

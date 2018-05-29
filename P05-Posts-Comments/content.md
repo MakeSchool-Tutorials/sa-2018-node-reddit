@@ -3,7 +3,11 @@ title: "Posts, Database Relationships, Nested Routes"
 slug: 05-posts
 ---
 
-In this section we will give users the ability to create posts and comment on existing posts.  Along the way we'll also learn a little about nested routes–what they are, how they work, and why you would want them.
+In this section we will:
+
+- Give users the ability to create new Posts
+- Let users comment on existing Posts
+- Learn about nested routes
 
 # Database Relationships
 
@@ -11,7 +15,7 @@ Objects in our database can be related to each other in different ways. For exam
 
 <!-- TODO: [stretch] diagram & schema -->
 
-Or, say you're building a music app where users can make playlists. In this case, a playlist can have a bunch of different songs on it, and any of those songs could be on multiple playlists–this is a _many-to-many_ relationship.
+Or, suppose you're building a music app where users can make playlists. In this case, a playlist can have a bunch of different songs on it, and any of those songs could be on multiple playlists–this is a _many-to-many_ relationship.
 
 <!-- TODO: [stretch] diagram & schema -->
 
@@ -20,8 +24,6 @@ The relationship we're concerned about here is the one between rooms and posts. 
 <!-- TODO: [stretch] diagram & schema -->
 
 # Post Model
-
-<!-- TODO: add schema for all Models -->
 
 First, let's define our Post model so that we can save it to the database.  Just like with Users and Rooms, we'll need to make a file for our model.  In that file, well define a `PostSchema` that has a subject and a body (both Strings), and references its room.
 
@@ -242,6 +244,13 @@ So far our users can create rooms to discuss topics, and post in those rooms–t
 
 The process of implementing comments will be almost the same as implementing posts (with a *little* extra complexity), so for the next few sections I'll give you hints and let you try to implement each section on your own. Of course, I'll provide my solutions in case you get stuck.
 
+<!-- TODO: Preview all the steps -->
+<!-- create a Comment model and relate it to Posts
+update the room `show` view to display a post's comments and a new comment button
+create a Comments controller and define a `/new` action (and nest it inside posts)(you'll also add a `create` action in a later step)
+create the view for making a comment
+add the `create action` to the controller  -->
+
 ## Comments Model
 
 >[action]
@@ -302,4 +311,289 @@ const PostSchema = new Schema({
 module.exports = mongoose.model('Post', PostSchema);
 ```
 
-## Comments Controller
+## Update the Room `show` View
+
+We want to put a 'New Comment' button directly under each Post, and eventually we'll want to display all of its Comments there as well. Our result should look something like this:
+
+<!-- TODO screenshot -->
+
+The code to create those 'New Comment' links looks like this:
+
+```HTML
+<ul>
+  <li><a href="/rooms/{{../room.id}}/posts/{{post.id}}/comments/new">New comment</a></li>
+</ul>
+```
+
+There are a few interesting things about this code snippet: first, it's a list even though there's only one item (`ul` stands for __u__nordered __l__ist; your other option is `ol` if you want numbers instead of bullet points [•]). Later you'll include the post's comments as the other items in the list. The other thing to notice is that the comments are *deeply nested* – comments are nested inside posts, which are in turn nested inside rooms. We'll start setting that up in the next section.
+
+>[action]
+>
+Add the 'New Comment' links to the Rooms `show` view in `views/rooms/show.hbs`. Where can you put the code snippet above so that it appears below each Post? Make sure your answer is similar to the solution below:
+
+>[solution]
+>
+`views/rooms/show.hbs`:
+>
+```HTML
+<div class="row justify-content-center">
+  <h1>{{room.topic}}</h1>
+</div>
+>
+<div class="row justify-content-center">
+  <div class="col-8">
+    {{#each posts as |post|}}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h3 class="card-title text-center">{{post.subject}}</h3>
+          <p>{{post.body}}</p>
+          <p>{{post}}</p>
+        </div>
+>
+        <div class="card-footer text-muted text-right">
+          <span class="points-span">{{post.points}} points </span>
+>
+          <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-success">+</button>
+            <button type="button" class="btn btn-danger">-</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add everything between the <ul>...</ul> tags -->
+      <ul>
+        {{#each post.comments as |comment|}}
+          <li>{{comment.body}}</li>
+        {{/each}}
+        <li><a href="/rooms/{{../room.id}}/posts/{{post.id}}/comments/new">New comment</a></li>
+      </ul>
+>
+    {{/each}}
+>
+  </div>
+</div>
+>
+<div class="row justify-content-center">
+  <a href="/rooms/{{room.id}}/posts/new">New Post</a>
+</div>
+```
+
+## Comments Controller (`new` action)
+
+>[action]
+>
+Next, you'll create a Controller to handle all of your incoming requests at `routes/comments.js` and implement a `new` action. Remember that a `new` action gives the user a form, while the `create` action saves it to the database. You'll add the `create` action a little later.
+>
+Look back at the `new` action in `routes/posts.js`. This will be similar, but with an extra level of complexity – the Post routes are nested inside the Room routes, and your comment routes will be nested one level deeper. In the Posts `new` action, we had to find the correct Room using the `RoomId`; in the comments `new` action, you'll need to find the correct Room **and** the correct Post. And just like in Posts `new`, you'll want to require authorization.
+>
+Don't forget to tell the Posts controller about the new nested routes. In our Rooms controller, we used the line `router.use('/:roomId/posts', posts)` to nest posts inside rooms – try to do the same thing with posts and comments. Also, when you rendered `'posts/new'` you only needed to pass the `room` value to Handlebars, but when you render `'comments/new'` you'll need to pass a `room` value and a `post` value.
+>
+<!-- TODO provide screenshot of error -->
+In the end, you should be able to go to a Room with Posts, click on the 'New Comment' link, and receive an error (because the view doesn't exist yet – that's the next step!) Give it a try, and be sure your solution is similar to the one below:
+
+>[solution]
+>
+`routes/comments.js`
+>
+```Javascript
+const express = require('express');
+const router = express.Router({mergeParams: true});
+const auth = require('./helpers/auth');
+const Room = require('../models/room');
+const Post = require('../models/post');
+const Comment = require('../models/comment');
+
+// Comments new
+router.get('/new', auth.requireLogin, (req, res, next) => {
+  Room.findById(req.params.roomId, function(err, room) {
+    if(err) { console.error(err) };
+
+    Post.findById(req.params.postId, function(err, post) {
+      if(err) { console.error(err) };
+
+      res.render('comments/new', { post: post, room: room });
+    });
+  })
+});
+
+module.exports = router;
+```
+>
+'routes/posts.js'
+>
+```Javascript
+// { ...Existing Code... }
+  });
+});
+>
+// Add this line:
+router.use('/:postId/comments', commentsRouter);
+>
+module.exports = router;
+```
+
+## Comments `new` View
+
+>[action]
+>
+Now we'll create the view so that the user can enter the information we'll need to create the comment. You'll need to make a new file, `views/comments/new.hbs`, which will be similar to `views/posts/new.hbs`.
+>
+Of course, it won't be *exactly* the same. You'll only need one text input field, for the Comment's body. For the form's `action` URL, you'll need to nest the comment inside the post and inside the room, like this: `/rooms/{{room.id}}/posts/{{post.id}}/comments`.
+>
+Your final result should look like this:
+>
+<!-- TODO: screenshot  -->
+>
+But, submitting that form won't work yet. Click 'Submit', and you should get a 404 error–implementing that route will be next step. Your code should look like the solution below:
+
+>[solution]
+>
+`views/comments/new.hbs`:
+>
+```HTML
+<div class="row justify-content-md-center">
+  <div class="col-8">
+    <form action="/rooms/{{room.id}}/posts/{{post.id}}/comments" method="post" id="new-comment-form">
+      <legend>New Comment</legend>
+>
+      <div class="form-group">
+        <textarea type="text" name="body" class="form-control" id="comment-body" placeholder="Body" form="new-comment-form"></textarea>
+      </div>
+>
+      <div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+```
+
+## Comments `create` Action
+
+>[action]
+>
+Now when a user submits a New Comment form, the data is sent as a POST request to `/rooms/:roomId/posts/:postId/comments` – but we receive an error because we haven't defined any action for that URL. We'll add a `create` action to the Comments controller at `routes/comments.js`.
+>
+This is going to be somewhat similar to the Posts `create` action in `routes/posts.js`, so look there to remind yourself how it works. However, we're storing references to the comments on the post object (rather than storing a reference to the Post on each Comment, like how we stored a reference to a Room on each Post), things get just a little more complicated. We'll help you out with some *pseudocode* so that you can see the exact steps you'll need to implement:
+>
+```
+router.post('/', auth.requireLogin, (req, res, next) => {
+  Find the correct room with :roomId {
+    print the error, if there is one.
+
+    Find the correct Post using :postId {
+      print the error, if there is one.
+
+      Get the  Comment data from req.body
+      Use this line to store the comments on the Post: `post.comments.unshift(comment);`
+
+      save the post {
+        print the error, if there is one.
+
+        save the comment {
+          print the error, if there is one.
+
+          Redirect the user to the Rooms show page.
+        }
+      }
+    }
+  }
+}
+```
+>
+Give it a shot, then check the solution below:
+
+<!-- TODO: • comment on unshift() -->
+>[solution]
+>
+```Javascript
+// { ...Existing Code... }
+>
+router.get('/new', auth.requireLogin, (req, res, next) => {
+  // { ...Existing Code... }
+});
+>
+// Add this method:
+router.post('/', auth.requireLogin, (req, res, next) => {
+  Room.findById(req.params.roomId, function(err, room) {
+    if(err) { console.error(err) };
+>
+    Post.findById(req.params.postId, function(err, post) {
+      if(err) { console.error(err) };
+>
+      let comment = new Comment(req.body);
+      post.comments.unshift(comment);
+>
+      post.save(function(err, post) {
+        if(err) { console.error(err) };
+>
+        comment.save(function(err, comment) {
+          if(err) { console.error(err) };
+>
+          return res.redirect(`/rooms/${room.id}`);
+        });
+      });
+    });
+  });
+});
+>
+module.exports = router;
+```
+>
+
+
+## Update Rooms `show` (again)
+
+Earlier we added a 'New Comment' link to each Post in the Rooms show action (`views/rooms/show.hbs`) with the following bit of code:
+
+```HTML
+<ul>
+  <li><a href="/rooms/{{../room.id}}/posts/{{post.id}}/comments/new">New comment</a></li>
+</ul>
+```
+
+The reason we put the link inside a list is so that we can easily list all of the comments for each room. To do that, you'll need to use the `{{#each}}` Handlebars helper, and wrap the body of each comment in `<li>...</li>` tags. We used a similar technique to list the rooms in `views/rooms/index.hbs`, so review that code if you need help getting started.
+
+When you're finished, be sure your code matches the solution below:
+
+>[solution]
+>
+```HTML
+<!-- {{ ...Existing code... }} -->
+>
+{{#each posts as |post|}}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h3 class="card-title text-center">{{post.subject}}</h3>
+      <p>{{post.body}}</p>
+      <p>{{post}}</p>
+    </div>
+>
+    <div class="card-footer text-muted text-right">
+      <span class="points-span">{{post.points}} points </span>
+>
+      <div class="btn-group btn-group-sm">
+        <button type="button" class="btn btn-success">+</button>
+        <button type="button" class="btn btn-danger">-</button>
+      </div>
+    </div>
+  </div>
+>
+  <ul>
+    <!-- Add this section: -->
+    {{#each post.comments as |comment|}}
+      <li>{{comment.body}}</li>
+    {{/each}}
+    <li><a href="/rooms/{{../room.id}}/posts/{{post.id}}/comments/new">New comment</a></li>
+  </ul>
+>
+{{/each}}
+>
+<!-- {{ ...Existing code... }} -->
+```
+
+# Summary
+
+In this section, we gave users the ability to create new posts in a room. We also let them comment on posts to keep the conversation going.
+
+In the next section, we'll let users vote on comments, so that the top comments are always at the top of the list.
