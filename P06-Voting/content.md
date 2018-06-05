@@ -3,7 +3,11 @@ title: "Voting"
 slug: 06-voting
 ---
 
-The final step–and the main feature that separates Reddit from any other message board–is up-voting and down-voting posts. We'll sort all of the posts by their number of votes so that (in theory) the most interesting content will always be at the top.
+Our final step–and the main feature that separates Reddit from any other message board–is up-voting and down-voting posts. In this section, we will:
+
+- Let users vote on posts
+- Add points to our posts so we can keep track of their votes
+- Sort posts by vote, so that the most popular posts are always at the top.
 
 <!--
 - add buttons to view
@@ -168,5 +172,8 @@ router.get('/:id', auth.requireLogin, (req, res, next) => {
 
 <!-- TODO: talk through code -->
 
-<!-- # Conclusion
-TODO -->
+# Conclusion
+
+Congratulations! Try it out – you now have a working clone of Reddit!
+
+Over the course of this tutorial, we set up an Express web server and configured it to use MongoDB as a database. We then created user accounts and built our own authentication system so they could log in and out. We used Handlebars as a templating engine to create dynamic HTML. We learned about MVC and REST then, using those principles, we built the models, views and controllers necessary for our user to make posts and comments. Finally, we
