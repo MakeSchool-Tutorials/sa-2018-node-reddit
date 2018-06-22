@@ -1,5 +1,5 @@
 title: "MakeReddit"
 cover: cover.png
-solution_url: https://github.com/MakeSchool-Tutorials/Tutorial-Template/
+# solution_url: https://github.com/MakeSchool-Tutorials/Tutorial-Template/
 teaser_text: |
-    Node, Express, MongoDB–Build a full stack web app in Javascript
+    Node, Express, MongoDB – Clone Reddit and build a full stack web app in Javascript.
