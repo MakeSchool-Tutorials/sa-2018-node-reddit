@@ -263,7 +263,7 @@ Comment: {
 }
 ```
 >
-Look back at `models/post.js` to check the syntax for creating a new Mongoose Schema. (And note that the above example is **not** valid syntax – it's just to show what attributes the Schema needs.)
+Look back at `models/post.js` to check the syntax for creating a new Mongoose Schema. (And note that the above example is **not** valid syntax – it's just to show what attributes the Schema needs).
 >
 You might notice an important difference between our `Post` model and our `Comment` model – `Post` has an attribute to record the room it belongs to. We *could* do that here, but this is a great opportunity to explore the other way to relate Schemas with MongoDB. Rather than each `Comment` recording its `Post`, we'll update our `Post`s  in `models/post.js` to hold an Array of all their comments:
 >

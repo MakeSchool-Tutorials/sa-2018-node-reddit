@@ -198,7 +198,7 @@ router.post('/', (req, res, next) => {
 module.exports = router;
 ```
 >
-This file tells our app what to do when users request certain URLs.  We are inside the `/users` route, so if someone requests `ourwebsite.com/users/`, we will render something called `users/index`.  If someone requests `ourwebsite.com/users/new`, we will render a file called `users/new`. (This system for organizing our resources is called REST, and we'll learn about it in part 4.)
+This file tells our app what to do when users request certain URLs.  We are inside the `/users` route, so if someone requests `ourwebsite.com/users/`, we will render something called `users/index`.  If someone requests `ourwebsite.com/users/new`, we will render a file called `users/new`. (This system for organizing our resources is called REST, and we'll learn about it in part 4).
 >
 As for the files`users/index` and `users/new`, they don't exist yet.  Let's create them.
 

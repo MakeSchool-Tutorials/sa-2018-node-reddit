@@ -387,7 +387,7 @@ const session = require('express-session');
 app.use(session({ secret: 'secret-unique-code', cookie: { maxAge: 3600000 }, resave: true, saveUninitialized: true }));
 ```
 >
-(This code comes from the [Express Session documentation](https://github.com/expressjs/session).)
+(This code comes from the [Express Session documentation](https://github.com/expressjs/session)).
 
 <!-- TODO: info box for session cookies -->
 

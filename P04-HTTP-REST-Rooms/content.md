@@ -215,7 +215,7 @@ Let's set up the view at `views/rooms/index.hbs`. Create that file and paste the
 <div>
 ```
 >
-(Notice that I included an `edit` link for each of the rooms. They won't work until we implement our _edit_ and _update_ actions, which we'll do a little further down the page, after we set up the `show` action.)
+Notice that I included an `edit` link for each of the rooms. They won't work until we implement our _edit_ and _update_ actions, which we'll do a little further down the page, after we set up the `show` action.
 
 >[action]
 >

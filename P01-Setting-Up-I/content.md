@@ -27,7 +27,7 @@ In this tutorial, all of the code we write will belong to one of these three dom
 
 # Express
 
-HTTP is the language of the web, and a web server is basically a machine that can receive an HTTP _request_ and return an HTTP _response_. (We'll learn more about HTTP in Part 4.) What happens between receiving the request and sending the response can be dead simple or insanely complicated – it all depends on the situation. A very simple web server might only return static HTML files, and in that simple case Node.js would be good enough to develop your whole web server. But, as we start to add more complex functions like writing to a database, logging users in and out, writing posts, etc... we'll need some more powerful tools...
+HTTP is the language of the web, and a web server is basically a machine that can receive an HTTP _request_ and return an HTTP _response_ (we'll learn more about HTTP in Part 4). What happens between receiving the request and sending the response can be dead simple or insanely complicated – it all depends on the situation. A very simple web server might only return static HTML files, and in that simple case Node.js would be good enough to develop your whole web server. But, as we start to add more complex functions like writing to a database, logging users in and out, writing posts, etc... we'll need some more powerful tools...
 
 <!-- TODO: explain static html in info box, and italicize -->
 
@@ -37,7 +37,7 @@ Enter [Express](https://expressjs.com/). It is by far the most popular web serve
 
 Express is "unopinionated", which means we can organize the files in our code however we want. Express has very few requirements in terms of what our files and directories are called, or how they work together; it doesn't matter how many files we have, or even how they work together.
 
-However, some structure can be helpful for getting started.  There are lots of apps and packages to help you start a new project (see examples in the "Further Reading" section at the bottom of this page.) For this tutorial, we're going to use the Express team's recommended tool, [Express Generator](https://expressjs.com/en/starter/generator.html).
+However, some structure can be helpful for getting started.  There are lots of apps and packages to help you start a new project (see examples in the "Further Reading" section at the bottom of this page). For this tutorial, we're going to use the Express team's recommended tool, [Express Generator](https://expressjs.com/en/starter/generator.html).
 
 The following instructions assume you already have Node and NPM installed on your computer.
 
