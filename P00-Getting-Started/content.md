@@ -3,7 +3,7 @@ title: "Getting Started"
 slug: 00-get-started
 ---
 
-# What is a Web App?
+## What is a Web App?
 
 In an earlier tutorial, we learned what a _web page_ is. A bunch of web pages together make up a _web site_. For example, the web site for a small restaurant might have a landing page, a menu page, and a 'Contact Us' page–all together, that's their website.
 
@@ -15,7 +15,7 @@ A _web app_ is the next step up from a web site. Like a web site, it's made of m
 Before starting this tutorial, you should be familiar with HTML, CSS, and Basic Javascript. If you've completed the first five tutorials in this series, you're good.
 
 
-# What We're Building
+## What We're Building
 
 ![MS Reddit](assets/ms_reddit.png)
 
@@ -23,7 +23,7 @@ In this tutorial, we'll build a clone of the popular discussion website [Reddit]
 
 <!-- TODO: a little more description and a screenshot -->
 
-# What You'll Learn
+## What You'll Learn
 
 By the end of this tutorial, you will:
 
@@ -33,7 +33,7 @@ By the end of this tutorial, you will:
 - learn about the MVC architecture for organizing your code
 - learn about the REST style of organizing your URLs
 
-# If You Get Stuck
+## If You Get Stuck
 
 
 "Sometimes, magic is just someone spending more time on something than anyone else might reasonably expect." - Teller (Penn & Teller)
