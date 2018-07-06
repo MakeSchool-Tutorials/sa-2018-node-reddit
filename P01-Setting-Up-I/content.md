@@ -9,7 +9,7 @@ In this section, we're going to:
 - Generate HTML using Handlebars
 - Make it look good using Bootstrap.
 
-# MVC
+## MVC
 
 Before we dive in, it's helpful to think about the big picture and understand how these tools work together.  We're going to build our app using an architecture called Model-View-Controller (MVC).
 
@@ -44,13 +44,14 @@ The following instructions assume you already have Node and NPM installed on you
 >[action]
 >
 Open your terminal and enter:
-<!-- TODO: where should I direct students who might not have Node/NPM installed? Do we have an environment set up tutorial? -->
 >
 ```
 npm install express-generator -g
 ```
 >
 The `-g` option tells NPM to install the package globally.
+
+<!--  -->
 
 >[action]
 >
@@ -95,7 +96,6 @@ Let's open `views/index.hbs`, and change `Welcome to {{title}}` to `Hello, world
 <h1>{{title}}</h1>
 <p>Hello, world</p>
 ```
-<!-- [TODO: comment on why 'hello world'] -->
 
 Now, start the server by entering `npm start` into your terminal. Then open your web browser and go to `localhost:3000`.  You should see something like this:
 
@@ -128,12 +128,12 @@ Let's change that 'title' to 'Hello, world', so that the entire `/routes/index.j
 ```Javascript
 var express = require('express');
 var router = express.Router();
-
+>
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Hello, world' });
 });
-
+>
 module.exports = router;
 ```
 
@@ -141,7 +141,7 @@ Now–be sure to save your file!–then, let's go back to the browser and hit re
 
 ![hello world](assets/hello_world.png)
 
-:flushed:
+😳
 
 Unfortunately, Express only reads these files _when it starts_.  After that, it ignores any changes we make. One quick fix is to simply restart the server:
 - Go to the terminal where the server is running
@@ -152,7 +152,7 @@ Now when we refresh the page:
 
 ![hello world](assets/hello_world_2.png)
 
-:relieved:
+😌
 
 But it's a huge pain if we have to stop and restart the server after every. single. little. change.  Luckily, there are lots of packages that will take care of restarting the server for us. As you grow as a developer, you'll eventually learn about tools like [Webpack](https://webpack.js.org/) or [Yarn](https://yarnpkg.com/en/).  But for this project, we're going to use a super simple solution called [nodemon](https://nodemon.io/) (short for "Node Monitor").
 
@@ -184,18 +184,13 @@ Now, **without** restarting the server, let's go to the browser and refresh the 
 
 ![hello world](assets/hello_world_3.png)
 
-:satisfied:
+😄
 
 # Handlebars and Bootstrap
-
-<!-- ## Handlebars -->
-<!-- Handlebars is a templating engine. A templating engine is... -->
-<!-- [TODO: no code writing here, just a quick overview of what Handlebars is, what the `{{...}}` tags are, etc...] -->
 
 ## Layout File
 
 Remember what we learned about HTML in previous tutorials, and then let's look back at `views/index`:
-<!-- TODO: which previous tutorials? -->
 
 ```HTML
 <h1>{{title}}</h1>
