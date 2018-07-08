@@ -310,11 +310,13 @@ Try to work through these steps yourself. When you're finished, compare your sol
 <div>
   <form action="/rooms/{{room.id}}" method="post">
     <legend>Edit Room</legend>
+
     <div class="form-group">
       <label for="post-topic">Topic</label>
       <input type="text" name="topic" class="form-control" id="room-topic" value="{{room.topic}}">
     </div>
-    <div class='text-right'>
+
+    <div class="text-right">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
