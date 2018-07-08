@@ -216,7 +216,7 @@ Create a new file `views/login.hbs`, and paste the following form inside:
     <input type="password" name="password" class="form-control" id="user-password" placeholder="password">
   </div>
 >
-  <div class='text-right'>
+  <div class="text-right">
     <button type="submit" class="btn btn-primary">Submit</button>
   </div>
 </form>
