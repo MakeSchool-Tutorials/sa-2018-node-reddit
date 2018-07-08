@@ -64,7 +64,7 @@ Following the REST convention, we expect that if we go to `/rooms/new`, we shoul
 
 >[action]
 >
-Let's create a new file to hold our room routes called `routes/rooms.js`, and paste in the following:
+Let's create a new file to hold our room routes called `routes/rooms.js`, and type in the following:
 >
 ```Javascript
 const express = require('express');
@@ -122,12 +122,13 @@ Create a file (in a new `views/rooms` folder) called `views/rooms/new.hbs` and p
 <div>
   <form action="/rooms" method="post">
     <legend>New Room</legend>
+>
     <div class="form-group">
       <label for="room-title">Topic</label>
       <input type="text" name="topic" class="form-control" id="room-topic" placeholder="Topic">
     </div>
 >
-    <div>
+    <div class="text-right">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
