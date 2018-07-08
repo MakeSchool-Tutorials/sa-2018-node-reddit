@@ -529,24 +529,19 @@ Open `routes/index.js` and add an action for logout:
 >
 // logout
 router.get('/logout', (req, res, next) => {
-  if(req.session) {
+  if (req.session) {
     req.session.destroy((err) => {
-      if(err) {
-        return next(err);
-      } else {
-        return res.redirect('/login');
-      }
+      if (err) return next(err);
     });
-  } else {
-    return res.redirect('/login');
   }
-}
+  
+  return res.redirect('/login');
 });
 >
 module.exports = router;
 ```
 >
-This code checks whether the request has a session cookie attached and, if so, deletes it. It then redirects the user to the login page.
+This code checks whether the request has a session cookie attached and, if so, deletes it. It then redirects the user to the login page. If there is no session, we also just want to redirect the user to the login page.
 
 # Authorization
 
