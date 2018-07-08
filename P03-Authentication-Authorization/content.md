@@ -304,6 +304,7 @@ UserSchema.statics.authenticate = function(username, password, next) {
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
 ```
+
 <!-- TODO: briefly talk through code,  will define `next` in section below  -->
 
 Now let's take a step back and look at the big picture–we have a method  `User.authenticate('myusername', 'secretpassword')`  to log our user in, but how/when/where do we do that?  We want to call `authenticate()` when users send us their password, which happens when they submit the login form. Check the HTML form in `views/login.hbs`–where does it go when we submit?
@@ -338,6 +339,7 @@ router.post('/login', (req, res, next) => {
 ```
 >
 Inside `.post('/login', ...)`, the first thing we do is call the `.authenticate()` method, passing in the login form data and a callback (`req` represents the HTTP request object, and form data lives in the `body` of those requests). The callback (`(err, user) => {...}`) becomes the `next()` function in `UserSchema.statics.authenticate`, defined in `models/user.js`.
+
 <!-- TODO: talk through UserSchema.statics.authenticate code here -->
 
 In the end, your complete `/routes/index.js` file should look like this:
