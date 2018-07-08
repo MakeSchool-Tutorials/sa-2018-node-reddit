@@ -465,7 +465,7 @@ router.use(function(req, res, next) {
   res.locals.currentUserId = req.session.userId;
 >
   next();
-})
+});
 ```
 >
 While we have `routers/index.js` open, let's also remove the references to currentUserId we added to `router.get('/', ...)`, so that the whole file looks like this:
@@ -481,7 +481,7 @@ router.use(function(req, res, next) {
   res.locals.currentUserId = req.session.userId;
 >
   next();
-})
+});
 >
 // home page
 router.get('/', (req, res, next) => {
