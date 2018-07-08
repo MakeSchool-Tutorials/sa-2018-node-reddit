@@ -226,7 +226,8 @@ Now when we visit `localhost:3000/login`, we see our login form.
 
 ![login view](assets/login_view.png)
 
-But if we try to log in now, what do you expect to happen?  It won't work yet.  When we submit a form, where does it send that data?  (Hint: check the form's `action`)
+But if we try to log in now, what do you expect to happen? It won't work yet. When we submit a form, where does it send that data? (Hint: check the form's `action`)
+
 <!-- TODO: review HTTP verbs -->
 
 >[action]
