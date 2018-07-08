@@ -456,7 +456,7 @@ Go back to `localhost:3000/login`, and what happens to our "Log in/Log out" link
 
 >[action]
 >
-We can write a simple _middleware_ function to assign values to `title` and `currentUserId` before every router action by adding the following code to `routers/index.js`:
+We can write a simple _middleware_ function to assign values to `title` and `currentUserId` before every router action by adding the following code to `routers/index.js` before we define any of our routes:
 >
 ```Javascript
 // set layout variables
