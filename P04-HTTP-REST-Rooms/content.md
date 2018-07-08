@@ -27,7 +27,7 @@ REST is a system that calls for organizing our URLs by _resource_. Each _resourc
 
 These seven actions should cover most situations you'll come across in a web app. Often, you won't need all of the actions, just one or two–that's totally OK. Occasionally, you'll need an _extra_ action–it's better to avoid that if possible, but sometimes you can't, and that's OK too. The nice thing about REST is that it's just a convention – if you do things differently it will still _work_, but if you stick closely to the convention you'll have to make fewer decisions, and other developers will be able to more easily work with your code.
 
-There are a few confusing points about REST. First, notice that some behavior requires _two_ actions. `new` and `create`, for example, are both needed to create a new object–the `create` action is a `POST` request that receives data from the user to store in the database, while the 'new' action is a `GET` request sends the user a web form to collect that information. `edit` and `update` have a similar relationship.
+There are a few confusing points about REST. First, notice that some behavior requires _two_ actions. `new` and `create`, for example, are both needed to create a new object–the `create` action is a `POST` request that receives data from the user to store in the database, while the 'new' action is a `GET` request that sends the user a web form to collect that information. `edit` and `update` have a similar relationship.
 
 <!-- TODO: new/create workflow -->
 
