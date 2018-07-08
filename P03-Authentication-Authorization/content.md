@@ -381,7 +381,7 @@ There's just one final detail before our user can log in–we need to set our ap
 
 >[action]
 >
-We configure Express in `app.js`, so open that file and add the following:
+We configure Express in `app.js`, so open that file and add the following before we setup our routes. The ordering of this is very important. Because this is a middleware function, it needs to be setup before we configure out routes, otherwise the routes won't have access to the middleware (meaning our sessions will not work at all).
 >
 ```Javascript
 // configure sessions
@@ -421,7 +421,7 @@ The header is defined in our layout file.  Open `views/layout.hbs`, and replace 
 >
 This code has some new syntax, the `{{# if ...}} {{else}} {{/if}}` statement in Handlebars. This is one of several built-in [Handlebars helpers](http://handlebarsjs.com/block_helpers.html); we saw `{{#each}}` in an earlier section.
 
-However, this doesn't work yet.  Try it if you like–go to `localhost:3000/login`, enter your username and password... and still be offered a link to log _in_.  Take another look at that `{{# if}}` statement. Can you spot the problem?  We never assign any value to `currentUser`, so it's not possible to avoid the `{{else}}` branch; `current_user` will always be `undefined`.
+However, this doesn't work yet.  Try it if you like–go to `localhost:3000/login`, enter your username and password... and still be offered a link to log _in_.  Take another look at that `{{# if}}` statement. Can you spot the problem?  We never assign any value to `currentUserId`, so it's not possible to avoid the `{{else}}` branch; `currentUserId` will always be `undefined`.
 
 >[action]
 >
