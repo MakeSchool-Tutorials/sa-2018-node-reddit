@@ -41,7 +41,7 @@ Let's start by defining what a "room" will look like when we store it in our dat
 
 >[action]
 >
-For now, create a file for our room model called `models/room.js` and paste the following code into it:
+For now, create a file for our room model called `models/room.js` and type the following code into it:
 >
 ```Javascript
 const mongoose = require('mongoose');
@@ -116,7 +116,7 @@ The single purpose of our `new` action is to show users the form they need to ma
 
 >[action]
 >
-Create a file (in a new `views/rooms` folder) called `views/rooms/new.hbs` and paste in the following code, which will render a web form for creating a new room:
+Create a file (in a new `views/rooms` folder) called `views/rooms/new.hbs` and type in the following code, which will render a web form for creating a new room:
 >
 ```HTML
 <div>
@@ -198,7 +198,7 @@ Now that we can create rooms and store them in our database, we need to create a
 
 >[action]
 >
-Let's set up the view at `views/rooms/index.hbs`. Create that file and paste the following inside:
+Let's set up the view at `views/rooms/index.hbs`. Create that file and type the following inside:
 >
 ```HTML
 <div>
@@ -255,7 +255,7 @@ Where an `index` shows a collection of items, such as all the rooms in our datab
 
 >[action]
 >
-Create a new file for our view at `views/rooms/show.hbs` and paste in the following:
+Create a new file for our view at `views/rooms/show.hbs` and type in the following:
 >
 ```HTML
 <div>
