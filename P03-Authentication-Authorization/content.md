@@ -317,6 +317,15 @@ Now let's take a step back and look at the big picture–we have a method  `User
 This tells the form to send a POST request to `/login`, which we define in `routes/index.js`–let's open that file.  
 
 >[action]
+Before we update our request to `/login` we need to make sure to add our `User` class, otherwise the `.authenticate()` function will not work.
+>
+```Javascript
+const express = require('express');
+const router = express.Router();
+const User = require('../models/user');
+
+/* our index routes */
+```
 >
 Let's define a POST request to `/login` like this:
 >
@@ -347,6 +356,7 @@ In the end, your complete `/routes/index.js` file should look like this:
 ```Javascript
 const express = require('express');
 const router = express.Router();
+const User = require('../models/user');
 
 // home page
 router.get('/', (req, res, next) => {
