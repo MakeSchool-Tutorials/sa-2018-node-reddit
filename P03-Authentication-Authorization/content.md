@@ -98,7 +98,7 @@ Enter any username and password you like, click 'Submit', and our new user shoul
 
 ![new user](assets/new_user_2.png)
 
-That looks good.  Let's check out the new user on mLab to see what it looks like in the database. Go to (mlab.com)[https://mlab.com/home], click on your `makereddit` database, click on `Users` to see the documents, and find your new user in the list:
+That looks good.  Let's check out the new user on mLab to see what it looks like in the database. Go to [mlab.com](https://mlab.com/home), click on your `makereddit` database, click on `Users` to see the documents, and find your new user in the list:
 
 ![mlab user](assets/mlab_user_1.png)
 
@@ -126,7 +126,7 @@ UserSchema.pre('save', function(next) {
 });
 ```
 
-This code comes from the [Bcrypt documentation page](https://github.com/kelektiv/node.bcrypt.js). First, we call the `.pre()` method on `UserSchema`, which takes a callback. It fires _before_ (pre-) the action you pass as the first argument (in this case, `user.password`). So here we're saying, "before we 'save', call this function." If we wanted the function to happen _after_ we save, we could call `.post()`.
+This code comes from the [Bcrypt documentation page](https://github.com/kelektiv/node.bcrypt.js). First, we call the `.pre()` method on `UserSchema`, which takes a callback. It fires _before_ (pre-) the action you pass as the first argument (in this case, `save`). So here we're saying, "before we 'save', call this function." If we wanted the function to happen _after_ we save, we could call `.post()`.
 
 Before we save a user to the database, we call Bcrypt's `.hash()` method, which gives us the hash of the user's password. We then save the _hash_ to the database – _not the password_.
 
