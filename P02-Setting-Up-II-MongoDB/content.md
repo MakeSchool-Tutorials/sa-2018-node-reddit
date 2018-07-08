@@ -234,7 +234,7 @@ And paste this into `views/users/new.hbs`:
       <input type="text" name="username" class="form-control" id="user-username" placeholder="Username">
     </div>
 >
-    <div>
+    <div class="text-right">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>

@@ -81,7 +81,7 @@ When you're done, compare your file with the solution below.
       <input type="password" name="password" class="form-control" id="user-password" placeholder="Password">
     </div>
 >
-    <div>
+    <div class="text-right">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
@@ -221,7 +221,6 @@ Create a new file `views/login.hbs`, and paste the following form inside:
   </div>
 </form>
 ```
-<!-- TODO: update new user form to have submit button in 'text-right' div -->
 
 Now when we visit `localhost:3000/login`, we see our login form.
 
