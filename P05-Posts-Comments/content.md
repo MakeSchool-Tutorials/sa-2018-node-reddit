@@ -331,6 +331,8 @@ There are a few interesting things about this code snippet: first, it's a list e
 >
 Add the 'New Comment' links to the Rooms `show` view in `views/rooms/show.hbs`. Where can you put the code snippet above so that it appears below each Post? Make sure your answer is similar to the solution below:
 
+<!--  -->
+
 >[solution]
 >
 `views/rooms/show.hbs`:
@@ -359,7 +361,7 @@ Add the 'New Comment' links to the Rooms `show` view in `views/rooms/show.hbs`. 
           </div>
         </div>
       </div>
-
+>
       <!-- Add everything between the <ul>...</ul> tags -->
       <ul>
         {{#each post.comments as |comment|}}
@@ -390,6 +392,8 @@ Don't forget to tell the Posts controller about the new nested routes. In our Ro
 >
 <!-- TODO provide screenshot of error -->
 In the end, you should be able to go to a Room with Posts, click on the 'New Comment' link, and receive an error (because the view doesn't exist yet – that's the next step!) Give it a try, and be sure your solution is similar to the one below:
+
+<!--  -->
 
 >[solution]
 >
@@ -440,11 +444,9 @@ Now we'll create the view so that the user can enter the information we'll need 
 >
 Of course, it won't be *exactly* the same. You'll only need one text input field, for the Comment's body. For the form's `action` URL, you'll need to nest the comment inside the post and inside the room, like this: `/rooms/{{room.id}}/posts/{{post.id}}/comments`.
 >
-Your final result should look like this:
->
-<!-- TODO: screenshot  -->
->
-But, submitting that form won't work yet. Click 'Submit', and you should get a 404 error–implementing that route will be next step. Your code should look like the solution below:
+But, submitting that form won't work yet. Click 'Submit', and you should get a 404 error–implementing that route will be next step. Your code should look like the solution below...
+
+<!--  -->
 
 >[solution]
 >

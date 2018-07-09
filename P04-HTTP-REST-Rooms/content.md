@@ -312,7 +312,7 @@ Notice that both of these snippets reference a `room` variable–this is just li
 
 Try to work through these steps yourself. When you're finished, compare your solution with the one below:
 
->[solution]
+> [solution]
 >
 `views/rooms/edit.hbs`:
 >
@@ -320,12 +320,12 @@ Try to work through these steps yourself. When you're finished, compare your sol
 <div>
   <form action="/rooms/{{room.id}}" method="post">
     <legend>Edit Room</legend>
-
+>
     <div class="form-group">
       <label for="post-topic">Topic</label>
       <input type="text" name="topic" class="form-control" id="room-topic" value="{{room.topic}}">
     </div>
-
+>
     <div class="text-right">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>

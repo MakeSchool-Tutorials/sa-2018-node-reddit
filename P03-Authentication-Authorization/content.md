@@ -327,7 +327,7 @@ Before we update our request to `/login` we need to make sure to add our `User` 
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
-
+>
 /* our index routes */
 ```
 >
@@ -538,7 +538,7 @@ router.get('/logout', (req, res, next) => {
       if (err) return next(err);
     });
   }
-  
+>
   return res.redirect('/login');
 });
 >
