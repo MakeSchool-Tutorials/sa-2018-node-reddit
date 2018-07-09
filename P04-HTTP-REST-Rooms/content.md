@@ -213,7 +213,7 @@ Let's set up the view at `views/rooms/index.hbs`. Create that file and type the 
   <ul>
     {{#each rooms as |room|}}
       <li>
-        <a href="rooms/{{room.id}}">{{room.topic}}</a> | <a href="rooms/{{room.id}}/edit">edit</a>
+        <a href="/rooms/{{room.id}}">{{room.topic}}</a> | <a href="/rooms/{{room.id}}/edit">edit</a>
       </li>
     {{/each}}
   </ul>
