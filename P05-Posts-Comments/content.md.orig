@@ -48,7 +48,7 @@ module.exports = mongoose.model('Message', MessageSchema);
 
 We won't create exactly the same set of REST actions for Messages that we did for Rooms. For one thing, we won't have an `index`–the Room's `show` action will basically serve that purpose by displaying all of the messages for that room.  And, although they could _possibly_ be useful, we won't create `show` or `edit` actions right now, either. We're starting with only _new_ and _create_.
 
-Let's create a new file called `routes/messages.js` and paste in the following:
+Let's create a new file called `routes/messages.js` and add in the following:
 
 ```Javascript
 const express = require('express');
@@ -154,7 +154,7 @@ Let's start with the view itself.  Open `views/rooms/show.hbs` and replace the c
 =======
 # Add Messagess to Rooms Show View
 
-When we go into a room, we expect to see all of the messages posted about that topic.  Let's update the Rooms _show_ view so that when we go to a room, we find all of the related messages and render them on the page. Let's start with the view itself.  
+When we go into a room, we expect to see all of the messages posted about that topic.  Let's update the Rooms _show_ view so that when we go to a room, we find all of the related messages and render them on the page. Let's start with the view itself.
 
 >[action]
 >
@@ -190,7 +190,7 @@ Here we see another [Handlebars Helper](http://handlebarsjs.com/block_helpers.ht
 
 Let's define `posts` in `routes/rooms.js`.  Update the `show` action to the following:
 =======
-Before we can use the `messages` collection in that view, we need to define it in our controller (`routes/rooms.js`).  
+Before we can use the `messages` collection in that view, we need to define it in our controller (`routes/rooms.js`).
 >>>>>>> eb9784068d035cb01d1effcb3306b69ead8e147c
 
 >[action]

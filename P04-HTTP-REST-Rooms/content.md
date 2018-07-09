@@ -64,7 +64,7 @@ Following the REST convention, we expect that if we go to `/rooms/new`, we shoul
 
 >[action]
 >
-Let's create a new file to hold our room routes called `routes/rooms.js`, and type in the following:
+Let's create a new file to hold our room routes called `routes/rooms.js`, and type in the following
 >
 ```Javascript
 const express = require('express');
