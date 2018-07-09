@@ -350,7 +350,6 @@ Add the 'New Comment' links to the Rooms `show` view in `views/rooms/show.hbs`. 
         <div class="card-body">
           <h3 class="card-title text-center">{{post.subject}}</h3>
           <p>{{post.body}}</p>
-          <p>{{post}}</p>
         </div>
 >
         <div class="card-footer text-muted text-right">
