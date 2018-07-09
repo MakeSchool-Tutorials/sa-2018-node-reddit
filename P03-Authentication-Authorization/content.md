@@ -20,6 +20,14 @@ If you want to add more advanced features, like email verification, password res
 
 Even though we're building our system _mostly_ from scratch, we'll install a couple of tools to help us out.  [Bcrypt](https://www.npmjs.com/package/bcrypt) is a _cryptography_ package used to _hash_ users' passwords (we'll talk about _hashing_ below), and [express-session](https://github.com/expressjs/session), which will let us safely store a user's login and account information in a cookie on the user's browser.
 
+> [info]
+>
+**MacOS / Unix / Linux:**
+If you cannot install `bcrypt`, please uninstall it from your project. Next enter this command `npm install -g node-gyp` if you get an error because of access permissions, add `sudo` to the front of that command. Next install bcrypt again with the command `npm install --save bcrypt` It should now build from source and you should get a success message (ignore the warnings if you get some).
+>
+**Windows:**
+If you cannot install `bcrypt`, please uninstall it from your project. You will need to download the community edition of Visual Studio before installing it again. Once installed (with build tools), you should be able to successfully run `npm install --save bcrypt`.
+
 <!-- TODO: diagram how session cookies work -->
 <!-- TODO: define cryptography, hashing, etc -->
 
