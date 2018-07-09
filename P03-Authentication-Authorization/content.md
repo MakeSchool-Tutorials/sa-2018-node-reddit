@@ -81,7 +81,7 @@ When you're done, compare your file with the solution below.
       <input type="password" name="password" class="form-control" id="user-password" placeholder="Password">
     </div>
 >
-    <div>
+    <div class="text-right">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
@@ -98,7 +98,7 @@ Enter any username and password you like, click 'Submit', and our new user shoul
 
 ![new user](assets/new_user_2.png)
 
-That looks good.  Let's check out the new user on mLab to see what it looks like in the database. Go to (mlab.com)[https://mlab.com/home], click on your `makereddit` database, click on `Users` to see the documents, and find your new user in the list:
+That looks good.  Let's check out the new user on mLab to see what it looks like in the database. Go to [mlab.com](https://mlab.com/home), click on your `makereddit` database, click on `Users` to see the documents, and find your new user in the list:
 
 ![mlab user](assets/mlab_user_1.png)
 
@@ -128,7 +128,7 @@ UserSchema.pre('save', function(next) {
 });
 ```
 
-This code comes from the [Bcrypt documentation page](https://github.com/kelektiv/node.bcrypt.js). First, we call the `.pre()` method on `UserSchema`, which takes a callback. It fires _before_ (pre-) the action you pass as the first argument (in this case, `user.password`). So here we're saying, "before we 'save', call this function." If we wanted the function to happen _after_ we save, we could call `.post()`.
+This code comes from the [Bcrypt documentation page](https://github.com/kelektiv/node.bcrypt.js). First, we call the `.pre()` method on `UserSchema`, which takes a callback. It fires _before_ (pre-) the action you pass as the first argument (in this case, `save`). So here we're saying, "before we 'save', call this function." If we wanted the function to happen _after_ we save, we could call `.post()`.
 
 Before we save a user to the database, we call Bcrypt's `.hash()` method, which gives us the hash of the user's password. We then save the _hash_ to the database – _not the password_.
 
@@ -220,18 +220,18 @@ Create a new file `views/login.hbs`, and add the following form inside:
     <input type="password" name="password" class="form-control" id="user-password" placeholder="password">
   </div>
 >
-  <div class='text-right'>
+  <div class="text-right">
     <button type="submit" class="btn btn-primary">Submit</button>
   </div>
 </form>
 ```
-<!-- TODO: update new user form to have submit button in 'text-right' div -->
 
 Now when we visit `localhost:3000/login`, we see our login form.
 
 ![login view](assets/login_view.png)
 
-But if we try to log in now, what do you expect to happen?  It won't work yet.  When we submit a form, where does it send that data?  (Hint: check the form's `action`)
+But if we try to log in now, what do you expect to happen? It won't work yet. When we submit a form, where does it send that data? (Hint: check the form's `action`)
+
 <!-- TODO: review HTTP verbs -->
 
 >[action]
@@ -308,6 +308,7 @@ UserSchema.statics.authenticate = function(username, password, next) {
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
 ```
+
 <!-- TODO: briefly talk through code,  will define `next` in section below  -->
 
 Now let's take a step back and look at the big picture–we have a method  `User.authenticate('myusername', 'secretpassword')`  to log our user in, but how/when/where do we do that?  We want to call `authenticate()` when users send us their password, which happens when they submit the login form. Check the HTML form in `views/login.hbs`–where does it go when we submit?
@@ -320,6 +321,15 @@ Now let's take a step back and look at the big picture–we have a method  `User
 This tells the form to send a POST request to `/login`, which we define in `routes/index.js`–let's open that file.  
 
 >[action]
+Before we update our request to `/login` we need to make sure to add our `User` class, otherwise the `.authenticate()` function will not work.
+>
+```Javascript
+const express = require('express');
+const router = express.Router();
+const User = require('../models/user');
+
+/* our index routes */
+```
 >
 Let's define a POST request to `/login` like this:
 >
@@ -342,6 +352,7 @@ router.post('/login', (req, res, next) => {
 ```
 >
 Inside `.post('/login', ...)`, the first thing we do is call the `.authenticate()` method, passing in the login form data and a callback (`req` represents the HTTP request object, and form data lives in the `body` of those requests). The callback (`(err, user) => {...}`) becomes the `next()` function in `UserSchema.statics.authenticate`, defined in `models/user.js`.
+
 <!-- TODO: talk through UserSchema.statics.authenticate code here -->
 
 In the end, your complete `/routes/index.js` file should look like this:
@@ -349,6 +360,7 @@ In the end, your complete `/routes/index.js` file should look like this:
 ```Javascript
 const express = require('express');
 const router = express.Router();
+const User = require('../models/user');
 
 // home page
 router.get('/', (req, res, next) => {
@@ -383,7 +395,7 @@ There's just one final detail before our user can log in–we need to set our ap
 
 >[action]
 >
-We configure Express in `app.js`, so open that file and add the following:
+We configure Express in `app.js`, so open that file and add the following before we setup our routes. The ordering of this is very important. Because this is a middleware function, it needs to be setup before we configure out routes, otherwise the routes won't have access to the middleware (meaning our sessions will not work at all).
 >
 ```Javascript
 // configure sessions
@@ -423,7 +435,7 @@ The header is defined in our layout file.  Open `views/layout.hbs`, and replace 
 >
 This code has some new syntax, the `{{# if ...}} {{else}} {{/if}}` statement in Handlebars. This is one of several built-in [Handlebars helpers](http://handlebarsjs.com/block_helpers.html); we saw `{{#each}}` in an earlier section.
 
-However, this doesn't work yet.  Try it if you like–go to `localhost:3000/login`, enter your username and password... and still be offered a link to log _in_.  Take another look at that `{{# if}}` statement. Can you spot the problem?  We never assign any value to `currentUser`, so it's not possible to avoid the `{{else}}` branch; `current_user` will always be `undefined`.
+However, this doesn't work yet.  Try it if you like–go to `localhost:3000/login`, enter your username and password... and still be offered a link to log _in_.  Take another look at that `{{# if}}` statement. Can you spot the problem?  We never assign any value to `currentUserId`, so it's not possible to avoid the `{{else}}` branch; `currentUserId` will always be `undefined`.
 
 >[action]
 >
@@ -448,7 +460,7 @@ Go back to `localhost:3000/login`, and what happens to our "Log in/Log out" link
 
 >[action]
 >
-We can write a simple _middleware_ function to assign values to `title` and `currentUserId` before every router action by adding the following code to `routers/index.js`:
+We can write a simple _middleware_ function to assign values to `title` and `currentUserId` before every router action by adding the following code to `routers/index.js` before we define any of our routes:
 >
 ```Javascript
 // set layout variables
@@ -457,7 +469,7 @@ router.use(function(req, res, next) {
   res.locals.currentUserId = req.session.userId;
 >
   next();
-})
+});
 ```
 >
 While we have `routers/index.js` open, let's also remove the references to currentUserId we added to `router.get('/', ...)`, so that the whole file looks like this:
@@ -473,7 +485,7 @@ router.use(function(req, res, next) {
   res.locals.currentUserId = req.session.userId;
 >
   next();
-})
+});
 >
 // home page
 router.get('/', (req, res, next) => {
@@ -521,24 +533,19 @@ Open `routes/index.js` and add an action for logout:
 >
 // logout
 router.get('/logout', (req, res, next) => {
-  if(req.session) {
+  if (req.session) {
     req.session.destroy((err) => {
-      if(err) {
-        return next(err);
-      } else {
-        return res.redirect('/login');
-      }
+      if (err) return next(err);
     });
-  } else {
-    return res.redirect('/login');
   }
-}
+  
+  return res.redirect('/login');
 });
 >
 module.exports = router;
 ```
 >
-This code checks whether the request has a session cookie attached and, if so, deletes it. It then redirects the user to the login page.
+This code checks whether the request has a session cookie attached and, if so, deletes it. It then redirects the user to the login page. If there is no session, we also just want to redirect the user to the login page.
 
 # Authorization
 
