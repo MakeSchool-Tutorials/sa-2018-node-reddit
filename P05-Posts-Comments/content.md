@@ -479,7 +479,7 @@ Now when a user submits a New Comment form, the data is sent as a POST request t
 >
 This is going to be somewhat similar to the Posts `create` action in `routes/posts.js`, so look there to remind yourself how it works. However, we're storing references to the comments on the post object (rather than storing a reference to the Post on each Comment, like how we stored a reference to a Room on each Post), things get just a little more complicated. We'll help you out with some *pseudocode* so that you can see the exact steps you'll need to implement:
 >
-```
+```Javascript
 router.post('/', auth.requireLogin, (req, res, next) => {
   Find the correct room with :roomId {
     print the error, if there is one.
