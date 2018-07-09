@@ -20,20 +20,14 @@ Installing and configuring MongoDB from scratch can be a fairly complicated proc
 In your browser, go to (https://mlab.com/signup/) to create an account (unless you already have one–in which case, skip ahead).
 >
 ![mLab Signup Page](assets/mlab-01-signup.png)
-
->[action]
 >
 After your account is created, click on `+ Create New` to create a new MongoDB deployment.  Select 'Amazon Web Services' for your provider and 'Sandbox' for your plan type (as shown below) then click 'Continue'.
 >
 ![mLab Deployment Creator](assets/mlab-02-setup.png)
-
->[action]
 >
 Choose the AWS region closest to you, and click 'Continue'.
 >
 ![mLab Deployment Creator](assets/mlab-03-setup.png)
-
->[action]
 >
 Next, give your database a really cool name, like so:
 >
@@ -48,14 +42,10 @@ And finally, complete the process by clicking 'Submit Order'.
 We're almost finished setting up our database.  There's just one last step, which is to set up a username and password to keep out nosy neighbors. First, let's open that new database by clicking on its name in your MongoDB Deployments list.
 >
 ![mLab Deployment Creator](assets/mlab-06-deployments.png)
-
->[action]
 >
 Inside the database, you should see something like the screenshot below.  First, there are instructions for connecting to a MongoDB driver and a `mongodb://` URI.  We're not quite ready for this yet, but notice it now because we'll be back for it soon.  Down below, let's click on the 'Users' tab.  The list will be empty because we don't have any database users yet, so let's click on '+ Add database user'.
 >
 ![mLab Deployment Creator](assets/mlab-08-new-user.png)
-
->[action]
 >
 Use whatever username and password you like (I used username: ms-user, password: makeschool), but be sure to remember it because we'll need it again.  Click on 'Create'.  You should now see one user in your user table.
 >
@@ -83,13 +73,13 @@ Setting up a database in Express is really easy–that's one of its big advantag
 
 >[action]
 >
-Open `app.js` (this file is for configuring Express) and paste the following code near the end of the document, just above the `module.exports = app;` line (which should be on or near line 52):
+Open `app.js` (this file is for configuring Express) and add the following code near the end of the document, just above the `module.exports = app;` line (which should be on or near line 52):
 >
 ```Javascript
 // Database setup
 const mongoose = require('mongoose');
 const mongoURI = '(your mongodb URI)';
-
+>
 mongoose.connect(mongoURI)
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
@@ -97,6 +87,8 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 ```
 >
 This is [boilerplate code](https://en.wikipedia.org/wiki/Boilerplate_code) copy-pasted from [Mongoose's Getting Started guide](http://mongoosejs.com/docs/index.html). But, notice that `mongoURI` variable–we need to update that with the information from your mLab database.
+
+<!--  -->
 
 >[action]
 >
@@ -144,7 +136,7 @@ First, create a new folder in your root directory called 'models'–obviously, t
 >
 ![file tree](assets/file_tree.png)
 >
-Paste the following inside `models/user.js`:
+Add the following inside `models/user.js`:
 >
 ```Javascript
 const mongoose = require('mongoose');
@@ -160,9 +152,11 @@ module.exports = User;
 >
 We'll learn more later but, in short, this file defines what properties our users will have.  To begin with, we will only store a username, but in the future we might also store a password, a name, an email address, etc...
 
+<!--  -->
+
 >[action]
 >
-Next, open the `routes/users.js` file and delete everything in it. Paste in the following:
+Next, open the `routes/users.js` file and delete everything in it. Add in the following:
 >
 ```Javascript
 const express = require('express');
@@ -202,13 +196,15 @@ This file tells our app what to do when users request certain URLs.  We are insi
 >
 As for the files`users/index` and `users/new`, they don't exist yet.  Let's create them.
 
+<!--  -->
+
 >[action]
 >
 Make a new folder inside the `views/` folder called `users`.  Inside `users`, make two new files called `index.hbs` and `new.hbs`.  Your file structure should look like this:
 >
 ![file tree 2](assets/file_tree_2.png)
 >
-Paste this in `views/users/index.hbs`:
+Add this in `views/users/index.hbs`:
 >
 ```HTML
 <div>
@@ -222,7 +218,7 @@ Paste this in `views/users/index.hbs`:
 </ul>
 ```
 >
-And paste this into `views/users/new.hbs`:
+And add this into `views/users/new.hbs`:
 >
 ```HTML
 <div>
@@ -241,6 +237,8 @@ And paste this into `views/users/new.hbs`:
 </div>
 ```
 
+<!--  -->
+
 >[action]
 >
 And finally, let's add a _little_ extra CSS to clean things up. Open `public/stylesheets/style.css` and add this:
@@ -254,6 +252,8 @@ form {
   max-width: 20em;
 }
 ```
+
+<!--  -->
 
 >[action]
 >

@@ -50,7 +50,7 @@ module.exports = mongoose.model('Post', PostSchema);
 
 We won't create exactly the same set of REST actions for Posts that we did for Rooms. For one thing, we won't have an `index`–later the Room's `show` action will display all of its related posts, and that will serve the purpose of an `index`.  And, although they could _possibly_ be useful, we won't create `show` or `edit` actions right now, either. We're starting with only _new_ and _create_.
 
-Let's create a new file called `routes/posts.js` and paste in the following:
+Let's create a new file called `routes/posts.js` and add in the following:
 
 ```Javascript
 const express = require('express');

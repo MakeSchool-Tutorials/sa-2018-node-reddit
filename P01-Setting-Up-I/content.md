@@ -165,15 +165,15 @@ npm install -g nodemon
 ```
 >
 (the `-g` means we're installing it globally, so it's available anywhere on your system, not just for this project)
-
+>
 Now, instead of typing `npm start`, we'll type `nodemon start`.  Go ahead:  use `control`+`c` to stop the running server, then enter:
-
+>
 ```
 nodemon start
 ```
-
+>
 Now in our `routes/index.js` file, let's set the title on our home page to be our real title, "MakeReddit":
-
+>
 ```Javascript
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'MakeReddit' });
@@ -269,13 +269,13 @@ hmm... That's obviously not great. Let's add some styling.
 
 >[action]
 >
-Paste the following code inside the `<head>...</head>` tags of `views/layout.hbs`:
+Add the following code inside the `<head>...</head>` tags of `views/layout.hbs`:
 >
 ```HTML
 <!-- Required meta tags -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+>
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 ```
@@ -293,7 +293,7 @@ Update your `views/layout.hbs` file to match the following:
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 >

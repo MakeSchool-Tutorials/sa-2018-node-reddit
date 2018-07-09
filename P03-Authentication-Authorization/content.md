@@ -111,15 +111,17 @@ Later, when we implement logging in, the user will enter their password into the
 <!-- TODO: this could be explained so much better, and a diagram would be useful -->
 <!-- TODO: a given password will always produce the same hash, no two passwords will ever produce the same hash (very unlikely), hashing cannot be reversed -->
 
-Let's open our user model at `models/user.js`.  Require bcrypt at the top of the file (use `const bcrypt = require('bcrypt')`), then paste the following in, after you define the UserSchema:
-
+> [action]
+>
+Let's open our user model at `models/user.js`.  Require bcrypt at the top of the file (use `const bcrypt = require('bcrypt')`), then add the following in, after you define the UserSchema:
+>
 ```Javascript
 UserSchema.pre('save', function(next) {
   let user = this;
-
+>
   bcrypt.hash(user.password, 10, function (err, hash){
     if (err) return next(err);
-
+>
     user.password = hash;
     next();
   })
@@ -133,6 +135,8 @@ Before we save a user to the database, we call Bcrypt's `.hash()` method, which 
 >[info]
 >
 `next()` is a callback that will be supplied by the system later. It's a very common feature in Express apps and part of a feature called [middleware](https://expressjs.com/en/guide/using-middleware.html). You don't need to know all about it right now; you'll get used to seeing it.
+
+<!--  -->
 
 >[solution]
 >
@@ -200,7 +204,7 @@ In our `/login` route, we told our app to render a file called `'login'`. So it 
 
 >[action]
 >
-Create a new file `views/login.hbs`, and paste the following form inside:
+Create a new file `views/login.hbs`, and add the following form inside:
 >
 ```HTML
 <form action="/login" method="post">
@@ -544,7 +548,7 @@ Our authorization strategy will be another piece of _middleware_ that will allow
 
 >[action]
 >
-Let's create a new file, and a new folder, called `routes/helpers/auth.js` and paste the following code inside:
+Let's create a new file, and a new folder, called `routes/helpers/auth.js` and add the following code inside:
 >
 ```Javascript
 exports.requireLogin = (req, res, next) => {
