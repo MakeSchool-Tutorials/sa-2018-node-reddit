@@ -289,7 +289,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 >
 const CommentSchema = new Schema({
-  body: String,
+  body: { type: String, required: true }
 });
 >
 module.exports = mongoose.model('Comment', CommentSchema);
@@ -424,7 +424,7 @@ router.get('/new', auth.requireLogin, (req, res, next) => {
 module.exports = router;
 ```
 >
-'routes/posts.js'
+`routes/posts.js`
 >
 ```Javascript
 // { ...Existing Code... }
