@@ -596,6 +596,29 @@ When you're finished, be sure your code matches the solution below:
 <!-- {{ ...Existing code... }} -->
 ```
 
+Now before we move on, there is one last thing we need to do. We updated our handlebars code to show our comments when we view a room. Before those comments actually show though, we need to go and update one more piece of code. In our rooms router `routes/rooms.js` we are currently fetching each post. When we set up our `Comment` model we added our references to the `Post` model (refer to earlier in this section if you don't follow).
+
+When we are fetching each `Post` we are currently ignoring the comments. In order to show the comments we need to grab our related items (the comments) by telling Mongoose to populate the query. It's okay if you don't quite understand what all of this means. To try and sum it up, we are telling Mongoose to grab the post, and all related comments to this post.
+
+>[action]
+Locate the following line of code in `rooms.js`:
+>
+```Javascript
+/* Rooms Show */
+router.get('/:id', auth.requireLogin, (req, res, next) => {
+  // more code here
+});
+```
+>
+Now update your code that fetches the `Post` to look like this:
+>
+```Javascript
+//                      V The new stuff starts here
+Post.find({ room: room}).populate('comments').exec(function(err, posts) {
+  // this internal code does not change
+});
+```
+
 # Summary
 
 In this section, we gave users the ability to create new posts in a room. We also let them comment on posts to keep the conversation going.
