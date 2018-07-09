@@ -135,6 +135,8 @@ Create a file (in a new `views/rooms` folder) called `views/rooms/new.hbs` and t
 </div>
 ```
 
+<!--  -->
+
 >[action]
 >
 And in `routes/rooms.js`, replace `router.get('/new', (req, res, next) => { ... });` with:
@@ -145,6 +147,8 @@ router.get('/new', auth.requireLogin, (req, res, next) => {
   res.render('rooms/new');
 });
 ```
+
+<!--  -->
 
 >[action]
 >
@@ -218,6 +222,8 @@ Let's set up the view at `views/rooms/index.hbs`. Create that file and type the 
 >
 Notice that I included an `edit` link for each of the rooms. They won't work until we implement our _edit_ and _update_ actions, which we'll do a little further down the page, after we set up the `show` action.
 
+<!--  -->
+
 >[action]
 >
 Now we need to set up our `index` controller action in `routes/rooms.js`. Replace the existing `Rooms index` action with:
@@ -238,6 +244,8 @@ router.get('/', (req, res, next) => {
 This is similar to our home page action in `routes/index.js`, but with one big difference–all of our logic happens inside a _callback function_ that we pass to `Room.find()`. `Room.find()` is a method provided by Mongoose that we can use when we want to find a particular document or documents. For example, if we want to find a room with a 'sports' topic (if it exists), we would call `Room.find({ 'topic': 'sports' }, 'topic', function(err, rooms) {...})`. Passing an empty object (`{}`) for the first argument will return all of the documents for that model (like this: `Room.find({}, function(err, rooms) { ... })`).
 >
 For detailed information on how Mongoose queries work, check out [their documentation](http://mongoosejs.com/docs/queries.html).
+
+<!--  -->
 
 >[info]
 >
@@ -266,6 +274,8 @@ Create a new file for our view at `views/rooms/show.hbs` and type in the followi
   Coming soon: posts!
 </div>
 ```
+
+<!--  -->
 
 >[action]
 Then, in our controller we need to render this file when anybody visits `/rooms/:id` (where `:id` is the id of a specific room) and set the value of `room` on the second line.  In `routes/rooms.js`, replace `get('/:id', ...)` with:
@@ -343,6 +353,8 @@ Our Rooms `update` action is very similar to our `create` action–they are both
 >[info]
 >
 Update actions should typically be PUT or PATCH requests. However, these options are not available to us with plain HTML, so we are substituting in a POST request.
+
+<!--  -->
 
 >[action]
 >

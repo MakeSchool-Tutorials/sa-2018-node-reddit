@@ -147,7 +147,7 @@ const Room = require('../models/room');
 router.get('/new', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.roomId, function(err, room) {
     if(err) { console.error(err) };
-
+>
     res.render('posts/new', { room: room });
   });
 });
@@ -325,7 +325,7 @@ The code to create those 'New Comment' links looks like this:
 </ul>
 ```
 
-There are a few interesting things about this code snippet: first, it's a list even though there's only one item (`ul` stands for __u__nordered __l__ist; your other option is `ol` if you want numbers instead of bullet points [•]). Later you'll include the post's comments as the other items in the list. The other thing to notice is that the comments are *deeply nested* – comments are nested inside posts, which are in turn nested inside rooms. We'll start setting that up in the next section.
+There are a few interesting things about this code snippet: first, it's a list even though there's only one item (`ul` stands for __u__ nordered __l__ ist; your other option is `ol` if you want numbers instead of bullet points [•]). Later you'll include the post's comments as the other items in the list. The other thing to notice is that the comments are *deeply nested* – comments are nested inside posts, which are in turn nested inside rooms. We'll start setting that up in the next section.
 
 >[action]
 >
@@ -402,20 +402,20 @@ const auth = require('./helpers/auth');
 const Room = require('../models/room');
 const Post = require('../models/post');
 const Comment = require('../models/comment');
-
+>
 // Comments new
 router.get('/new', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.roomId, function(err, room) {
     if(err) { console.error(err) };
-
+>
     Post.findById(req.params.postId, function(err, post) {
       if(err) { console.error(err) };
-
+>
       res.render('comments/new', { post: post, room: room });
     });
   })
 });
-
+>
 module.exports = router;
 ```
 >
@@ -480,19 +480,19 @@ This is going to be somewhat similar to the Posts `create` action in `routes/pos
 router.post('/', auth.requireLogin, (req, res, next) => {
   Find the correct room with :roomId {
     print the error, if there is one.
-
+>
     Find the correct Post using :postId {
       print the error, if there is one.
-
+>
       Get the  Comment data from req.body
       Use this line to store the comments on the Post: `post.comments.unshift(comment);`
-
+>
       save the post {
         print the error, if there is one.
-
+>
         save the comment {
           print the error, if there is one.
-
+>
           Redirect the user to the Rooms show page.
         }
       }
@@ -503,7 +503,9 @@ router.post('/', auth.requireLogin, (req, res, next) => {
 >
 Give it a shot, then check the solution below:
 
+<!--  -->
 <!-- TODO: • comment on unshift() -->
+
 >[solution]
 >
 ```Javascript

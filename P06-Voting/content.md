@@ -85,7 +85,7 @@ const PostSchema = new Schema({
   subject: String,
   body: String,
   room: { type: Schema.Types.ObjectId, ref: 'Room' },
-
+>
   // Add this line:
   points: { type: Number, default: 0 },
 });
@@ -113,7 +113,7 @@ Open `views/rooms/show.hbs` and update the following code to make our +/- button
   <input type="hidden" name="points" id="post-points" value="-1">
   <button type="submit" class="downvote-button">-</button>
 </form>
-
+>
 <form action="/rooms/{{post.room}}/posts/{{post.id}}" method="post" class="inline-form">
   <input type="hidden" name="points" id="post-points" value="1">
   <button type="submit" class="upvote-button">+</button>
