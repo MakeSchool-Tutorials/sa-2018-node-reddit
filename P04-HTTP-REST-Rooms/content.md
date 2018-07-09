@@ -27,7 +27,7 @@ REST is a system that calls for organizing our URLs by _resource_. Each _resourc
 
 These seven actions should cover most situations you'll come across in a web app. Often, you won't need all of the actions, just one or two–that's totally OK. Occasionally, you'll need an _extra_ action–it's better to avoid that if possible, but sometimes you can't, and that's OK too. The nice thing about REST is that it's just a convention – if you do things differently it will still _work_, but if you stick closely to the convention you'll have to make fewer decisions, and other developers will be able to more easily work with your code.
 
-There are a few confusing points about REST. First, notice that some behavior requires _two_ actions. `new` and `create`, for example, are both needed to create a new object–the `create` action is a `POST` request that receives data from the user to store in the database, while the 'new' action is a `GET` request sends the user a web form to collect that information. `edit` and `update` have a similar relationship.
+There are a few confusing points about REST. First, notice that some behavior requires _two_ actions. `new` and `create`, for example, are both needed to create a new object–the `create` action is a `POST` request that receives data from the user to store in the database, while the 'new' action is a `GET` request that sends the user a web form to collect that information. `edit` and `update` have a similar relationship.
 
 <!-- TODO: new/create workflow -->
 
@@ -41,7 +41,7 @@ Let's start by defining what a "room" will look like when we store it in our dat
 
 >[action]
 >
-For now, create a file for our room model called `models/room.js` and add the following code into it:
+For now, create a file for our room model called `models/room.js` and type the following code into it:
 >
 ```Javascript
 const mongoose = require('mongoose');
@@ -64,7 +64,7 @@ Following the REST convention, we expect that if we go to `/rooms/new`, we shoul
 
 >[action]
 >
-Let's create a new file to hold our room routes called `routes/rooms.js`, and add in the following:
+Let's create a new file to hold our room routes called `routes/rooms.js`, and type in the following
 >
 ```Javascript
 const express = require('express');
@@ -116,18 +116,19 @@ The single purpose of our `new` action is to show users the form they need to ma
 
 >[action]
 >
-Create a file (in a new `views/rooms` folder) called `views/rooms/new.hbs` and add in the following code, which will render a web form for creating a new room:
+Create a file (in a new `views/rooms` folder) called `views/rooms/new.hbs` and type in the following code, which will render a web form for creating a new room:
 >
 ```HTML
 <div>
   <form action="/rooms" method="post">
     <legend>New Room</legend>
+>
     <div class="form-group">
       <label for="room-title">Topic</label>
       <input type="text" name="topic" class="form-control" id="room-topic" placeholder="Topic">
     </div>
 >
-    <div>
+    <div class="text-right">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
@@ -197,7 +198,7 @@ Now that we can create rooms and store them in our database, we need to create a
 
 >[action]
 >
-Let's set up the view at `views/rooms/index.hbs`. Create that file and add the following inside:
+Let's set up the view at `views/rooms/index.hbs`. Create that file and type the following inside:
 >
 ```HTML
 <div>
@@ -254,7 +255,7 @@ Where an `index` shows a collection of items, such as all the rooms in our datab
 
 >[action]
 >
-Create a new file for our view at `views/rooms/show.hbs` and add in the following:
+Create a new file for our view at `views/rooms/show.hbs` and type in the following:
 >
 ```HTML
 <div>
@@ -309,11 +310,13 @@ Try to work through these steps yourself. When you're finished, compare your sol
 <div>
   <form action="/rooms/{{room.id}}" method="post">
     <legend>Edit Room</legend>
+
     <div class="form-group">
       <label for="post-topic">Topic</label>
       <input type="text" name="topic" class="form-control" id="room-topic" value="{{room.topic}}">
     </div>
-    <div class='text-right'>
+
+    <div class="text-right">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
