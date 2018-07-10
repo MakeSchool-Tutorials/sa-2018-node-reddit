@@ -289,7 +289,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 >
 const CommentSchema = new Schema({
-  body: String,
+  body: { type: String, required: true }
 });
 >
 module.exports = mongoose.model('Comment', CommentSchema);
@@ -350,7 +350,6 @@ Add the 'New Comment' links to the Rooms `show` view in `views/rooms/show.hbs`. 
         <div class="card-body">
           <h3 class="card-title text-center">{{post.subject}}</h3>
           <p>{{post.body}}</p>
-          <p>{{post}}</p>
         </div>
 >
         <div class="card-footer text-muted text-right">
@@ -424,7 +423,7 @@ router.get('/new', auth.requireLogin, (req, res, next) => {
 module.exports = router;
 ```
 >
-'routes/posts.js'
+`routes/posts.js`
 >
 ```Javascript
 // { ...Existing Code... }
@@ -479,7 +478,7 @@ Now when a user submits a New Comment form, the data is sent as a POST request t
 >
 This is going to be somewhat similar to the Posts `create` action in `routes/posts.js`, so look there to remind yourself how it works. However, we're storing references to the comments on the post object (rather than storing a reference to the Post on each Comment, like how we stored a reference to a Room on each Post), things get just a little more complicated. We'll help you out with some *pseudocode* so that you can see the exact steps you'll need to implement:
 >
-```
+```Javascript
 router.post('/', auth.requireLogin, (req, res, next) => {
   Find the correct room with :roomId {
     print the error, if there is one.
@@ -595,6 +594,29 @@ When you're finished, be sure your code matches the solution below:
 {{/each}}
 >
 <!-- {{ ...Existing code... }} -->
+```
+
+Now before we move on, there is one last thing we need to do. We updated our handlebars code to show our comments when we view a room. Before those comments actually show though, we need to go and update one more piece of code. In our rooms router `routes/rooms.js` we are currently fetching each post. When we set up our `Comment` model we added our references to the `Post` model (refer to earlier in this section if you don't follow).
+
+When we are fetching each `Post` we are currently ignoring the comments. In order to show the comments we need to grab our related items (the comments) by telling Mongoose to populate the query. It's okay if you don't quite understand what all of this means. To try and sum it up, we are telling Mongoose to grab the post, and all related comments to this post.
+
+>[action]
+Locate the following line of code in `rooms.js`:
+>
+```Javascript
+/* Rooms Show */
+router.get('/:id', auth.requireLogin, (req, res, next) => {
+  // more code here
+});
+```
+>
+Now update your code that fetches the `Post` to look like this:
+>
+```Javascript
+//                      V The new stuff starts here
+Post.find({ room: room}).populate('comments').exec(function(err, posts) {
+  // this internal code does not change
+});
 ```
 
 # Summary
