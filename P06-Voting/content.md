@@ -157,12 +157,10 @@ Open the Rooms controller at `routes/rooms.js` and update the `show` action as b
 router.get('/:id', auth.requireLogin, (req, res, next) => {
   Room.findById(req.params.id, function(err, room) {
     if(err) { console.error(err) };
->
-    Post.find({ room: room }, function(err, posts) {
-      if(err) { console.error(err) };
->
-      // Add this line:
-      posts = posts.sort({ points: -1 });
+>   
+    //                       V Add the sorting action here
+    Post.find({ room: room }).sort({ points: -1 }).populate('comments').exec(function (err, posts) {
+      if (err) { console.error(err) };
 >
       res.render('rooms/show', { room: room, posts: posts, roomId: req.params.id });
     });
