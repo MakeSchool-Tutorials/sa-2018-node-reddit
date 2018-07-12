@@ -174,4 +174,4 @@ router.get('/:id', auth.requireLogin, (req, res, next) => {
 
 Congratulations! Try it out – you now have a working clone of Reddit!
 
-Over the course of this tutorial, we set up an Express web server and configured it to use MongoDB as a database. We then created user accounts and built our own authentication system so they could log in and out. We used Handlebars as a templating engine to create dynamic HTML. We learned about MVC and REST then, using those principles, we built the models, views and controllers necessary for our user to make posts and comments. Finally, we
+Over the course of this tutorial, we set up an Express web server and configured it to use MongoDB as a database. We then created user accounts and built our own authentication system so they could log in and out. We used Handlebars as a templating engine to create dynamic HTML. We learned about MVC and REST then, using those principles, we built the models, views and controllers necessary for our user to make posts and comments. Finally, we added in voting so that comments could be sorted to feature the ones that the community thinks are most relevant.
