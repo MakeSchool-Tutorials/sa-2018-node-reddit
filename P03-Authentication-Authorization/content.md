@@ -255,7 +255,7 @@ router.post('/login', (req, res, next) => {
 });
 ```
 >
-This tells our app what to do if ever it receives a POST request to `http://your-site.com/login`. It's the same URL as above, but our app will behave differently depending on whether it receives a GET or a POST request. We're not doing anything yet, except printing some information to the console. But with all of our groundwork laid, we're ready to authenticate users.
+This tells our app what to do if it ever it receives a POST request to `http://your-site.com/login`. It's the same URL as above, but our app will behave differently depending on whether it receives a GET or a POST request. We're not doing anything yet, except printing some information to the console. But with all of our groundwork laid, we're ready to authenticate users.
 
 # Authentication
 
